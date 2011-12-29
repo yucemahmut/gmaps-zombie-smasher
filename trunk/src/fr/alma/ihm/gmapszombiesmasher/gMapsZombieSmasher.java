@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.content.Intent;
-import  android.content.res.Resources;
+import android.content.res.Resources;
+import android.graphics.Color;
 
 public class gMapsZombieSmasher extends TabActivity
 {
