@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<PreferenceCategory android:title="Game settings">
+		<CheckBoxPreference android:key="check_sound"
+			android:title="Sound" android:summary="Zombie: Did I scare you?"
+			android:defaultValue="true" />
+		<CheckBoxPreference android:key="check_anything"
+			android:title="Change" android:summary="change me as you want"
+			android:defaultValue="false" />
+	</PreferenceCategory>
+</PreferenceScreen>
