@@ -15,6 +15,9 @@ public class ZombieFactory {
 
 	public Entity getZombie() {
 		// TODO create a zombie
+		
+		// Cf CitizenFactory
+		
 		return null;
 	}
 

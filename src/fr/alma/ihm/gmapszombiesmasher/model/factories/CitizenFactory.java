@@ -15,6 +15,16 @@ public class CitizenFactory {
 
 	public Entity getCitizen() {
 		// TODO create a citizen
+
+		// Créer une Entity c
+		// Créer une CCoordinate en fonction des boundaries et l'ajouter à c
+		// Créer une CMoveSpeed dans une fourchette
+		// -> définir une unité
+		// -> définir une movespeed pour les zombies légerement superieur en
+		// moyenne a un citoyen
+		
+		// Créer une CAICitizen et l'ajouter à c à MIA
+
 		return null;
 	}
 
