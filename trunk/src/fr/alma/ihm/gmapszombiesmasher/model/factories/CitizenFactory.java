@@ -25,6 +25,7 @@ public class CitizenFactory {
 		
 		// Créer une CAICitizen et l'ajouter à c à MIA
 
+		
 		return null;
 	}
 

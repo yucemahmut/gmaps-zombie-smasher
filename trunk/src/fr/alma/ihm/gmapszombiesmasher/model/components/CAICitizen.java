@@ -29,8 +29,12 @@ public class CAICitizen extends Component implements ICAI {
 		// CMovespeed
 		// (Prendre en compte le deltaTime) et se diriger vers l helicoptère
 		// grace
-		// a la route trouvée par Gmap
-
+		// a la route trouvée par Gmap ( que l on conserve en mémoire au cas où
+		// la position
+		// de l helico ne change pas a la frame suivante )
+		
+		// Si aucun Chopper trouvé , alors autistifier sur place, ou fuir zombie proche =)
+		// -> definir distance de fuite
 	}
 
 }
