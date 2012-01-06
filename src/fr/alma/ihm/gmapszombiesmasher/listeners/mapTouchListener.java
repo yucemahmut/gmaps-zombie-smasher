@@ -8,6 +8,7 @@ public class mapTouchListener implements OnTouchListener {
 
 	@Override
 	public boolean onTouch(View arg0, MotionEvent event) {
+		System.out.println("Miaaou");
 		return false;
 	}
 
