@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">gMapsZombieSmasher</string>
+        
+    <!-- Main Menu -->
+    <string name="play">Play</string>
+    <string name="resume">Resume</string>
+    <string name="level">Manage Levels</string>
+    <string name="achievements">Achievements</string>
+    <string name="settings">Settings</string>
+    
+    <!-- Play -->
+    <string name="play_here">Play Here</string>
+    <string name="new_world">Create a Fù$*ing New World</string>    
+    
+    <!-- Game -->
+    <string name="game">Game</string>
+    
 </resources>
