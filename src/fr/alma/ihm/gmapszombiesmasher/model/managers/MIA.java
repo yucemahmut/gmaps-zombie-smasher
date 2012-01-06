@@ -23,8 +23,9 @@ public class MIA implements IManager {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-
+		for (ICAI ai : ais) {
+			ai.update();
+		}
 	}
 
 }

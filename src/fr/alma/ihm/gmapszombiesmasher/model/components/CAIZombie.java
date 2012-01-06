@@ -32,7 +32,13 @@ public class CAIZombie extends Component implements ICAI {
 
 		// Par effet de bord, changer les variables de CCoordinates en fonction
 		// de la CMoveSpeed (ne pas oublier deltaTime => demander a Adrien pour
-		// plus de précisions) et de la route trouvée par Gmaps
+		// plus de précisions) et de la route trouvée par Gmaps ( que l on
+		// conserve en mémoire au cas où la position
+		// de l helico ne change pas a la frame suivante )
+		
+		// Verification de proximité
+		// Si un citizen se trouve proche, il est transformé en zombi, son icone
+		// devient celle d ' un zombi et son IA aussi, movespeed recalculé
 
 	}
 
