@@ -10,6 +10,10 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
+
 import fr.alma.ihm.gmapszombiesmasher.views.GameOnTouchListener;
 //import fr.alma.ihm.gmapszombiesmasher.views.ZombiesOverlay;
 
@@ -51,9 +55,34 @@ public class GameActivity extends MapActivity {
 //		
 	       mapView.invalidate();
 		//mapView.setOnTouchListener(new mapTouchListener());
-		
-
-
-
 	}
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+
+    inflater.inflate(R.menu.pause_menu, menu);
+
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.it_resume:
+        // TODO
+        return true;
+
+      case R.id.it_achievements:
+        // TODO
+        return true;
+
+      case R.id.it_settings:
+        // TODO
+        return true;
+
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
 }
