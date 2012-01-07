@@ -19,28 +19,48 @@
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_width="200sp"
             android:layout_height="60sp"
-            android:text="@string/play" />
+            android:text="@string/play"
+            android:textSize="10pt"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:background="@drawable/btn_menu"
+            android:textColor="#fff" />
         <Button
             android:id="@+id/level"
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_width="200sp"
             android:layout_height="60sp"
-            android:text="@string/level" />
+            android:text="@string/level"
+            android:textSize="10pt"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:background="@drawable/btn_menu"
+            android:textColor="#fff" />
         <Button
             android:id="@+id/achievements"
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_width="200sp"
             android:layout_height="60sp"
-            android:text="@string/achievements" />
+            android:text="@string/achievements"
+            android:textSize="10pt"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:background="@drawable/btn_menu"
+            android:textColor="#fff" />
         <Button
             android:id="@+id/settings"
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_width="200sp"
             android:layout_height="60sp"
-            android:text="@string/settings" />
+            android:text="@string/settings"
+            android:textSize="10pt"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:background="@drawable/btn_menu"
+            android:textColor="#fff" />
 
     </LinearLayout>
 

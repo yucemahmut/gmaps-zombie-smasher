@@ -11,7 +11,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 import fr.alma.ihm.gmapszombiesmasher.views.GameOnTouchListener;
-import fr.alma.ihm.gmapszombiesmasher.views.ZombiesOverlay;
+//import fr.alma.ihm.gmapszombiesmasher.views.ZombiesOverlay;
 
 public class GameActivity extends MapActivity {
 
