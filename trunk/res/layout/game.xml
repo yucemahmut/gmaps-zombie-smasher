@@ -11,12 +11,25 @@
       android:layout_weight="1"
       android:clickable="true"
       android:apiKey="05k7HM_cKtQYm88WCmJX6KKz0BtQ07_h9SVQPAQ" />
-  <LinearLayout android:id="@+id/game_menu_bar"
-                android:orientation="vertical"
-                android:layout_width="48px"
-                android:layout_height="fill_parent"
-                android:layout_weight="0">
-    <!-- TODO objets du jeu -->
-  </LinearLayout>
+  <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/game_menu_scroller"
+              android:layout_width="48px"
+              android:layout_height="fill_parent"
+              android:background="#762A08">
+    <LinearLayout android:id="@+id/game_menu_bar"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="0">
+      <ImageView android:id="@+id/helicopter_button"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:src="@drawable/ic_helicopter"/>
+      <ImageView android:id="@+id/bomb_button"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:src="@drawable/ic_bomb"/>
+    </LinearLayout>
+  </ScrollView>
 </LinearLayout>
 
