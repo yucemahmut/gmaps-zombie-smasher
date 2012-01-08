@@ -1,4 +1,4 @@
-package fr.alma.ihm.gmapszombiesmasher.views;
+package fr.alma.ihm.gmapszombiesmasher.listeners;
 
 import android.view.MotionEvent;
 import android.view.View;

@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
 
-import fr.alma.ihm.gmapszombiesmasher.views.GameOnTouchListener;
+import fr.alma.ihm.gmapszombiesmasher.listeners.GameOnTouchListener;
 //import fr.alma.ihm.gmapszombiesmasher.views.ZombiesOverlay;
 
 public class GameActivity extends MapActivity {
