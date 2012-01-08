@@ -9,12 +9,13 @@
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.NoTitleBar">
         <uses-library android:name="com.google.android.maps" />
 
         <activity
             android:label="@string/app_name"
-            android:name="gMapsZombieSmasher" >
+            android:name="gMapsZombieSmasher">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
