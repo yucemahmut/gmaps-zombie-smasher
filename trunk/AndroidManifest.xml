@@ -30,6 +30,7 @@
         </activity>
         <activity
             android:label="@string/game"
+            android:screenOrientation="landscape"
             android:name="GameActivity" >
             
         </activity>
