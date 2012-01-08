@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.maps.MapView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mapview"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:clickable="true"
-    android:apiKey="0ksD3O-Cys3kKxMCdIix0St7nCMsrqUbmTbb5KA"
-/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+  <com.google.android.maps.MapView
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/mapview"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      android:clickable="true"
+      android:apiKey="05k7HM_cKtQYm88WCmJX6KKz0BtQ07_h9SVQPAQ" />
+  <LinearLayout android:id="@+id/game_menu_bar"
+                android:orientation="vertical"
+                android:layout_width="48px"
+                android:layout_height="fill_parent"
+                android:layout_weight="0">
+    <!-- TODO objets du jeu -->
+  </LinearLayout>
+</LinearLayout>
+
