@@ -18,6 +18,8 @@ public class MIA implements IManager {
 	}
 
 	public void addAI(ICAI ai) {
+		// TODO setup ai component
+
 		ais.add(ai);
 	}
 

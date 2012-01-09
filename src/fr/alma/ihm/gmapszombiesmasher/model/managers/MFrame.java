@@ -21,7 +21,9 @@ public class MFrame implements IManager {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+		for (IManager manager : managers) {
+			manager.update();
+		}
 
 	}
 
