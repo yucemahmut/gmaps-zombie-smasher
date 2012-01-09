@@ -16,10 +16,13 @@ public class CAICitizen extends Component implements ICAI {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+		// TODO implémente algo suivant :
 
 		// Chercher le CGoal du parent
 		// Si aucun , alors le créer
+		if (!(getParent().getComponentMap().containsKey("CGoal"))) {
+			getParent().addComponent(new CGoal(getParent()));
+		}
 
 		// Si la valeur du CGoal est null
 		// Alors chercher si une entité de chopper existe, la mettre dans le
@@ -32,8 +35,9 @@ public class CAICitizen extends Component implements ICAI {
 		// a la route trouvée par Gmap ( que l on conserve en mémoire au cas où
 		// la position
 		// de l helico ne change pas a la frame suivante )
-		
-		// Si aucun Chopper trouvé , alors autistifier sur place, ou fuir zombie proche =)
+
+		// Si aucun Chopper trouvé , alors autistifier sur place, ou fuir zombie
+		// proche =)
 		// -> definir distance de fuite
 	}
 
