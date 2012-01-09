@@ -21,14 +21,14 @@
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
                   android:layout_weight="0">
-      <ImageView android:id="@+id/helicopter_button"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:src="@drawable/ic_helicopter"/>
-      <ImageView android:id="@+id/bomb_button"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:src="@drawable/ic_bomb"/>
+      <Button android:id="@+id/helicopter_button"
+              android:layout_width="48px"
+              android:layout_height="48px"
+              android:background="@drawable/btn_helicopter"/>
+      <Button android:id="@+id/bomb_button"
+              android:layout_width="48px"
+              android:layout_height="48px"
+              android:background="@drawable/btn_bomb"/>
     </LinearLayout>
   </ScrollView>
 </LinearLayout>
