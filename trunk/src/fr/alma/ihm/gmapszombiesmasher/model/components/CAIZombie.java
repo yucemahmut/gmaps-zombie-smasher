@@ -17,7 +17,7 @@ public class CAIZombie extends Component implements ICAI {
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
-
+		// TODO fonction de recherche d'entité citizen plus proche
 		// Chercher dans le parent si il a un CGoal
 		// Si ce n'est pas le cas , alors le créer
 
