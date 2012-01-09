@@ -15,7 +15,7 @@ public class MFrame implements IManager {
 		managers = new LinkedList<IManager>();
 	}
 
-	public void addAI(IManager manager) {
+	public void addManager(IManager manager) {
 		managers.add(manager);
 	}
 
