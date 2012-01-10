@@ -19,6 +19,10 @@ public class CCoordinates extends Component {
 		longitude = 0;
 	}
 
+  public boolean equals(CCoordinates c) {
+    return (latitude == c.latitude && longitude == c.longitude);
+  }
+
 	public int getLatitude() {
 		return latitude;
 	}
