@@ -21,12 +21,14 @@ public class CGoal extends Component {
   private static final boolean DIRECTION_ALTERNATIVES = false;
 
 	private Entity goal;
+  private CCoordinates lastGoalCoordinates;
   private JSONObject roadSteps;
   private int currentStep;
 	
 	public CGoal(Entity parent) {
 		super(parent);
 		goal = null; // If there ain't no goal
+    lastGoalCoordinates = null;
     roadSteps = null;
     currentStep = 0;
 	}
@@ -43,9 +45,17 @@ public class CGoal extends Component {
    *          isn't valide.
    */
 	public CCoordinates setGoal(Entity goal) {
-    CCoordinates startCoordinates = null;
-
 		this.goal = goal;
+
+    if(goal.getComponentMap().containsKey(CCoordinates.class.getName())) {
+      lastGoalCoordinates = (CCoordinates) goal.getComponentMap().get(CCoordinates.class.getName());
+    }
+
+    return updateSteps();
+	}
+
+  private CCoordinates updateSteps() {
+    CCoordinates startCoordinates = null;
 
     // get the path from the parent position to the goal
     if(getParent().getComponentMap().containsKey(CCoordinates.class.getName())
@@ -100,7 +110,7 @@ public class CGoal extends Component {
     }
 
     return startCoordinates;
-	}
+  }
 	
   /**
    * Determine the new position of an entity, regarding its current location,
@@ -113,10 +123,18 @@ public class CGoal extends Component {
     CCoordinates coordinates = null;
 
     if(roadSteps != null) {
-      if(getParent().getComponentMap().containsKey(CCoordinates.class.getName())) {
+      if(getParent().getComponentMap().containsKey(CCoordinates.class.getName())
+         && goal.getComponentMap().containsKey(CCoordinates.class.getName())) {
         try {
           JSONObject step = roadSteps.getJSONArray("steps").getJSONObject(currentStep);
           CCoordinates currentCoordinates = (CCoordinates) getParent().getComponentMap().get(CCoordinates.class.getName());
+
+          // recalculate the steps if the target has moved
+          if(!goal.getComponentMap().get(CCoordinates.class.getName())
+             .equals(lastGoalCoordinates)) {
+            currentCoordinates = updateSteps();
+            lastGoalCoordinates = (CCoordinates) goal.getComponentMap().get(CCoordinates.class.getName());
+          }
 
           coordinates = new CCoordinates(getParent());
 
