@@ -1,8 +1,10 @@
 package fr.alma.ihm.gmapszombiesmasher.listeners;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import fr.alma.ihm.gmapszombiesmasher.AchievementsActivity;
 
 public class AchievementsButtonListener implements OnClickListener {
 
@@ -14,8 +16,9 @@ public class AchievementsButtonListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-
+		Intent intent = new Intent().setClass(this.parent,
+				AchievementsActivity.class);
+		this.parent.startActivity(intent);
 	}
 
 }

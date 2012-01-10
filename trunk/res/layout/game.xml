@@ -8,9 +8,9 @@
 		android:layout_weight="1" android:clickable="true"
 		android:apiKey="0JT-9Wr1m52Xf9UX888Hry_1igFlkuiydpeKNzg" />
 	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-		android:id="@+id/game_menu_scroller" android:layout_height="fill_parent"
-		android:background="@drawable/vertical_background"
-		android:layout_width="52px" android:layout_gravity="center_horizontal">
+	android:id="@+id/game_menu_scroller" android:layout_height="fill_parent"
+	android:background="@drawable/vertical_background"
+	android:layout_width="52px" android:layout_gravity="center_horizontal">
 		<LinearLayout android:id="@+id/game_menu_bar"
 			android:orientation="vertical" android:layout_width="fill_parent"
 
