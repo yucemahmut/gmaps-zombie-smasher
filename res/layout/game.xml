@@ -6,7 +6,7 @@
 		xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/mapview"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:layout_weight="1" android:clickable="true"
-		android:apiKey="0JT-9Wr1m52Xf9UX888Hry_1igFlkuiydpeKNzg" />
+		android:apiKey="0qsMDe7mnD957X3mV4eaM9Gw_pF6UQHdntSuZ7g" />
 	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/game_menu_scroller" android:layout_height="fill_parent"
 	android:background="@drawable/vertical_background"

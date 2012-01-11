@@ -7,6 +7,6 @@ public class SettingPreferenceActivity extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.layout.setting_preference);
+        addPreferencesFromResource(R.layout.setting_preference);        
     }   
 }

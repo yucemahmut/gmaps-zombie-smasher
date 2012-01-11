@@ -9,11 +9,25 @@
     <string name="achievements">Achievements</string>
     <string name="settings">Settings</string>
     
+    <!-- SD CARD -->
+    <string name="welcome_dialog_sdcard_error">SD CARD Error</string>
+    <string name="welcome_dialog_sdcard_ok">SD CARD Ok</string>
+    
     <!-- Play -->
     <string name="play_here">Play in your current location</string>
     <string name="new_world">Create a Fù$*ing New World</string>    
     
     <!-- Game -->
     <string name="game">Game</string>
+    
+    <!-- Manage Levels -->
+    <string name="select_world">Select World In Map</string>
+    <string name="manage_levels">Manage Levels</string>
+    <string name="delete_world">Delete Selected World</string>
+    <string name="new_world_name">Enter a new Name:</string>
+    <string name="get_current_position">Get Current Position</string>
+    <string name="set_zoom">In Game Zoom</string>
+    <string name="select_world_here">New World Here</string>
+    
     
 </resources>
