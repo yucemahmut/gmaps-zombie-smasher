@@ -28,8 +28,15 @@
 		</activity>
 		<activity android:label="@string/game"
 			android:screenOrientation="landscape" android:name="GameActivity">
-
 		</activity>
+		<activity android:label="@string/game"
+      android:name="SelectWorldInMap"
+      android:screenOrientation="landscape">
+    </activity>
+		<activity android:label="@string/game"
+      android:name=".utils.GPSUtilities"
+      android:screenOrientation="landscape">
+    </activity>
 	</application>
 
 </manifest>
