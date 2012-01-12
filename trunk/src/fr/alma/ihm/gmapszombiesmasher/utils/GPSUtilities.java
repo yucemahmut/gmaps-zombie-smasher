@@ -84,11 +84,11 @@ public class GPSUtilities extends Activity {
 						intent.putExtra("longitude", longitude);
 						
 						setResult(RESULT_OK, intent);
-						finish();
 					} else {
 						setResult(RESULT_CANCELED);
-						finish();
 					}
+					
+					finish();
 				}
 			};
 

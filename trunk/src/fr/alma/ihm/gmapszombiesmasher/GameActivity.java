@@ -1,10 +1,12 @@
 package fr.alma.ihm.gmapszombiesmasher;
 
-import java.util.List;
-
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,9 +17,9 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
 
 import fr.alma.ihm.gmapszombiesmasher.listeners.GameOnTouchListener;
+import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSCoordinate;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSUtilities;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
@@ -30,6 +32,9 @@ public class GameActivity extends MapActivity {
 	private MapView mapView;
 	private static final int GPS_CODE = 1;
 	private static final int SETTINGS_CODE = 2;
+
+	private Handler hRefresh;
+	private ProgressDialog dialog;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -44,13 +49,13 @@ public class GameActivity extends MapActivity {
 
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapController = mapView.getController();
-		List<Overlay> listOfOverlays = mapView.getOverlays();
-		listOfOverlays.clear();
+		// List<Overlay> listOfOverlays = mapView.getOverlays();
+		// listOfOverlays.clear();
 
 		// Disable controls and set up the view
 		mapView.setClickable(false);
 		mapView.setFocusable(false);
-		mapView.setOnTouchListener(new GameOnTouchListener());
+		mapView.setOnTouchListener(new GameOnTouchListener(this));
 		mapView.setBuiltInZoomControls(false);
 
 		SharedPreferences settings = PreferenceManager
@@ -72,10 +77,62 @@ public class GameActivity extends MapActivity {
 			world = ManageWorlds.getWorld(worldName);
 			mapController.setCenter(new GeoPoint(world.getLatitude(), world
 					.getLongitude()));
-			System.out.println("Zoom: " + world.getZoom());
+
 			mapController.setZoom(world.getZoom());
 			mapView.invalidate();
 		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		Runnable showWaitDialog = new Runnable() {
+			@Override
+			public void run() {
+				SystemClock.sleep(3000);
+				hRefresh.sendEmptyMessage(1);
+				dialog.dismiss();
+			}
+		};
+
+		dialog = ProgressDialog.show(this, "", 
+                "Loading. Please wait...", true);
+		
+		Thread t = new Thread(showWaitDialog);
+		t.start();
+
+		// Handler waitting for spawn
+		hRefresh = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				switch (msg.what) {
+				case 1:
+					spawn();
+					break;
+				}
+			}
+		};
+	}
+
+	private void spawn() {
+		int height = mapView.getHeight();
+		int width = mapView.getWidth();
+		
+		GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
+		GeoPoint topRight = mapView.getProjection().fromPixels(width, 0);
+		GeoPoint botLeft = mapView.getProjection().fromPixels(0, height);
+		GeoPoint botRight = mapView.getProjection().fromPixels(width, height);
+
+		Spawn s = new Spawn(this, mapView, topLeft.getLatitudeE6(),
+				botLeft.getLatitudeE6(), topLeft.getLongitudeE6(),
+				topRight.getLongitudeE6());
+
+		s.spawnCitizen(5);
+		s.spawnZombies(5);
+
+		// Reload View
+		mapView.invalidate();
 	}
 
 	@Override
@@ -112,7 +169,6 @@ public class GameActivity extends MapActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		System.out.println("RESULT: " + resultCode);
 
 		switch (requestCode) {
 		case GPS_CODE:

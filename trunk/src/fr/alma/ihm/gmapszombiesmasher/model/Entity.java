@@ -33,7 +33,7 @@ public class Entity {
 	 *            the new component to be added
 	 */
 	public void addComponent(Component c) {
-		System.out.println("New component name : " + c.getClass().getName());
+		//System.out.println("New component name : " + c.getClass().getName());
 		componentMap.put(c.getClass().getName(), c);
 	}
 

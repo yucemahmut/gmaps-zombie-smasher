@@ -26,6 +26,12 @@ public class CitizenFactory {
 		this.botLatitude = botLatitude;
 		this.leftLongitude = leftLongitude;
 		this.rightLongitude = rightLongitude;
+		
+		System.out.println("topLatitude:" + topLatitude);
+		System.out.println("botLatitude:" + botLatitude);
+		System.out.println("leftLongitude:" + leftLongitude);
+		System.out.println("rightLongitude:" + rightLongitude);
+		
 	}
 
 	public Entity getCitizen() {
@@ -33,22 +39,24 @@ public class CitizenFactory {
 		// TODO Component markerColor for citizen
 		Entity citizen = new Entity();
 		citizen.addComponent(new CCoordinates(citizen));
-		// TODO Créer une CMoveSpeed dans une fourchette
-		// -> définir une unité
-		// -> définir une movespeed pour les zombies légerement superieur en
+		// TODO Crï¿½er une CMoveSpeed dans une fourchette
+		// -> dï¿½finir une unitï¿½
+		// -> dï¿½finir une movespeed pour les zombies lï¿½gerement superieur en
 		// moyenne a un citoyen
 		citizen.addComponent(new CMoveSpeed(citizen));
 		citizen.addComponent(new CAICitizen(citizen));
 
 		// Random position :
-		Random random = new Random();
+		//Random random = new Random();
 
-		// TODO Verification de formule aux pôles
-		int tempLatitude = botLatitude
-				+ random.nextInt(topLatitude - botLatitude);
-		int tempLongitude = leftLongitude
-				+ random.nextInt(rightLongitude - leftLongitude);
+		// TODO Verification de formule aux pï¿½les
+		int tempLatitude = (int) (botLatitude
+				+ Math.random() * (topLatitude - botLatitude));
+		int tempLongitude = (int) (leftLongitude
+				+ Math.random() * (rightLongitude - leftLongitude));
 
+		System.out.println("TEMP: " + tempLatitude + " : " + tempLongitude);
+		
 		CCoordinates coordinates = new CCoordinates(citizen);
 		coordinates.setLatitude(tempLatitude);
 		coordinates.setLongitude(tempLongitude);
