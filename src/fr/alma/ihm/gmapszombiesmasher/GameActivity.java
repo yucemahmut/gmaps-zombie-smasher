@@ -136,7 +136,6 @@ public class GameActivity extends MapActivity {
 			}
 			break;
 		case SETTINGS_CODE:
-			System.out.println("SETTINGS");
 			SharedPreferences settings = PreferenceManager
 					.getDefaultSharedPreferences(this);
 			mapView.setSatellite(settings.getBoolean(
