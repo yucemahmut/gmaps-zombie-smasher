@@ -1,7 +1,5 @@
 package fr.alma.ihm.gmapszombiesmasher.model.factories;
 
-import java.util.Random;
-
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
@@ -38,34 +36,33 @@ public class ZombieFactory {
 		zombie.addComponent(new CMoveSpeed(zombie));
 
 		// Getting the random boundary where the zombie will appear
-		Random random = new Random();
 
 		// 0<=value<nbBoundaries
-		// FIXME Verification des formules aux pôles
-		int randomValue = random.nextInt(4);
+		// FIXME Verification des formules aux pï¿½les
+		int randomValue = (int) (Math.random() * 4);
 
 		int tempLatitude = 0;
 		int tempLongitude = 0;
 		switch (randomValue) {
 		case 0: // topLatitude
-			tempLatitude = topLatitude;
-			tempLongitude = leftLongitude
-					+ random.nextInt(rightLongitude - leftLongitude);
+			tempLatitude = topLatitude - 100;
+			tempLongitude = (int) (leftLongitude
+					+ Math.random() * (rightLongitude - leftLongitude));
 			break;
 		case 1: // botLatitude
 			tempLatitude = botLatitude;
-			tempLongitude = leftLongitude
-					+ random.nextInt(rightLongitude - leftLongitude);
+			tempLongitude = (int) (leftLongitude
+					+ Math.random() * (rightLongitude - leftLongitude));
 			break;
 		case 2: // leftLongitude
 			tempLongitude = leftLongitude;
-			tempLatitude = botLatitude
-					+ random.nextInt(topLatitude - botLatitude);
+			tempLatitude = (int) (botLatitude
+					+ Math.random() * (topLatitude - botLatitude));
 			break;
 		default: // rightLongitude
-			tempLongitude = rightLongitude;
-			tempLatitude = botLatitude
-					+ random.nextInt(topLatitude - botLatitude);
+			tempLongitude = rightLongitude - 100;
+			tempLatitude = (int) (botLatitude
+					+ Math.random() * (topLatitude - botLatitude));
 			break;
 		}
 

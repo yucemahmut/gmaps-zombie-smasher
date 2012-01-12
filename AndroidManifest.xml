@@ -27,7 +27,8 @@
 			android:screenOrientation="portrait" android:name="AchievementsActivity">
 		</activity>
 		<activity android:label="@string/game"
-			android:screenOrientation="landscape" android:name="GameActivity">
+			android:screenOrientation="landscape" android:name="GameActivity"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 		</activity>
 		<activity android:label="@string/select_world_in_map"
       android:name="SelectWorldInMap"
