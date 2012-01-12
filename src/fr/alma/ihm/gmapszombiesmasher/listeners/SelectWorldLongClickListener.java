@@ -19,7 +19,7 @@ public class SelectWorldLongClickListener implements OnItemLongClickListener {
 			int position, long id) {
 
 		if (!adapterParent.getItemAtPosition(position).equals("Play Here")) {
-			final CharSequence[] items = { "Delete", "Rename" };
+			final CharSequence[] items = { "Edit", "Rename", "Delete" };
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(parent);
 			builder.setTitle("Pick an Option");
