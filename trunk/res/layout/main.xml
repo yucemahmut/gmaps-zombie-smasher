@@ -25,6 +25,7 @@
             android:typeface="sans"
             android:background="@drawable/btn_menu"
             android:textColor="#fff" />
+        <!-- 
         <Button
             android:id="@+id/level"
             android:gravity="center_horizontal|center_vertical"
@@ -37,6 +38,7 @@
             android:typeface="sans"
             android:background="@drawable/btn_menu"
             android:textColor="#fff" />
+        -->
         <Button
             android:id="@+id/achievements"
             android:gravity="center_horizontal|center_vertical"

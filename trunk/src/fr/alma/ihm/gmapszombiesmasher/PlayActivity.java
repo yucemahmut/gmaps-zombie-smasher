@@ -4,15 +4,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import fr.alma.ihm.gmapszombiesmasher.listeners.ManageLevelsButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.SelectWorldClickListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.SelectWorldLongClickListener;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
 
 public class PlayActivity extends Activity {
+	
+	public static final int EDIT_WORLD_CODE = 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,22 @@ public class PlayActivity extends Activity {
 		lv.setOnItemLongClickListener(new SelectWorldLongClickListener(this));
 		
 		this.findViewById(R.id.new_world).setOnClickListener(new ManageLevelsButtonListener(this));
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case EDIT_WORLD_CODE:
+			if (resultCode == RESULT_CANCELED) {
+				Toast.makeText(this, "No changes done!",Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(this, "World updated!", Toast.LENGTH_LONG).show();
+			}
+			break;
+
+		default:
+			break;
+		}
 	}
 
 }

@@ -20,7 +20,7 @@ public class gMapsZombieSmasher extends Activity {
 		init();
 
 		this.findViewById(R.id.play).setOnClickListener(new PlayButtonListener(this));
-		this.findViewById(R.id.level).setOnClickListener(new ManageLevelsButtonListener(this));
+		//this.findViewById(R.id.level).setOnClickListener(new ManageLevelsButtonListener(this));
 		this.findViewById(R.id.achievements).setOnClickListener(new AchievementsButtonListener(this));
 		this.findViewById(R.id.settings).setOnClickListener(new SettingsButtonListener(this));
 	}

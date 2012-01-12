@@ -29,12 +29,16 @@
 		<activity android:label="@string/game"
 			android:screenOrientation="landscape" android:name="GameActivity">
 		</activity>
-		<activity android:label="@string/game"
+		<activity android:label="@string/select_world_in_map"
       android:name="SelectWorldInMap"
       android:screenOrientation="landscape">
     </activity>
-		<activity android:label="@string/game"
+		<activity android:label="@string/gps_utilities"
       android:name=".utils.GPSUtilities"
+      android:screenOrientation="landscape">
+		</activity>
+		<activity android:label="@string/edit_world_in_map"
+      android:name="EditWorldInMap"
       android:screenOrientation="landscape">
     </activity>
 	</application>

@@ -9,13 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import fr.alma.ihm.gmapszombiesmasher.EditWorldInMap;
 import fr.alma.ihm.gmapszombiesmasher.PlayActivity;
 import fr.alma.ihm.gmapszombiesmasher.R;
 import fr.alma.ihm.gmapszombiesmasher.exceptions.AlreadyExistingWorldException;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
 
 public class OnClickWorldOptionListener implements OnClickListener {
-
+	
 	private Activity parent;
 	private String selectedWorldName;
 
@@ -26,18 +27,24 @@ public class OnClickWorldOptionListener implements OnClickListener {
 
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
-		
+
 		switch (which) {
-		// 1 -> Delete
+		// 0 -> Edit
 		case 0:
-			ManageWorlds.deleteWorld(this.selectedWorldName);
-			
-			reload();
+			Intent intent = new Intent().setClass(parent, EditWorldInMap.class);
+			intent.putExtra("worldEditName", this.selectedWorldName);
+			parent.startActivityForResult(intent, PlayActivity.EDIT_WORLD_CODE);
 			break;
 
-		// 2 -> Rename
+		// 1 -> Rename
 		case 1:
 			this.newNameDialog(this.selectedWorldName);
+			break;
+		// 2 -> Delete
+		case 2:
+			ManageWorlds.deleteWorld(this.selectedWorldName);
+			reload();
+			break;
 		default:
 			break;
 		}
@@ -50,7 +57,7 @@ public class OnClickWorldOptionListener implements OnClickListener {
 	}
 
 	private void newNameDialog(final String selectedWorldName) {
-		
+
 		// On instancie notre layout en tant que View
 		LayoutInflater factory = LayoutInflater.from(parent);
 		final View alertDialogView = factory
@@ -84,8 +91,8 @@ public class OnClickWorldOptionListener implements OnClickListener {
 							.getText().toString());
 					reload();
 				} catch (AlreadyExistingWorldException e) {
-					Toast.makeText(parent, e.getMessage(),
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(parent, e.getMessage(), Toast.LENGTH_LONG)
+							.show();
 				}
 			}
 		});
@@ -100,5 +107,4 @@ public class OnClickWorldOptionListener implements OnClickListener {
 
 		adb.show();
 	}
-
 }
