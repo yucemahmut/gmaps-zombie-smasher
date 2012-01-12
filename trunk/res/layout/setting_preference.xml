@@ -5,6 +5,10 @@
 		<CheckBoxPreference android:key="check_sound"
 			android:title="Sound" android:summary="Zombie: Did I scare you?"
 			android:defaultValue="true" />
+		<CheckBoxPreference android:key="check_satellite"
+      android:title="Satellite" 
+      android:summary="View the maps in satellite mode"
+      android:defaultValue="false" />
 		<CheckBoxPreference android:key="check_anything"
 			android:title="Change" android:summary="Change me as you want"
 			android:defaultValue="false" />
