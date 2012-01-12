@@ -18,7 +18,7 @@
 			</intent-filter>
 		</activity>
 		<activity android:label="@string/settings"
-			android:screenOrientation="portrait" android:name="SettingPreferenceActivity">
+			android:name="SettingPreferenceActivity">
 		</activity>
 		<activity android:label="@string/play"
 			android:screenOrientation="portrait" android:name="PlayActivity">

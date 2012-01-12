@@ -16,7 +16,7 @@ import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
 
 public class OnClickWorldOptionListener implements OnClickListener {
 
-	private static Activity parent;
+	private Activity parent;
 	private String selectedWorldName;
 
 	public OnClickWorldOptionListener(Activity parent, String selectedWorldName) {
