@@ -134,12 +134,13 @@ public class GPSUtilities extends Activity {
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
+						setResult(RESULT_CANCELED);
+						finish();
 					}
 				});
 		AlertDialog alert = builder.create();
 		alert.show();
 
-		setResult(RESULT_CANCELED);
 	}
 
 	private void showGpsOptions() {
