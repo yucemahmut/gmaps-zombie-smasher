@@ -128,6 +128,11 @@ public class CGoal extends Component {
         try {
           JSONObject step = roadSteps.getJSONArray("steps").getJSONObject(currentStep);
           CCoordinates currentCoordinates = (CCoordinates) getParent().getComponentMap().get(CCoordinates.class.getName());
+          String lastStepLat = step.getJSONObject("end_location").optString("lat");
+          String lastStepLon = step.getJSONObject("endlocation").optString("lon");
+          CCoordinates lastStepCoordinates = new CCoordinates(getParent());
+          double distance = 0.0;
+
 
           // recalculate the steps if the target has moved
           if(!goal.getComponentMap().get(CCoordinates.class.getName())
@@ -138,13 +143,25 @@ public class CGoal extends Component {
 
           coordinates = new CCoordinates(getParent());
 
-          // TODO
-          // calculate the traveled distance using the speed and the delta
-          // report this distance on the road
-          // -> verify if a step is complete, then start the next step (if
-          //    there is a next step)
-          // -> if the goal is reached, then return the goal coordinate and set
-          //    the goal to null
+          // TODO calculate the traveled distance using the speed and the delta
+          distance = 30.0;
+          lastStepCoordinates.setLatitude((int) (Float.parseFloat(lastStepLat) * 1e6));
+          lastStepCoordinates.setLongitude((int) (Float.parseFloat(lastStepLon) * 1e6));
+          if(coordinates.distanceTo(lastStepCoordinates) < distance) {
+            // report this distance on the road
+          } else {
+            coordinates = lastStepCoordinates;
+            // pass to the next step
+            if(this.currentStep < (roadSteps.getJSONArray("steps").length() - 1)) {
+              ++this.currentStep;
+            // the goal is reached
+            } else {
+              this.goal = null;
+              this.lastGoalCoordinates = null;
+              this.roadSteps = null;
+              this.currentStep = 0;
+            }
+          }
         } catch(Exception e) {
           // TODO
         }
