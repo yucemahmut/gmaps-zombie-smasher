@@ -1,11 +1,15 @@
 package fr.alma.ihm.gmapszombiesmasher;
 
+import android.app.Activity;
+import android.app.KeyguardManager;
+import android.app.KeyguardManager.KeyguardLock;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -19,7 +23,10 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
 import fr.alma.ihm.gmapszombiesmasher.listeners.GameOnTouchListener;
+import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSCoordinate;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSUtilities;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
@@ -33,8 +40,23 @@ public class GameActivity extends MapActivity {
 	private static final int GPS_CODE = 1;
 	private static final int SETTINGS_CODE = 2;
 
-	private Handler hRefresh;
+	private Spawn spawn;
+	private Handler waittingHandler;
 	private ProgressDialog dialog;
+	private Thread mainTread;
+
+	private static final int SPAWN_CODE = 1;
+	private static final int NEXT_STEP_CODE = 2;
+	protected static final int WAIT_CODE = 3;
+	protected static final int STOP_CODE = 4;
+	protected static final int RESUME_CODE = 5;
+
+	protected static boolean threadStop = false;
+	protected static boolean threadSuspended = false;
+	protected boolean notSpawn = true;
+	protected boolean started = false;
+	
+	 private PowerManager.WakeLock wakeLock;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -46,6 +68,16 @@ public class GameActivity extends MapActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
+		
+		
+		// Unallow lock screen
+		PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
+                this.getClass().getName());
+        
+        KeyguardManager keyguardManager = (KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE);
+        KeyguardLock lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
+        lock.disableKeyguard();
 
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapController = mapView.getController();
@@ -81,75 +113,172 @@ public class GameActivity extends MapActivity {
 			mapController.setZoom(world.getZoom());
 			mapView.invalidate();
 		}
+
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
+		startMainLoop();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		System.out.println("OnPause");
+		waittingHandler.sendEmptyMessage(WAIT_CODE);
+	}
 
-		Runnable showWaitDialog = new Runnable() {
-			@Override
-			public void run() {
-				SystemClock.sleep(3000);
-				hRefresh.sendEmptyMessage(1);
-				dialog.dismiss();
-			}
-		};
+	@Override
+	protected void onResume() {
+		super.onResume();
+		System.out.println("OnResume");
+		waittingHandler.sendEmptyMessage(RESUME_CODE);
+	}
 
-		dialog = ProgressDialog.show(this, "", 
-                "Loading. Please wait...", true);
-		
-		Thread t = new Thread(showWaitDialog);
-		t.start();
+	@Override
+	protected void onStop() {
+		System.out.println("OnStop");
+		super.onStop();
+		waittingHandler.sendEmptyMessage(STOP_CODE);
+	}
 
-		// Handler waitting for spawn
-		hRefresh = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				switch (msg.what) {
-				case 1:
-					spawn();
-					break;
+	protected void startMainLoop() {
+		super.onStart();
+
+		if (!started) {
+			started = true;
+
+			System.out.println("Spawn: " + notSpawn);
+			System.out.println("threadStop: " + threadStop);
+			System.out.println("threadSuspended: " + threadSuspended);
+
+			Runnable mainLoop = new Runnable() {
+				@Override
+				public void run() {
+
+					if (notSpawn) {
+						SystemClock.sleep(3000);
+						waittingHandler.sendEmptyMessage(SPAWN_CODE);
+						dialog.dismiss();
+						notSpawn = false;
+					}
+
+					while (!threadStop) {
+						while (threadSuspended) {
+							//
+						}
+						SystemClock.sleep(500);
+						waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
+					}
 				}
+			};
+
+			if (notSpawn) {
+				dialog = ProgressDialog.show(GameActivity.this, "",
+						"Loading. Please wait...", true);
 			}
-		};
+
+			mainTread = new Thread(mainLoop);
+			mainTread.start();
+
+			// Handler waitting for spawn
+			waittingHandler = new Handler() {
+				@Override
+				public void handleMessage(Message msg) {
+					switch (msg.what) {
+					case SPAWN_CODE:
+						spawn();
+						break;
+					case NEXT_STEP_CODE:
+						nextStep();
+						break;
+					case WAIT_CODE:
+						threadSuspended = true;
+						break;
+					case STOP_CODE:
+						threadStop = true;
+						started = false;
+						break;
+					case RESUME_CODE:
+						threadStop = false;
+						threadSuspended = false;
+						break;
+					}
+				}
+			};
+		}
 	}
 
 	private void spawn() {
 		int height = mapView.getHeight();
 		int width = mapView.getWidth();
-		
+
 		GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
 		GeoPoint topRight = mapView.getProjection().fromPixels(width, 0);
 		GeoPoint botLeft = mapView.getProjection().fromPixels(0, height);
 		GeoPoint botRight = mapView.getProjection().fromPixels(width, height);
 
-		Spawn s = new Spawn(this, mapView, topLeft.getLatitudeE6(),
+		spawn = new Spawn(this, mapView, topLeft.getLatitudeE6(),
 				botLeft.getLatitudeE6(), topLeft.getLongitudeE6(),
 				topRight.getLongitudeE6());
 
-		s.spawnCitizen(5);
-		s.spawnZombies(5);
+		spawn.spawnCitizen(5);
+		spawn.spawnZombies(5);
+
+		Entity center = new Entity();
+		CCoordinates coordinates = new CCoordinates(center);
+		coordinates.setLatitude(mapView.getMapCenter().getLatitudeE6());
+		coordinates.setLongitude(mapView.getMapCenter().getLongitudeE6());
+		center.addComponent(coordinates);
+
+		CGoal goal;
+		for (Entity citizen : spawn.getCitizens()) {
+			goal = (CGoal) citizen.getComponentMap().get(CGoal.class.getName());
+			spawn.putCitizenOnMap(goal.setGoal(center));
+		}
 
 		// Reload View
+		mapView.invalidate();
+	}
+
+	private void nextStep() {
+
+		System.out.println("NEXT STEP");
+		CGoal goal = null;
+
+		for (Entity citizen : spawn.getCitizens()) {
+			goal = (CGoal) citizen.getComponentMap().get(CGoal.class.getName());
+			spawn.putCitizenOnMap(goal.getNextPosition(0));
+		}
+
 		mapView.invalidate();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-
+		waittingHandler.sendEmptyMessage(WAIT_CODE);
 		inflater.inflate(R.menu.pause_menu, menu);
-		onPause();
-
 		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		waittingHandler.sendEmptyMessage(WAIT_CODE);
+		return true;
+	}
+
+	@Override
+	public void onOptionsMenuClosed(Menu menu) {
+		waittingHandler.sendEmptyMessage(RESUME_CODE);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.it_resume:
-			// TODO
+			waittingHandler.sendEmptyMessage(RESUME_CODE);
 			return true;
 
 		case R.id.it_achievements:
@@ -200,7 +329,5 @@ public class GameActivity extends MapActivity {
 		default:
 			break;
 		}
-
-	}
-
+	}	
 }
