@@ -50,6 +50,8 @@ public class GameActivity extends MapActivity {
 	protected static final int WAIT_CODE = 3;
 	protected static final int STOP_CODE = 4;
 	protected static final int RESUME_CODE = 5;
+	protected static final long SLEEPING_TIME = 3000;
+	protected static final long TIME_BEFORE_NEXT_STEP = 1000;
 
 	protected static boolean threadStop = false;
 	protected static boolean threadSuspended = false;
@@ -57,6 +59,7 @@ public class GameActivity extends MapActivity {
 	protected boolean started = false;
 	
 	 private PowerManager.WakeLock wakeLock;
+	 private KeyguardLock lock;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -76,7 +79,7 @@ public class GameActivity extends MapActivity {
                 this.getClass().getName());
         
         KeyguardManager keyguardManager = (KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE);
-        KeyguardLock lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
+        lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
         lock.disableKeyguard();
 
 		mapView = (MapView) findViewById(R.id.mapview);
@@ -141,12 +144,12 @@ public class GameActivity extends MapActivity {
 		System.out.println("OnStop");
 		super.onStop();
 		waittingHandler.sendEmptyMessage(STOP_CODE);
+		lock.reenableKeyguard();
 	}
 
 	protected void startMainLoop() {
-		super.onStart();
-
 		if (!started) {
+			mapView.getOverlays().clear();
 			started = true;
 
 			System.out.println("Spawn: " + notSpawn);
@@ -158,17 +161,17 @@ public class GameActivity extends MapActivity {
 				public void run() {
 
 					if (notSpawn) {
-						SystemClock.sleep(3000);
-						waittingHandler.sendEmptyMessage(SPAWN_CODE);
+						SystemClock.sleep(SLEEPING_TIME);
 						dialog.dismiss();
 						notSpawn = false;
+						waittingHandler.sendEmptyMessage(SPAWN_CODE);
 					}
 
 					while (!threadStop) {
 						while (threadSuspended) {
 							//
 						}
-						SystemClock.sleep(500);
+						SystemClock.sleep(TIME_BEFORE_NEXT_STEP);
 						waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 					}
 				}
@@ -235,7 +238,8 @@ public class GameActivity extends MapActivity {
 		CGoal goal;
 		for (Entity citizen : spawn.getCitizens()) {
 			goal = (CGoal) citizen.getComponentMap().get(CGoal.class.getName());
-			spawn.putCitizenOnMap(goal.setGoal(center));
+			citizen.addComponent(goal.setGoal(center));
+			spawn.putCitizenOnMap(citizen);
 		}
 
 		// Reload View
@@ -243,13 +247,20 @@ public class GameActivity extends MapActivity {
 	}
 
 	private void nextStep() {
-
 		System.out.println("NEXT STEP");
 		CGoal goal = null;
-
+		CCoordinates coordinates = null;
+		// Clear map
+		mapView.getOverlays().clear();
 		for (Entity citizen : spawn.getCitizens()) {
 			goal = (CGoal) citizen.getComponentMap().get(CGoal.class.getName());
-			spawn.putCitizenOnMap(goal.getNextPosition(0));
+			coordinates = goal.getNextPosition(0);
+			if(coordinates != null) {
+				citizen.addComponent(coordinates);
+				spawn.putCitizenOnMap(citizen);
+			} else {
+				spawn.putCitizenOnMap(citizen);
+			}
 		}
 
 		mapView.invalidate();

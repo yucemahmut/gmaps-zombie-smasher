@@ -25,7 +25,7 @@ public class Entity {
 	public void setComponentMap(TreeMap<String, Component> componentMap) {
 		this.componentMap = componentMap;
 	}
-
+	
 	/**
 	 * Add a new component to the entity, which can be a moveSpeed, an IA etc...
 	 * 
