@@ -61,21 +61,22 @@ public class Spawn {
 		}
 	}
 	
-	private void putOnMap(EntityOverlay entityOverlay, CCoordinates coordinates) {
+	private void putOnMap(EntityOverlay entityOverlay, Entity entity) {
+		CCoordinates coordinates = ((CCoordinates) entity.getComponentMap().get(CCoordinates.class.getName()));
 		GeoPoint point = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
 		OverlayItem overlayitem = new OverlayItem(point, null, null);
 		entityOverlay.addOverlay(overlayitem);
 		mapOverlays.add(entityOverlay);
 	}
 	
-	public void putCitizenOnMap(CCoordinates coordinates){
+	public void putCitizenOnMap(Entity entity){
 		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(R.drawable.citizens_marker));
-		putOnMap(entityOverlay, coordinates);
+		putOnMap(entityOverlay, entity);
 	}
 	
-	public void putZombieOnMap(CCoordinates coordinates){
+	public void putZombieOnMap(Entity entity){
 		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(R.drawable.zombies_marker));
-		putOnMap(entityOverlay, coordinates);
+		putOnMap(entityOverlay, entity);
 	}
 
 	/**

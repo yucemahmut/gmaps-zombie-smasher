@@ -1,13 +1,13 @@
 package fr.alma.ihm.gmapszombiesmasher.model.components;
 
-import fr.alma.ihm.gmapszombiesmasher.model.Entity;
-
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
+
 import org.json.JSONObject;
-import org.json.JSONArray;
+
+import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 
 /**
  * 
@@ -96,7 +96,7 @@ public class CGoal extends Component {
         // initialize the entity position
         JSONObject firstStep = roadSteps.getJSONArray("steps").getJSONObject(0);
         String firstLat = firstStep.getJSONObject("start_location").optString("lat");
-        String firstLon = firstStep.getJSONObject("start_location").optString("lon");
+        String firstLon = firstStep.getJSONObject("start_location").optString("lng");
 
         startCoordinates = new CCoordinates(getParent());
         startCoordinates.setLatitude((int) (Float.parseFloat(firstLat) * 1e6));
@@ -129,7 +129,7 @@ public class CGoal extends Component {
           JSONObject step = roadSteps.getJSONArray("steps").getJSONObject(currentStep);
           CCoordinates currentCoordinates = (CCoordinates) getParent().getComponentMap().get(CCoordinates.class.getName());
           String lastStepLat = step.getJSONObject("end_location").optString("lat");
-          String lastStepLon = step.getJSONObject("endlocation").optString("lon");
+          String lastStepLon = step.getJSONObject("end_location").optString("lng");
           CCoordinates lastStepCoordinates = new CCoordinates(getParent());
           double distance = 0.0;
 
@@ -147,8 +147,11 @@ public class CGoal extends Component {
           distance = 30.0;
           lastStepCoordinates.setLatitude((int) (Float.parseFloat(lastStepLat) * 1e6));
           lastStepCoordinates.setLongitude((int) (Float.parseFloat(lastStepLon) * 1e6));
+          
           if(coordinates.distanceTo(lastStepCoordinates) < distance) {
             // report this distance on the road
+        	coordinates.setLatitude(coordinates.getLatitude() + (int) (0.5 * 1e6));
+        	coordinates.setLongitude(coordinates.getLongitude() + (int) (0.5 * 1e6));
           } else {
             coordinates = lastStepCoordinates;
             // pass to the next step
@@ -163,7 +166,7 @@ public class CGoal extends Component {
             }
           }
         } catch(Exception e) {
-          // TODO
+          e.printStackTrace();
         }
       }
     }
