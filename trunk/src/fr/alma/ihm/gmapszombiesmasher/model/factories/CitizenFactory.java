@@ -1,7 +1,5 @@
 package fr.alma.ihm.gmapszombiesmasher.model.factories;
 
-import java.util.Random;
-
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
@@ -27,11 +25,6 @@ public class CitizenFactory {
 		this.leftLongitude = leftLongitude;
 		this.rightLongitude = rightLongitude;
 		
-		System.out.println("topLatitude:" + topLatitude);
-		System.out.println("botLatitude:" + botLatitude);
-		System.out.println("leftLongitude:" + leftLongitude);
-		System.out.println("rightLongitude:" + rightLongitude);
-		
 	}
 
 	public Entity getCitizen() {
@@ -54,8 +47,6 @@ public class CitizenFactory {
 				+ Math.random() * (topLatitude - botLatitude));
 		int tempLongitude = (int) (leftLongitude
 				+ Math.random() * (rightLongitude - leftLongitude));
-
-		System.out.println("TEMP: " + tempLatitude + " : " + tempLongitude);
 		
 		CCoordinates coordinates = new CCoordinates(citizen);
 		coordinates.setLatitude(tempLatitude);
