@@ -17,7 +17,6 @@ import fr.alma.ihm.gmapszombiesmasher.model.factories.CitizenFactory;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.ZombieFactory;
 
 public class Spawn {
-	
 	private CitizenFactory citizenFactory;
 	private ZombieFactory zombieFactory;
 	
@@ -26,11 +25,22 @@ public class Spawn {
 	
 	private List<Overlay> mapOverlays;
 	private Activity activity;
+	
+	private int topLatitude;
+	private int botLatitude;
+	private int leftLongitude;
+	private int rightLongitude;
+	
 	public Spawn(Activity activity, MapView mapView, int topLatitude, int botLatitude, int leftLongitude,
 			int rightLongitude) {
 		super();
 		
 		this.activity = activity;
+		
+		this.topLatitude = topLatitude;
+		this.botLatitude = botLatitude;
+		this.leftLongitude = leftLongitude;
+		this.rightLongitude = rightLongitude;
 		
 		this.citizenFactory = new CitizenFactory(topLatitude, botLatitude, leftLongitude, rightLongitude);
 		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude, leftLongitude, rightLongitude);
@@ -93,4 +103,16 @@ public class Spawn {
 		return citizens;
 	}
 	
+	public CCoordinates getRandomPosition(Entity entity){
+		int tempLatitude = (int) (botLatitude
+				+ Math.random() * (topLatitude - botLatitude));
+		int tempLongitude = (int) (leftLongitude
+				+ Math.random() * (rightLongitude - leftLongitude));
+		
+		CCoordinates coordinates = new CCoordinates(entity);
+		coordinates.setLatitude(tempLatitude);
+		coordinates.setLongitude(tempLongitude);
+		
+		return coordinates;
+	}
 }

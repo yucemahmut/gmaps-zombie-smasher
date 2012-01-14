@@ -20,7 +20,7 @@ public class CGoal extends Component {
   private static final String DIRECTION_MODE = "walking";
   private static final boolean DIRECTION_ALTERNATIVES = false;
 
-	private Entity goal;
+  private Entity goal;
   private CCoordinates lastGoalCoordinates;
   private JSONObject roadSteps;
   private int currentStep;
@@ -56,7 +56,7 @@ public class CGoal extends Component {
 
   private CCoordinates updateSteps() {
     CCoordinates startCoordinates = null;
-
+   
     // get the path from the parent position to the goal
     if(getParent().getComponentMap().containsKey(CCoordinates.class.getName())
        && goal.getComponentMap().containsKey(CCoordinates.class.getName())) {
@@ -103,7 +103,7 @@ public class CGoal extends Component {
         startCoordinates.setLongitude((int) (Float.parseFloat(firstLon) * 1e6));
 
       } catch(Exception e) {
-        // TODO
+        e.printStackTrace();
       }
     } else {
       // TODO exception
@@ -121,8 +121,9 @@ public class CGoal extends Component {
    */
   public CCoordinates getNextPosition(int delta) {
     CCoordinates coordinates = null;
-
+    
     if(roadSteps != null) {
+    	
       if(getParent().getComponentMap().containsKey(CCoordinates.class.getName())
          && goal.getComponentMap().containsKey(CCoordinates.class.getName())) {
         try {
@@ -144,7 +145,7 @@ public class CGoal extends Component {
           coordinates = new CCoordinates(getParent());
 
           // TODO calculate the traveled distance using the speed and the delta
-          distance = 30.0;
+          distance = 5.0;
           lastStepCoordinates.setLatitude((int) (Float.parseFloat(lastStepLat) * 1e6));
           lastStepCoordinates.setLongitude((int) (Float.parseFloat(lastStepLon) * 1e6));
           
@@ -166,7 +167,7 @@ public class CGoal extends Component {
             }
           }
         } catch(Exception e) {
-          e.printStackTrace();
+          //e.printStackTrace();
         }
       }
     }
