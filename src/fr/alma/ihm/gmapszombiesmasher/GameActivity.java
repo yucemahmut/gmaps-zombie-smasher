@@ -1,7 +1,5 @@
 package fr.alma.ihm.gmapszombiesmasher;
 
-import android.app.Activity;
-import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -15,6 +13,8 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -51,15 +51,15 @@ public class GameActivity extends MapActivity {
 	protected static final int STOP_CODE = 4;
 	protected static final int RESUME_CODE = 5;
 	protected static final long SLEEPING_TIME = 3000;
-	protected static final long TIME_BEFORE_NEXT_STEP = 1000;
+	protected static final long TIME_BEFORE_NEXT_STEP = 5000;
 
 	protected static boolean threadStop = false;
 	protected static boolean threadSuspended = false;
 	protected boolean notSpawn = true;
 	protected boolean started = false;
-	
-	 private PowerManager.WakeLock wakeLock;
-	 private KeyguardLock lock;
+
+	private PowerManager.WakeLock wakeLock;
+	private KeyguardLock lock;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -71,16 +71,20 @@ public class GameActivity extends MapActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
-		
-		
-		// Unallow lock screen
-		PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
-                this.getClass().getName());
-        
-        KeyguardManager keyguardManager = (KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE);
-        lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
-        lock.disableKeyguard();
+
+		// Keep Screen On
+		Window w = this.getWindow();
+		w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+		/*
+		 * // To desable screen lock, need to do "lock.reanable()" at the end of
+		 * the activity // Problem if the person kill the process (the screen
+		 * lock will be disabled) KeyguardManager keyguardManager =
+		 * (KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE); lock =
+		 * keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
+		 * lock.disableKeyguard();
+		 */
 
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapController = mapView.getController();
@@ -124,7 +128,7 @@ public class GameActivity extends MapActivity {
 		super.onStart();
 		startMainLoop();
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -144,7 +148,7 @@ public class GameActivity extends MapActivity {
 		System.out.println("OnStop");
 		super.onStop();
 		waittingHandler.sendEmptyMessage(STOP_CODE);
-		lock.reenableKeyguard();
+		// lock.reenableKeyguard();
 	}
 
 	protected void startMainLoop() {
@@ -161,17 +165,22 @@ public class GameActivity extends MapActivity {
 				public void run() {
 
 					if (notSpawn) {
-						SystemClock.sleep(SLEEPING_TIME);
-						dialog.dismiss();
 						notSpawn = false;
+						SystemClock.sleep(SLEEPING_TIME);
+						// Close waitting dialog
+						dialog.dismiss();
+						// Send a message to the handler
 						waittingHandler.sendEmptyMessage(SPAWN_CODE);
 					}
 
+					SystemClock.sleep(SLEEPING_TIME);
+
 					while (!threadStop) {
 						while (threadSuspended) {
-							//
+							// Do nothing, wait ...
 						}
 						SystemClock.sleep(TIME_BEFORE_NEXT_STEP);
+						// Send a message to the handler
 						waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 					}
 				}
@@ -213,6 +222,9 @@ public class GameActivity extends MapActivity {
 		}
 	}
 
+	/**
+	 * Create and place citizen and zombies on the map Set a goal for each
+	 */
 	private void spawn() {
 		int height = mapView.getHeight();
 		int width = mapView.getWidth();
@@ -229,41 +241,76 @@ public class GameActivity extends MapActivity {
 		spawn.spawnCitizen(5);
 		spawn.spawnZombies(5);
 
-		Entity center = new Entity();
-		CCoordinates coordinates = new CCoordinates(center);
-		coordinates.setLatitude(mapView.getMapCenter().getLatitudeE6());
-		coordinates.setLongitude(mapView.getMapCenter().getLongitudeE6());
-		center.addComponent(coordinates);
-
-		CGoal goal;
 		for (Entity citizen : spawn.getCitizens()) {
-			goal = (CGoal) citizen.getComponentMap().get(CGoal.class.getName());
-			citizen.addComponent(goal.setGoal(center));
+			setNewGoal(citizen);
 			spawn.putCitizenOnMap(citizen);
 		}
+
+		/*
+		 * for (Entity zombie : spawn.getZombies()) { setNewGoal(zombie);
+		 * spawn.putZombieOnMap(zombie); }
+		 */
 
 		// Reload View
 		mapView.invalidate();
 	}
 
+	/**
+	 * Next step process - Move Citizen and zombie to next step
+	 */
 	private void nextStep() {
 		System.out.println("NEXT STEP");
 		CGoal goal = null;
 		CCoordinates coordinates = null;
 		// Clear map
 		mapView.getOverlays().clear();
+
+		// For each citizen, go to next step
 		for (Entity citizen : spawn.getCitizens()) {
 			goal = (CGoal) citizen.getComponentMap().get(CGoal.class.getName());
 			coordinates = goal.getNextPosition(0);
-			if(coordinates != null) {
+			if (!goal.goalReached()) {
 				citizen.addComponent(coordinates);
 				spawn.putCitizenOnMap(citizen);
 			} else {
+				// If the goal is reached, get a new one:
+				setNewGoal(citizen);
 				spawn.putCitizenOnMap(citizen);
 			}
 		}
 
+		// For each zombie, go to next step
+		for (Entity zombie : spawn.getZombies()) {
+			goal = (CGoal) zombie.getComponentMap().get(CGoal.class.getName());
+			coordinates = goal.getNextPosition(0);
+			if (!goal.goalReached()) {
+				zombie.addComponent(coordinates);
+				spawn.putZombieOnMap(zombie);
+			} else {
+				// If the goal is rieached, get a new one:
+				setNewGoal(zombie);
+				spawn.putZombieOnMap(zombie);
+			}
+		}
+
 		mapView.invalidate();
+	}
+
+	/**
+	 * Set a random new goal to the entity and set the current position on the
+	 * road closer to the goal
+	 * 
+	 * @param entity
+	 *            the entity to set
+	 */
+	private void setNewGoal(Entity entity) {
+		// Get New Goal Coordinates
+		Entity newGoal = new Entity();
+		newGoal.addComponent(spawn.getRandomPosition(newGoal));
+		
+		// Put the new goal on the Entity
+		CGoal goal = (CGoal) entity.getComponentMap().get(CGoal.class.getName());
+		entity.addComponent(goal.setGoal(newGoal));
 	}
 
 	@Override
@@ -340,5 +387,5 @@ public class GameActivity extends MapActivity {
 		default:
 			break;
 		}
-	}	
+	}
 }
