@@ -1,20 +1,14 @@
 package fr.alma.ihm.gmapszombiesmasher;
 
-import android.app.KeyguardManager.KeyguardLock;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -29,6 +23,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSCoordinate;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSUtilities;
+import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
 import fr.alma.ihm.gmapszombiesmasher.utils.World;
 
@@ -51,15 +46,14 @@ public class GameActivity extends MapActivity {
 	protected static final int STOP_CODE = 4;
 	protected static final int RESUME_CODE = 5;
 	protected static final long SLEEPING_TIME = 3000;
-	protected static final long TIME_BEFORE_NEXT_STEP = 5000;
+	protected static final long TIME_BEFORE_NEXT_STEP = 3000;
+	private static final int CITIZEN_NUMBER = 5;
+	private static final int ZOMBIES_NOMBER = 5;
 
 	protected static boolean threadStop = false;
 	protected static boolean threadSuspended = false;
 	protected boolean notSpawn = true;
 	protected boolean started = false;
-
-	private PowerManager.WakeLock wakeLock;
-	private KeyguardLock lock;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -73,23 +67,10 @@ public class GameActivity extends MapActivity {
 		setContentView(R.layout.game);
 
 		// Keep Screen On
-		Window w = this.getWindow();
-		w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-		/*
-		 * // To desable screen lock, need to do "lock.reanable()" at the end of
-		 * the activity // Problem if the person kill the process (the screen
-		 * lock will be disabled) KeyguardManager keyguardManager =
-		 * (KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE); lock =
-		 * keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
-		 * lock.disableKeyguard();
-		 */
+		ManagePreferences.setKeepScreenOn(this);
 
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapController = mapView.getController();
-		// List<Overlay> listOfOverlays = mapView.getOverlays();
-		// listOfOverlays.clear();
 
 		// Disable controls and set up the view
 		mapView.setClickable(false);
@@ -97,10 +78,7 @@ public class GameActivity extends MapActivity {
 		mapView.setOnTouchListener(new GameOnTouchListener(this));
 		mapView.setBuiltInZoomControls(false);
 
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		mapView.setSatellite(settings.getBoolean(
-				SettingPreferenceActivity.SATELLITE_VIEW_IN_MAP, false));
+		mapView.setSatellite(ManagePreferences.isSateliteView(this));
 
 		// On récupère l'objet Bundle envoyé par l'autre Activity
 		Bundle objetbunble = this.getIntent().getExtras();
@@ -145,20 +123,15 @@ public class GameActivity extends MapActivity {
 
 	@Override
 	protected void onStop() {
-		System.out.println("OnStop");
 		super.onStop();
+		System.out.println("OnStop");
 		waittingHandler.sendEmptyMessage(STOP_CODE);
-		// lock.reenableKeyguard();
 	}
 
 	protected void startMainLoop() {
 		if (!started) {
 			mapView.getOverlays().clear();
 			started = true;
-
-			System.out.println("Spawn: " + notSpawn);
-			System.out.println("threadStop: " + threadStop);
-			System.out.println("threadSuspended: " + threadSuspended);
 
 			Runnable mainLoop = new Runnable() {
 				@Override
@@ -238,18 +211,18 @@ public class GameActivity extends MapActivity {
 				botLeft.getLatitudeE6(), topLeft.getLongitudeE6(),
 				topRight.getLongitudeE6());
 
-		spawn.spawnCitizen(5);
-		spawn.spawnZombies(5);
+		spawn.spawnCitizen(CITIZEN_NUMBER);
+		spawn.spawnZombies(ZOMBIES_NOMBER);
 
 		for (Entity citizen : spawn.getCitizens()) {
 			setNewGoal(citizen);
 			spawn.putCitizenOnMap(citizen);
 		}
 
-		/*
-		 * for (Entity zombie : spawn.getZombies()) { setNewGoal(zombie);
-		 * spawn.putZombieOnMap(zombie); }
-		 */
+		for (Entity zombie : spawn.getZombies()) {
+			setNewGoal(zombie);
+			spawn.putZombieOnMap(zombie);
+		}
 
 		// Reload View
 		mapView.invalidate();
@@ -259,7 +232,6 @@ public class GameActivity extends MapActivity {
 	 * Next step process - Move Citizen and zombie to next step
 	 */
 	private void nextStep() {
-		System.out.println("NEXT STEP");
 		CGoal goal = null;
 		CCoordinates coordinates = null;
 		// Clear map
@@ -287,7 +259,7 @@ public class GameActivity extends MapActivity {
 				zombie.addComponent(coordinates);
 				spawn.putZombieOnMap(zombie);
 			} else {
-				// If the goal is rieached, get a new one:
+				// If the goal is reached, get a new one:
 				setNewGoal(zombie);
 				spawn.putZombieOnMap(zombie);
 			}
@@ -307,9 +279,10 @@ public class GameActivity extends MapActivity {
 		// Get New Goal Coordinates
 		Entity newGoal = new Entity();
 		newGoal.addComponent(spawn.getRandomPosition(newGoal));
-		
+
 		// Put the new goal on the Entity
-		CGoal goal = (CGoal) entity.getComponentMap().get(CGoal.class.getName());
+		CGoal goal = (CGoal) entity.getComponentMap()
+				.get(CGoal.class.getName());
 		entity.addComponent(goal.setGoal(newGoal));
 	}
 
@@ -379,10 +352,7 @@ public class GameActivity extends MapActivity {
 			}
 			break;
 		case SETTINGS_CODE:
-			SharedPreferences settings = PreferenceManager
-					.getDefaultSharedPreferences(this);
-			mapView.setSatellite(settings.getBoolean(
-					SettingPreferenceActivity.SATELLITE_VIEW_IN_MAP, false));
+			mapView.setSatellite(ManagePreferences.isSateliteView(this));
 			break;
 		default:
 			break;
