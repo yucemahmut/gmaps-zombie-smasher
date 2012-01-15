@@ -104,6 +104,12 @@ public class CGoal extends Component {
 
       } catch(Exception e) {
         e.printStackTrace();
+        try{
+          Thread.currentThread().sleep(250);
+          startCoordinates = updateSteps();
+        } catch(Exception ex) {
+          // TODO
+        }
       }
     } else {
       // TODO exception
