@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="dificultyLevel">
+        <item name="easy">Easy</item>
+        <item name="normal">Normal</item>
+        <item name="hard">Hard</item>
+    </string-array>
+
+    <string-array name="dificultyLevelValues">
+        <item name="easy">Easy</item>
+        <item name="normal">Normal</item>
+        <item name="hard">Hard</item>
+    </string-array>
+</resources>

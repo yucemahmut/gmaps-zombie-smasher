@@ -45,10 +45,8 @@ public class GameActivity extends MapActivity {
 	protected static final int WAIT_CODE = 3;
 	protected static final int STOP_CODE = 4;
 	protected static final int RESUME_CODE = 5;
-	protected static final long SLEEPING_TIME = 3000;
+	protected static final long SLEEPING_TIME = 500;
 	protected static final long TIME_BEFORE_NEXT_STEP = 3000;
-	private static final int CITIZEN_NUMBER = 5;
-	private static final int ZOMBIES_NOMBER = 5;
 
 	protected static boolean threadStop = false;
 	protected static boolean threadSuspended = false;
@@ -138,15 +136,20 @@ public class GameActivity extends MapActivity {
 				public void run() {
 
 					if (notSpawn) {
-						notSpawn = false;
-						SystemClock.sleep(SLEEPING_TIME);
-						// Close waitting dialog
-						dialog.dismiss();
+						while (!mapView.isShown()) {
+							System.out.println("isShown: " + mapView.isShown());
+							SystemClock.sleep(SLEEPING_TIME);
+						}
 						// Send a message to the handler
 						waittingHandler.sendEmptyMessage(SPAWN_CODE);
-					}
 
-					SystemClock.sleep(SLEEPING_TIME);
+						while(notSpawn){}
+						
+						// Close waitting dialog
+						if (dialog.isShowing()) {
+							dialog.dismiss();
+						}
+					}
 
 					while (!threadStop) {
 						while (threadSuspended) {
@@ -156,6 +159,7 @@ public class GameActivity extends MapActivity {
 						// Send a message to the handler
 						waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 					}
+
 				}
 			};
 
@@ -174,6 +178,7 @@ public class GameActivity extends MapActivity {
 					switch (msg.what) {
 					case SPAWN_CODE:
 						spawn();
+						notSpawn = false;
 						break;
 					case NEXT_STEP_CODE:
 						nextStep();
@@ -211,8 +216,12 @@ public class GameActivity extends MapActivity {
 				botLeft.getLatitudeE6(), topLeft.getLongitudeE6(),
 				topRight.getLongitudeE6());
 
-		spawn.spawnCitizen(CITIZEN_NUMBER);
-		spawn.spawnZombies(ZOMBIES_NOMBER);
+		System.out.println("Number: "
+				+ ManagePreferences.getCitizenNumber(this));
+		System.out
+				.println("Number: " + ManagePreferences.getZombieNumber(this));
+		spawn.spawnCitizen(ManagePreferences.getCitizenNumber(this));
+		spawn.spawnZombies(ManagePreferences.getZombieNumber(this));
 
 		for (Entity citizen : spawn.getCitizens()) {
 			setNewGoal(citizen);

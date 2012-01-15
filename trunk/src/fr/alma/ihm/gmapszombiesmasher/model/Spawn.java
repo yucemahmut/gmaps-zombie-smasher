@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
+import android.os.SystemClock;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -63,7 +64,7 @@ public class Spawn {
 
 	public void spawnCitizen(int number){
 		Entity citizen = null;
-		for(int i=0; i<number; i++){		
+		for(int i=0; i<number; i++){
 			citizen = citizenFactory.getCitizen();
 			citizens.add(citizen);
 			citizen.addComponent(new CGoal(citizen));
