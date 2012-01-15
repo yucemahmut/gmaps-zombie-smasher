@@ -10,6 +10,14 @@
       android:title="Satellite" 
       android:summary="View the maps in satellite mode"
       android:defaultValue="false" />
+		<ListPreference 
+            android:key="level"
+            android:title="Level"
+            android:summary="Define the dificulty level"
+            android:defaultValue="1" 
+            android:entries="@array/dificultyLevel"
+            android:entryValues="@array/dificultyLevelValues"
+        />    
 		<CheckBoxPreference android:key="check_anything"
 			android:title="Change" android:summary="Change me as you want"
 			android:defaultValue="false" />
