@@ -18,9 +18,6 @@
             android:entries="@array/dificultyLevel"
             android:entryValues="@array/dificultyLevelValues"
         />    
-		<CheckBoxPreference android:key="check_anything"
-			android:title="Change" android:summary="Change me as you want"
-			android:defaultValue="false" />
 	</PreferenceCategory>
 	
 </PreferenceScreen>
