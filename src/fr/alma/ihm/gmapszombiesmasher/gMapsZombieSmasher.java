@@ -3,10 +3,12 @@ package fr.alma.ihm.gmapszombiesmasher;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import fr.alma.ihm.gmapszombiesmasher.listeners.AchievementsButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.PlayButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.SettingsButtonListener;
+import fr.alma.ihm.gmapszombiesmasher.sounds.BackgroundMusicService;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
 
 public class gMapsZombieSmasher extends Activity {
@@ -22,6 +24,10 @@ public class gMapsZombieSmasher extends Activity {
 		//this.findViewById(R.id.level).setOnClickListener(new ManageLevelsButtonListener(this));
 		this.findViewById(R.id.achievements).setOnClickListener(new AchievementsButtonListener(this));
 		this.findViewById(R.id.settings).setOnClickListener(new SettingsButtonListener(this));
+		
+		// start to play background music
+		// *****important***** don't forget to call stopService when application goes to background
+		this.startService(new Intent(this, BackgroundMusicService.class));
 	}
 
 	private void checkInternetConnection() {
@@ -42,5 +48,6 @@ public class gMapsZombieSmasher extends Activity {
 			
 		}
 	}
+
 
 }
