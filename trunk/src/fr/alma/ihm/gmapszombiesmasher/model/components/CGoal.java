@@ -140,7 +140,6 @@ public class CGoal extends Component {
           CCoordinates lastStepCoordinates = new CCoordinates(getParent());
           double distance = 0.0;
 
-
           // recalculate the steps if the target has moved
           if(!goal.getComponentMap().get(CCoordinates.class.getName())
              .equals(lastGoalCoordinates)) {
@@ -151,14 +150,18 @@ public class CGoal extends Component {
           coordinates = new CCoordinates(getParent());
 
           // TODO calculate the traveled distance using the speed and the delta
-          distance = 5.0;
+          distance = 2.0;
           lastStepCoordinates.setLatitude((int) (Float.parseFloat(lastStepLat) * 1e6));
           lastStepCoordinates.setLongitude((int) (Float.parseFloat(lastStepLon) * 1e6));
           
-          if(coordinates.distanceTo(lastStepCoordinates) < distance) {
+          if(currentCoordinates.distanceTo(lastStepCoordinates) > distance) {
             // report this distance on the road
-        	coordinates.setLatitude(coordinates.getLatitude() + (int) (0.5 * 1e6));
-        	coordinates.setLongitude(coordinates.getLongitude() + (int) (0.5 * 1e6));
+            int u = (int) ((distance * (lastStepCoordinates.getLatitude() - currentCoordinates.getLatitude()))
+                           / currentCoordinates.distanceTo(lastStepCoordinates));
+            int v = (int) ((distance * (lastStepCoordinates.getLongitude() - currentCoordinates.getLongitude()))
+                           / currentCoordinates.distanceTo(lastStepCoordinates));
+            coordinates.setLatitude(currentCoordinates.getLatitude() + u);
+            coordinates.setLongitude(currentCoordinates.getLongitude() + v);
           } else {
             coordinates = lastStepCoordinates;
             // pass to the next step
