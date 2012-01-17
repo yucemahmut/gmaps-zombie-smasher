@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:background="@drawable/settings_background">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/settings_background" >
 
-	<PreferenceCategory android:title="Game settings">
-		<CheckBoxPreference android:key="check_sound"
-			android:title="Sound" android:summary="Zombie: Did I scare you?"
-			android:defaultValue="true" />
-		<CheckBoxPreference android:key="check_satellite"
-      android:title="Satellite" 
-      android:summary="View the maps in satellite mode"
-      android:defaultValue="false" />
-		<ListPreference 
-            android:key="level"
-            android:title="Level"
-            android:summary="Define the dificulty level"
-            android:defaultValue="1" 
+    <PreferenceCategory android:title="Game settings" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="check_backgroundMusic"
+            android:summaryOn="Zombie: Did I scare you?"
+            android:summaryOff="Silence hill"
+            android:title="Background music" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="check_sound"
+            android:summary="Zombie: Did I scare you?"
+            android:title="Sound" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="check_satellite"
+            android:summary="View the maps in satellite mode"
+            android:title="Satellite" />
+
+        <ListPreference
+            android:defaultValue="1"
             android:entries="@array/dificultyLevel"
             android:entryValues="@array/dificultyLevelValues"
-        />    
-	</PreferenceCategory>
-	
+            android:key="level"
+            android:summary="Define the dificulty level"
+            android:title="Level" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
