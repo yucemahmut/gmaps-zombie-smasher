@@ -53,7 +53,7 @@ public class GameOnTouchListener implements OnTouchListener {
 					coordinates.setLatitude(p.getLatitudeE6());
 					coordinates.setLongitude(p.getLongitudeE6());
 					chopper.addComponent(coordinates);
-					spawn.putChopperOnMap(chopper);
+					spawn.createChopper(chopper);
 
 					Runnable chopperLifeTime = new Runnable() {
 						@Override

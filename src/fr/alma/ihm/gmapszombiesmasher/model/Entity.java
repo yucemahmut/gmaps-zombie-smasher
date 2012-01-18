@@ -10,7 +10,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.Component;
  * Explosion ... )
  * 
  */
-public class Entity {
+public class Entity implements Cloneable {
 
 	private TreeMap<String, Component> componentMap;
 
@@ -37,4 +37,17 @@ public class Entity {
 		componentMap.put(c.getClass().getName(), c);
 	}
 
+	public Object clone() {
+		Entity entity = null;
+		try {
+			entity = (Entity) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return entity;
+	}
+
+	public void removeComponent(String name) {
+		componentMap.remove(name);
+	}
 }

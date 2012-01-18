@@ -10,10 +10,12 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-import fr.alma.ihm.gmapszombiesmasher.R;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CBoolean;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.CitizenFactory;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.ZombieFactory;
 
@@ -21,8 +23,7 @@ public class Spawn {
 	private CitizenFactory citizenFactory;
 	private ZombieFactory zombieFactory;
 	
-	private List<Entity> zombies;
-	private List<Entity> citizens;
+	private List<Entity> entities;
 	private Entity chopper;
 	private int citizenFree = 0;
 	private int citizenEated = 0;
@@ -50,8 +51,7 @@ public class Spawn {
 		this.citizenFactory = new CitizenFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this);
 		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this);
 		
-		this.zombies = new LinkedList<Entity>();
-		this.citizens = new LinkedList<Entity>();
+		this.entities = new LinkedList<Entity>();
 
 		mapOverlays = mapView.getOverlays();
 	}
@@ -60,9 +60,7 @@ public class Spawn {
 		Entity zombie = null;
 		for(int i=0; i<number; i++){
 			zombie = zombieFactory.getZombie();
-			zombies.add(zombie);
-			zombie.addComponent(new CGoal(zombie));
-			//putZombieOnMap((CCoordinates)zombie.getComponentMap().get(CCoordinates.class.getName()));
+			entities.add(zombie);
 		}
 	}
 
@@ -70,59 +68,79 @@ public class Spawn {
 		Entity citizen = null;
 		for(int i=0; i<number; i++){
 			citizen = citizenFactory.getCitizen();
-			citizens.add(citizen);
-			citizen.addComponent(new CGoal(citizen));
-			//putCitizenOnMap((CCoordinates)citizen.getComponentMap().get(CCoordinates.class.getName()));
+			entities.add(citizen);
 		}
 	}
 	
-	private void putOnMap(EntityOverlay entityOverlay, Entity entity) {
-		CCoordinates coordinates = ((CCoordinates) entity.getComponentMap().get(CCoordinates.class.getName()));
-		GeoPoint point = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
-		OverlayItem overlayitem = new OverlayItem(point, null, null);
-		entityOverlay.addOverlay(overlayitem);
-		mapOverlays.add(entityOverlay);
+	/**
+	 * Put all the existing entities on the map
+	 */
+	public void putOnMap() {
+		if(getChopper() != null){
+			getEntities().add(getChopper());
+		}
+		for(Entity entity: getEntities()){
+			CBoolean exist = ((CBoolean) entity.getComponentMap().get(CBoolean.class.getName()));
+			if(exist.isExist()){
+				CCoordinates coordinates = ((CCoordinates) entity.getComponentMap().get(CCoordinates.class.getName()));
+				GeoPoint point = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
+				OverlayItem overlayitem = new OverlayItem(point, null, null);
+				int id = ((CMarker)entity.getComponentMap().get(CMarker.class.getName())).getMarker();
+				EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(id));
+				entityOverlay.addOverlay(overlayitem);
+				mapOverlays.add(entityOverlay);
+			}
+		}
 	}
 	
-	public void putCitizenOnMap(Entity entity){
-		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(R.drawable.citizens_marker));
-		putOnMap(entityOverlay, entity);
-	}
-	
-	public void putZombieOnMap(Entity entity){
-		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(R.drawable.zombies_marker));
-		putOnMap(entityOverlay, entity);
-	}
-	
-	public void putChopperOnMap(Entity entity){
+	public void createChopper(Entity entity){
+		System.out.println("CREATE CHOPPER");
+		((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).setExist(true);
+		//entities.add(entity);
 		chopper = entity;
-		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(R.drawable.chopper_marker));
-		putOnMap(entityOverlay, entity);
 	}
 	
 	public void destroyChopper() {
+		
+		((CBoolean)chopper.getComponentMap().get(CBoolean.class.getName())).setExist(false);
 		chopper = null;
 	}
 
 	/**
-	 * @return the zombies
+	 * @return the entities
 	 */
-	public List<Entity> getZombies() {
-		return zombies;
+	public List<Entity> getEntities() {
+		return entities;
 	}
-
-	/**
-	 * @return the citizens
-	 */
-	public List<Entity> getCitizens() {
+	
+	public List<Entity> getClone() {
+		
+		List<Entity> entities = new LinkedList<Entity>();
+		for(Entity entity: getEntities()){
+			entities.add((Entity) entity.clone());
+		}	
+		return entities;
+	}
+	
+	public List<Entity> getCitizen() {
+		
+		List<Entity> citizens = new LinkedList<Entity>();
+		for(Entity entity: getEntities()){
+			if(entity.getComponentMap().containsKey(CAICitizen.class.getName())
+			   && ((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).isExist()){
+				citizens.add(entity);
+			}
+		}
+		
 		return citizens;
 	}
+	 
 	
 	public Entity getChopper() {
 		return chopper;
 	}
 	
-	public CCoordinates getRandomPosition(Entity entity){
+	private CCoordinates getRandomPosition(Entity entity){
 		int tempLatitude = (int) (botLatitude
 				+ Math.random() * (topLatitude - botLatitude));
 		int tempLongitude = (int) (leftLongitude
@@ -135,6 +153,10 @@ public class Spawn {
 		return coordinates;
 	}
 	
+	public void setGoal(Entity entity, Entity goal) {
+		entity.addComponent(((CGoal)entity.getComponentMap().get(CGoal.class.getName())).setGoal(goal));
+	}
+	
 	/**
 	 * Set a random new goal to the entity and set the current position on the
 	 * road closer to the goal
@@ -143,6 +165,7 @@ public class Spawn {
 	 *            the entity to set
 	 */
 	public void setNewGoal(Entity entity) {
+		
 		// Get New Goal Coordinates
 		Entity newGoal = new Entity();
 		newGoal.addComponent(getRandomPosition(newGoal));
@@ -160,7 +183,10 @@ public class Spawn {
 	 */
 	public void freeCitizen(Entity entity) {
 		System.out.println("FREE");
-		citizens.remove(entity);
+		CBoolean isFree = new CBoolean(entity);
+		isFree.setExist(false);
+		entity.addComponent(isFree);
+		entity.removeComponent(CAICitizen.class.getName());
 		citizenFree++;
 	}
 	
@@ -170,11 +196,12 @@ public class Spawn {
 	 * @param entity
 	 */
 	public void eatCitizen(Entity entity) {
-		System.out.println("MANGE");
-		citizens.remove(entity);
+		System.out.println("EATED");
 		// Changement d'IA
+		entity.removeComponent(CAICitizen.class.getName());
 		entity.addComponent(new CAIZombie(entity, this));
-		zombies.add(entity);
+		// Changement de marker
+		((CMarker)entity.getComponentMap().get(CMarker.class.getName())).setZombie();
 		citizenEated++;
 	}
 	
@@ -184,8 +211,11 @@ public class Spawn {
 	 * @param entity
 	 */
 	public void killZombie(Entity entity) {
-		System.out.println("KILL");
-		zombies.remove(entity);
+		System.out.println("KILLED");
+		CBoolean isKilled = new CBoolean(entity);
+		isKilled.setExist(false);
+		entity.addComponent(isKilled);
+		entity.removeComponent(CAIZombie.class.getName());
 		zombieKilled++;
 	}
 
@@ -208,6 +238,13 @@ public class Spawn {
 	 */
 	public int getZombieKilled() {
 		return zombieKilled;
+	}
+
+	public void setNextPosition(Entity parent, CGoal goal) {
+		CCoordinates c = goal.getNextPosition(0); 
+		if(c != null){
+			parent.addComponent(c);
+		}
 	}
 }
 

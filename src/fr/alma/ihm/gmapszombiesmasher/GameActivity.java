@@ -1,10 +1,7 @@
 package fr.alma.ihm.gmapszombiesmasher;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import android.app.ProgressDialog;
@@ -47,7 +44,6 @@ public class GameActivity extends MapActivity {
 	private Spawn spawn;
 	private Handler waittingHandler;
 	private ProgressDialog dialog;
-	private Thread mainTread;
 	private long startTime;
 	private Map<Integer, Boolean> selectedButton;
 	public static final int CHOPPER = 0;
@@ -208,7 +204,7 @@ public class GameActivity extends MapActivity {
 			mapView.getOverlays().clear();
 			started = true;
 
-			Runnable mainLoop = new Runnable() {
+			Runnable spawLoop = new Runnable() {
 				@Override
 				public void run() {
 
@@ -229,16 +225,6 @@ public class GameActivity extends MapActivity {
 
 						startTime = new Date().getTime();
 					}
-
-					while (!threadStop) {
-						while (threadSuspended) {
-							// Do nothing, wait ...
-						}
-						SystemClock.sleep(TIME_BEFORE_NEXT_STEP);
-						// Send a message to the handler
-						waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
-					}
-
 				}
 			};
 
@@ -247,8 +233,8 @@ public class GameActivity extends MapActivity {
 						"Loading. Please wait...", true);
 			}
 
-			mainTread = new Thread(mainLoop);
-			mainTread.start();
+			Thread spawnTread = new Thread(spawLoop);
+			spawnTread.start();
 
 			// Handler waitting for spawn
 			waittingHandler = new Handler() {
@@ -313,31 +299,16 @@ public class GameActivity extends MapActivity {
 				spawn.spawnZombies(ManagePreferences
 						.getZombieNumber(GameActivity.this));
 				
-				List<Entity> entities = spawn.getCitizens();
-				for (Entity citizen : entities) {
-					//spawn.setNewGoal(citizen);
-					((CAICitizen) citizen.getComponentMap().get(
-							CAICitizen.class.getName())).update();
-					spawn.putCitizenOnMap(citizen);
-				}
-
-				entities = spawn.getZombies();
-				for (Entity zombie : entities) {
-					//spawn.setNewGoal(zombie);
-					((CAIZombie) zombie.getComponentMap().get(
-							CAIZombie.class.getName())).update();
-					spawn.putZombieOnMap(zombie);
-				}
+				spawn.putOnMap();
 
 				onTouchListener.setSpawn(spawn);
 				waittingHandler.sendEmptyMessage(REFRESH_MAP_CODE);
-				notSpawn = false;
-
+				waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 			}
 		};
 
-		Thread nextStep = new Thread(spawnLoop);
-		nextStep.start();
+		Thread spawnThread = new Thread(spawnLoop);
+		spawnThread.start();
 	}
 
 	/**
@@ -348,39 +319,33 @@ public class GameActivity extends MapActivity {
 		Runnable nextStepLoop = new Runnable() {
 			@Override
 			public void run() {
-				CAICitizen cAICitizen = null;
-				CAIZombie cAIZombie = null;
-
 				waittingHandler.sendEmptyMessage(CLEAR_MAP_CODE);
 
-				// For each citizen, go to next step
-				List<Entity> entities = new LinkedList<Entity>();
-				Collections.copy(entities, spawn.getCitizens());
-				entities.addAll(spawn.getCitizens());
-				for (Entity citizen : entities) {
-					cAICitizen = (CAICitizen) citizen.getComponentMap().get(
-							CAICitizen.class.getName());
-					cAICitizen.update();
-					spawn.putCitizenOnMap(citizen);
+				// Update IA
+				for(Entity entity: spawn.getEntities()){
+					if(entity.getComponentMap().containsKey(CAICitizen.class.getName())){
+						((CAICitizen)entity.getComponentMap().get(CAICitizen.class.getName())).update();
+					} else if(entity.getComponentMap().containsKey(CAIZombie.class.getName())) {
+						((CAIZombie)entity.getComponentMap().get(CAIZombie.class.getName())).update();
+					}
 				}
-
-				// For each zombie, go to next step
-				entities.clear();
-				Collections.copy(entities, spawn.getZombies());
-				//entities.addAll(spawn.getZombies());
-				for (Entity zombie : entities) {
-					cAIZombie = (CAIZombie) zombie.getComponentMap().get(
-							CAIZombie.class.getName());
-					cAIZombie.update();
-					spawn.putZombieOnMap(zombie);
-				}
-
-				Entity chopper = spawn.getChopper();
-				if (chopper != null) {
-					spawn.putChopperOnMap(chopper);
-				}
+				
+				notSpawn = false;
+				
+				// Put On Map
+				spawn.putOnMap();
 
 				waittingHandler.sendEmptyMessage(REFRESH_MAP_CODE);
+
+				// Wait...
+				while (threadSuspended) {
+					// Do nothing, wait ...
+				}
+				
+				// If not ended
+				if(!threadStop){
+					waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
+				}
 
 			}
 		};
@@ -436,8 +401,8 @@ public class GameActivity extends MapActivity {
 	private void endGame() {
 		Intent intent = new Intent();
 		intent.putExtra(END_GAME_TIME, new Date().getTime() - startTime);
-		intent.putExtra(END_GAME_CITIZEN_SAVED, 0);
-		intent.putExtra(END_GAME_ZOMBIES_KILLED, 0);
+		intent.putExtra(END_GAME_CITIZEN_SAVED, spawn.getCitizenFree());
+		intent.putExtra(END_GAME_ZOMBIES_KILLED, spawn.getZombieKilled());
 
 		setResult(RESULT_OK, intent);
 	}

@@ -3,8 +3,10 @@ package fr.alma.ihm.gmapszombiesmasher.model.factories;
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CBoolean;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
 
 /**
@@ -38,6 +40,11 @@ public class ZombieFactory {
 		zombie.addComponent(new CAIZombie(zombie, spawn));
 		zombie.addComponent(new CGoal(zombie));
 		zombie.addComponent(new CMoveSpeed(zombie));
+		// Living
+		zombie.addComponent(new CBoolean(zombie));
+		CMarker marker = new CMarker(zombie);
+		marker.setZombie();
+		zombie.addComponent(marker);
 
 		// Getting the random boundary where the zombie will appear
 
