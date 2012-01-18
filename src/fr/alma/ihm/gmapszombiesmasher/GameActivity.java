@@ -1,5 +1,12 @@
 package fr.alma.ihm.gmapszombiesmasher;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +16,8 @@ import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -19,8 +28,8 @@ import com.google.android.maps.MapView;
 import fr.alma.ihm.gmapszombiesmasher.listeners.GameOnTouchListener;
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
-import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
-import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSCoordinate;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSUtilities;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
@@ -39,19 +48,32 @@ public class GameActivity extends MapActivity {
 	private Handler waittingHandler;
 	private ProgressDialog dialog;
 	private Thread mainTread;
+	private long startTime;
+	private Map<Integer, Boolean> selectedButton;
+	public static final int CHOPPER = 0;
+	public static final int BOMB = 1;
 
-	private static final int SPAWN_CODE = 1;
-	private static final int NEXT_STEP_CODE = 2;
+	protected static final int SPAWN_CODE = 1;
+	protected static final int NEXT_STEP_CODE = 2;
 	protected static final int WAIT_CODE = 3;
 	protected static final int STOP_CODE = 4;
 	protected static final int RESUME_CODE = 5;
+	protected static final int REFRESH_MAP_CODE = 6;
+	protected static final int CLEAR_MAP_CODE = 7;
+	protected static final int END_GAME = 8;
 	protected static final long SLEEPING_TIME = 500;
-	protected static final long TIME_BEFORE_NEXT_STEP = 3000;
+	protected static final long TIME_BEFORE_NEXT_STEP = 100;
 
 	protected static boolean threadStop = false;
 	protected static boolean threadSuspended = false;
 	protected boolean notSpawn = true;
 	protected boolean started = false;
+	private GameOnTouchListener onTouchListener;
+
+	public static final String END_GAME_TIME = "time";
+	public static final String END_GAME_ZOMBIES_KILLED = "zombiesKilled";
+	public static final String END_GAME_CITIZEN_SAVED = "citizenSaved";
+	public static final long CHOPPER_LIFE_TIME = 10000;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -64,6 +86,12 @@ public class GameActivity extends MapActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
 
+		selectedButton = new HashMap<Integer, Boolean>();
+		selectedButton.put(CHOPPER, false);
+		selectedButton.put(BOMB, false);
+
+		initButtons();
+
 		// Keep Screen On
 		ManagePreferences.setKeepScreenOn(this);
 
@@ -73,7 +101,8 @@ public class GameActivity extends MapActivity {
 		// Disable controls and set up the view
 		mapView.setClickable(false);
 		mapView.setFocusable(false);
-		mapView.setOnTouchListener(new GameOnTouchListener(this));
+		onTouchListener = new GameOnTouchListener(this, selectedButton);
+		mapView.setOnTouchListener(onTouchListener);
 		mapView.setBuiltInZoomControls(false);
 
 		mapView.setSatellite(ManagePreferences.isSateliteView(this));
@@ -97,6 +126,54 @@ public class GameActivity extends MapActivity {
 			mapView.invalidate();
 		}
 
+	}
+
+	/**
+	 * Create the hashmap with the state of each button (selected or not) Add
+	 * listeners to the buttons
+	 */
+	private void initButtons() {
+
+		// Listeners on buttons
+		this.findViewById(R.id.helicopter_button).setOnClickListener(
+				new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if (selectedButton.get(CHOPPER)) {
+							selectedButton.put(CHOPPER, false);
+						} else {
+							selectedButton.put(CHOPPER, true);
+							putAllOtherToFalse(CHOPPER);
+						}
+					}
+				});
+		this.findViewById(R.id.bomb_button).setOnClickListener(
+				new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if (selectedButton.get(BOMB)) {
+							selectedButton.put(BOMB, false);
+						} else {
+							selectedButton.put(BOMB, true);
+							putAllOtherToFalse(BOMB);
+						}
+					}
+				});
+	}
+
+	/**
+	 * Put all the element of the selectedButton hashMap to false excepted
+	 * "notThis"
+	 * 
+	 * @param notThis
+	 *            except this element
+	 */
+	private void putAllOtherToFalse(int notThis) {
+		for (int element : this.selectedButton.keySet()) {
+			if (element != notThis) {
+				this.selectedButton.put(element, false);
+			}
+		}
 	}
 
 	@Override
@@ -137,18 +214,20 @@ public class GameActivity extends MapActivity {
 
 					if (notSpawn) {
 						while (!mapView.isShown()) {
-							System.out.println("isShown: " + mapView.isShown());
 							SystemClock.sleep(SLEEPING_TIME);
 						}
 						// Send a message to the handler
 						waittingHandler.sendEmptyMessage(SPAWN_CODE);
 
-						while(notSpawn){}
-						
+						while (notSpawn) {
+						}
+
 						// Close waitting dialog
 						if (dialog.isShowing()) {
 							dialog.dismiss();
 						}
+
+						startTime = new Date().getTime();
 					}
 
 					while (!threadStop) {
@@ -178,7 +257,7 @@ public class GameActivity extends MapActivity {
 					switch (msg.what) {
 					case SPAWN_CODE:
 						spawn();
-						notSpawn = false;
+						// notSpawn = false;
 						break;
 					case NEXT_STEP_CODE:
 						nextStep();
@@ -194,6 +273,14 @@ public class GameActivity extends MapActivity {
 						threadStop = false;
 						threadSuspended = false;
 						break;
+					case CLEAR_MAP_CODE:
+						mapView.getOverlays().clear();
+						break;
+					case REFRESH_MAP_CODE:
+						mapView.invalidate();
+					case END_GAME:
+						endGame();
+						break;
 					}
 				}
 			};
@@ -204,95 +291,102 @@ public class GameActivity extends MapActivity {
 	 * Create and place citizen and zombies on the map Set a goal for each
 	 */
 	private void spawn() {
-		int height = mapView.getHeight();
-		int width = mapView.getWidth();
+		Runnable spawnLoop = new Runnable() {
+			@Override
+			public void run() {
+				int height = mapView.getHeight();
+				int width = mapView.getWidth();
 
-		GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
-		GeoPoint topRight = mapView.getProjection().fromPixels(width, 0);
-		GeoPoint botLeft = mapView.getProjection().fromPixels(0, height);
-		GeoPoint botRight = mapView.getProjection().fromPixels(width, height);
+				GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
+				GeoPoint topRight = mapView.getProjection()
+						.fromPixels(width, 0);
+				GeoPoint botLeft = mapView.getProjection()
+						.fromPixels(0, height);
+				// GeoPoint botRight =
+				// mapView.getProjection().fromPixels(width,height);
 
-		spawn = new Spawn(this, mapView, topLeft.getLatitudeE6(),
-				botLeft.getLatitudeE6(), topLeft.getLongitudeE6(),
-				topRight.getLongitudeE6());
+				spawn = new Spawn(GameActivity.this, mapView,
+						topLeft.getLatitudeE6(), botLeft.getLatitudeE6(),
+						topLeft.getLongitudeE6(), topRight.getLongitudeE6());
+				spawn.spawnCitizen(ManagePreferences
+						.getCitizenNumber(GameActivity.this));
+				spawn.spawnZombies(ManagePreferences
+						.getZombieNumber(GameActivity.this));
+				
+				List<Entity> entities = spawn.getCitizens();
+				for (Entity citizen : entities) {
+					//spawn.setNewGoal(citizen);
+					((CAICitizen) citizen.getComponentMap().get(
+							CAICitizen.class.getName())).update();
+					spawn.putCitizenOnMap(citizen);
+				}
 
-		System.out.println("Number: "
-				+ ManagePreferences.getCitizenNumber(this));
-		System.out
-				.println("Number: " + ManagePreferences.getZombieNumber(this));
-		spawn.spawnCitizen(ManagePreferences.getCitizenNumber(this));
-		spawn.spawnZombies(ManagePreferences.getZombieNumber(this));
+				entities = spawn.getZombies();
+				for (Entity zombie : entities) {
+					//spawn.setNewGoal(zombie);
+					((CAIZombie) zombie.getComponentMap().get(
+							CAIZombie.class.getName())).update();
+					spawn.putZombieOnMap(zombie);
+				}
 
-		for (Entity citizen : spawn.getCitizens()) {
-			setNewGoal(citizen);
-			spawn.putCitizenOnMap(citizen);
-		}
+				onTouchListener.setSpawn(spawn);
+				waittingHandler.sendEmptyMessage(REFRESH_MAP_CODE);
+				notSpawn = false;
 
-		for (Entity zombie : spawn.getZombies()) {
-			setNewGoal(zombie);
-			spawn.putZombieOnMap(zombie);
-		}
+			}
+		};
 
-		// Reload View
-		mapView.invalidate();
+		Thread nextStep = new Thread(spawnLoop);
+		nextStep.start();
 	}
 
 	/**
 	 * Next step process - Move Citizen and zombie to next step
 	 */
 	private void nextStep() {
-		CGoal goal = null;
-		CCoordinates coordinates = null;
-		// Clear map
-		mapView.getOverlays().clear();
 
-		// For each citizen, go to next step
-		for (Entity citizen : spawn.getCitizens()) {
-			goal = (CGoal) citizen.getComponentMap().get(CGoal.class.getName());
-			coordinates = goal.getNextPosition(0);
-			if (!goal.goalReached()) {
-				citizen.addComponent(coordinates);
-				spawn.putCitizenOnMap(citizen);
-			} else {
-				// If the goal is reached, get a new one:
-				setNewGoal(citizen);
-				spawn.putCitizenOnMap(citizen);
+		Runnable nextStepLoop = new Runnable() {
+			@Override
+			public void run() {
+				CAICitizen cAICitizen = null;
+				CAIZombie cAIZombie = null;
+
+				waittingHandler.sendEmptyMessage(CLEAR_MAP_CODE);
+
+				// For each citizen, go to next step
+				List<Entity> entities = new LinkedList<Entity>();
+				Collections.copy(entities, spawn.getCitizens());
+				entities.addAll(spawn.getCitizens());
+				for (Entity citizen : entities) {
+					cAICitizen = (CAICitizen) citizen.getComponentMap().get(
+							CAICitizen.class.getName());
+					cAICitizen.update();
+					spawn.putCitizenOnMap(citizen);
+				}
+
+				// For each zombie, go to next step
+				entities.clear();
+				Collections.copy(entities, spawn.getZombies());
+				//entities.addAll(spawn.getZombies());
+				for (Entity zombie : entities) {
+					cAIZombie = (CAIZombie) zombie.getComponentMap().get(
+							CAIZombie.class.getName());
+					cAIZombie.update();
+					spawn.putZombieOnMap(zombie);
+				}
+
+				Entity chopper = spawn.getChopper();
+				if (chopper != null) {
+					spawn.putChopperOnMap(chopper);
+				}
+
+				waittingHandler.sendEmptyMessage(REFRESH_MAP_CODE);
+
 			}
-		}
+		};
 
-		// For each zombie, go to next step
-		for (Entity zombie : spawn.getZombies()) {
-			goal = (CGoal) zombie.getComponentMap().get(CGoal.class.getName());
-			coordinates = goal.getNextPosition(0);
-			if (!goal.goalReached()) {
-				zombie.addComponent(coordinates);
-				spawn.putZombieOnMap(zombie);
-			} else {
-				// If the goal is reached, get a new one:
-				setNewGoal(zombie);
-				spawn.putZombieOnMap(zombie);
-			}
-		}
-
-		mapView.invalidate();
-	}
-
-	/**
-	 * Set a random new goal to the entity and set the current position on the
-	 * road closer to the goal
-	 * 
-	 * @param entity
-	 *            the entity to set
-	 */
-	private void setNewGoal(Entity entity) {
-		// Get New Goal Coordinates
-		Entity newGoal = new Entity();
-		newGoal.addComponent(spawn.getRandomPosition(newGoal));
-
-		// Put the new goal on the Entity
-		CGoal goal = (CGoal) entity.getComponentMap()
-				.get(CGoal.class.getName());
-		entity.addComponent(goal.setGoal(newGoal));
+		Thread nextStep = new Thread(nextStepLoop);
+		nextStep.start();
 	}
 
 	@Override
@@ -334,6 +428,18 @@ public class GameActivity extends MapActivity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	/**
+	 * Get and return the results of the game to the PlayActivity
+	 */
+	private void endGame() {
+		Intent intent = new Intent();
+		intent.putExtra(END_GAME_TIME, new Date().getTime() - startTime);
+		intent.putExtra(END_GAME_CITIZEN_SAVED, 0);
+		intent.putExtra(END_GAME_ZOMBIES_KILLED, 0);
+
+		setResult(RESULT_OK, intent);
 	}
 
 	@Override

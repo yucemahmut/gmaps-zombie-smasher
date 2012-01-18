@@ -1,6 +1,7 @@
 package fr.alma.ihm.gmapszombiesmasher.model.factories;
 
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
+import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
@@ -17,21 +18,24 @@ public class ZombieFactory {
 	private int botLatitude;
 	private int leftLongitude;
 	private int rightLongitude;
+	private Spawn spawn;
+	
 
 	public ZombieFactory(int topLatitude, int botLatitude, int leftLongitude,
-			int rightLongitude) {
+			int rightLongitude, Spawn spawn) {
 
 		this.topLatitude = topLatitude;
 		this.botLatitude = botLatitude;
 		this.leftLongitude = leftLongitude;
 		this.rightLongitude = rightLongitude;
+		this.spawn = spawn;
 	}
 
 	public Entity getZombie() {
 		// TODO setMovespeedcomponent for zombie
 		// TODO Component markerColor for zombie
 		Entity zombie = new Entity();
-		zombie.addComponent(new CAIZombie(zombie));
+		zombie.addComponent(new CAIZombie(zombie, spawn));
 		zombie.addComponent(new CGoal(zombie));
 		zombie.addComponent(new CMoveSpeed(zombie));
 

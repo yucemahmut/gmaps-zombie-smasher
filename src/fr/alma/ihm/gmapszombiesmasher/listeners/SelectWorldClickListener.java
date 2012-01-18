@@ -1,13 +1,20 @@
 package fr.alma.ihm.gmapszombiesmasher.listeners;
 
+import com.google.android.maps.GeoPoint;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import fr.alma.ihm.gmapszombiesmasher.GameActivity;
+import fr.alma.ihm.gmapszombiesmasher.PlayActivity;
+import fr.alma.ihm.gmapszombiesmasher.utils.GPSCoordinate;
+import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
+import fr.alma.ihm.gmapszombiesmasher.utils.World;
 
 public class SelectWorldClickListener implements OnItemClickListener {
 	
@@ -33,8 +40,7 @@ public class SelectWorldClickListener implements OnItemClickListener {
 		//On affecte à l'Intent le Bundle que l'on a créé
 		intent.putExtras(objetbunble);
 		
-	    this.parent.startActivity(intent);
+	    this.parent.startActivityForResult(intent, PlayActivity.PLAY_CODE);
 	}
-	
 
 }

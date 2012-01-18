@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
-import android.os.SystemClock;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -12,6 +11,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import fr.alma.ihm.gmapszombiesmasher.R;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.CitizenFactory;
@@ -23,6 +23,10 @@ public class Spawn {
 	
 	private List<Entity> zombies;
 	private List<Entity> citizens;
+	private Entity chopper;
+	private int citizenFree = 0;
+	private int citizenEated = 0;
+	private int zombieKilled = 0;
 	
 	private List<Overlay> mapOverlays;
 	private Activity activity;
@@ -43,8 +47,8 @@ public class Spawn {
 		this.leftLongitude = leftLongitude;
 		this.rightLongitude = rightLongitude;
 		
-		this.citizenFactory = new CitizenFactory(topLatitude, botLatitude, leftLongitude, rightLongitude);
-		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude, leftLongitude, rightLongitude);
+		this.citizenFactory = new CitizenFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this);
+		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this);
 		
 		this.zombies = new LinkedList<Entity>();
 		this.citizens = new LinkedList<Entity>();
@@ -89,6 +93,16 @@ public class Spawn {
 		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(R.drawable.zombies_marker));
 		putOnMap(entityOverlay, entity);
 	}
+	
+	public void putChopperOnMap(Entity entity){
+		chopper = entity;
+		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(R.drawable.chopper_marker));
+		putOnMap(entityOverlay, entity);
+	}
+	
+	public void destroyChopper() {
+		chopper = null;
+	}
 
 	/**
 	 * @return the zombies
@@ -104,6 +118,10 @@ public class Spawn {
 		return citizens;
 	}
 	
+	public Entity getChopper() {
+		return chopper;
+	}
+	
 	public CCoordinates getRandomPosition(Entity entity){
 		int tempLatitude = (int) (botLatitude
 				+ Math.random() * (topLatitude - botLatitude));
@@ -116,4 +134,80 @@ public class Spawn {
 		
 		return coordinates;
 	}
+	
+	/**
+	 * Set a random new goal to the entity and set the current position on the
+	 * road closer to the goal
+	 * 
+	 * @param entity
+	 *            the entity to set
+	 */
+	public void setNewGoal(Entity entity) {
+		// Get New Goal Coordinates
+		Entity newGoal = new Entity();
+		newGoal.addComponent(getRandomPosition(newGoal));
+
+		// Put the new goal on the Entity
+		CGoal goal = (CGoal) entity.getComponentMap()
+				.get(CGoal.class.getName());
+		entity.addComponent(goal.setGoal(newGoal));
+	}
+
+	/**
+	 * Free a citizen
+	 * 
+	 * @param entity the citizen to free
+	 */
+	public void freeCitizen(Entity entity) {
+		System.out.println("FREE");
+		citizens.remove(entity);
+		citizenFree++;
+	}
+	
+	/**
+	 * Eat a citizen
+	 * 
+	 * @param entity
+	 */
+	public void eatCitizen(Entity entity) {
+		System.out.println("MANGE");
+		citizens.remove(entity);
+		// Changement d'IA
+		entity.addComponent(new CAIZombie(entity, this));
+		zombies.add(entity);
+		citizenEated++;
+	}
+	
+	/**
+	 * Kill Zombie
+	 * 
+	 * @param entity
+	 */
+	public void killZombie(Entity entity) {
+		System.out.println("KILL");
+		zombies.remove(entity);
+		zombieKilled++;
+	}
+
+	/**
+	 * @return the citizenFree
+	 */
+	public int getCitizenFree() {
+		return citizenFree;
+	}
+
+	/**
+	 * @return the citizenEated
+	 */
+	public int getCitizenEated() {
+		return citizenEated;
+	}
+
+	/**
+	 * @return the zombieKilled
+	 */
+	public int getZombieKilled() {
+		return zombieKilled;
+	}
 }
+

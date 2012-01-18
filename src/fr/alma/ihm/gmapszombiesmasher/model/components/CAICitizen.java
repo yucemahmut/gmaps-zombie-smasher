@@ -3,6 +3,7 @@ package fr.alma.ihm.gmapszombiesmasher.model.components;
 import java.util.LinkedList;
 
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
+import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.ChopperFactory;
 
 /**
@@ -15,47 +16,56 @@ public class CAICitizen extends Component implements ICAI {
 
 	private ChopperFactory cF = new ChopperFactory();
 	private LinkedList<Entity> zombies;
+	private Spawn spawn;
 
-	public CAICitizen(Entity parent) {
+	public CAICitizen(Entity parent, Spawn spawn) {
 		super(parent);
+		this.spawn = spawn;
 	}
 
 	@Override
 	public void update() {
-		// TODO implémente algo suivant :
+		// TODO implemente algo suivant :
 
 		// Chercher le CGoal du parent
-		// Si aucun , alors le créer
-		if (!(getParent().getComponentMap().containsKey("CGoal"))) {
-			getParent().addComponent(new CGoal(getParent()));
-		}
+		// Si aucun , alors le crï¿½er
+		/*
+		 * if (!(getParent().getComponentMap().containsKey("CGoal"))) {
+		 * getParent().addComponent(new CGoal(getParent())); }
+		 */
+		CGoal goal = (CGoal) getParent().getComponentMap().get(CGoal.class.getName());
+		
+		// S'il existe un chopper sur la carte, alors on va vers le chopper
+		if (spawn.getChopper() != null && chopperClose(spawn.getChopper())) {
+			// On ajoute le chopper comme Ã©tant le but Ã  atteindre
+			getParent().addComponent(goal.setGoal(spawn.getChopper()));
 
-		// Si la valeur du CGoal est null
-		CGoal g = (CGoal) getParent().getComponentMap().get("CGoal");
-		if (g.getGoal() == null) {
-			// Alors chercher si une entité de chopper existe, la mettre dans le
-			// CGoal
-			g.setGoal(cF.get());
-		}
-
-		// Si le chopper n'a pas de destination sur la carte
-		if (!(g.getGoal().getComponentMap().containsKey("CGoal"))) {
-			// Ne rien faire
-			// Autistifier sur place
-			// TODO ou fuir zombie proche =)
+			// Si le chopper est atteind ou assez proche alors le citizen est
+			// libÃ©rÃ©
+			if (goal.goalReached()
+				|| ((CCoordinates) getParent().getComponentMap().get(
+				   CCoordinates.class.getName())).isNearOf(goal.getGoalCoordinates())) {
+				// Liberation du citoyen
+				spawn.freeCitizen(getParent());
+			}
 		} else {
-
-			// TODO Modifier par effet de bord les CCoordinates en fonction de
-			// la
-			// CMovespeed
-			// (Prendre en compte le deltaTime) et se diriger vers l helicoptère
-			// grace
-			// a la route trouvée par Gmap ( que l on conserve en mémoire au cas
-			// où
-			// la position
-			// de l helico ne change pas a la frame suivante )
-
+			// Si el but est atteind, on cherche un nouveau but
+			if(goal.goalReached()){
+				spawn.setNewGoal(getParent());
+			} else {
+				this.getParent().addComponent(goal.getNextPosition(0));
+			}
 		}
+	}
+
+	private boolean chopperClose(Entity chopper) {
+		double distanceMax = 200;
+		CCoordinates chopperCoord = (CCoordinates)chopper.getComponentMap().get(CCoordinates.class.getName());
+		CCoordinates citizenCoord = (CCoordinates)getParent().getComponentMap().get(CCoordinates.class.getName());
+		if((chopperCoord.distanceTo(citizenCoord)) <= distanceMax){
+			return true;
+		}
+		return false;
 	}
 
 	public ChopperFactory getcF() {
