@@ -12,6 +12,7 @@ public class CCoordinates extends Component {
 
 	private int latitude;
 	private int longitude;
+	private long minimumDistance = 100;
 
 	public CCoordinates(Entity parent) {
 		super(parent);
@@ -57,4 +58,9 @@ public class CCoordinates extends Component {
 
     return d;
   }
+
+	public boolean isNearOf(CCoordinates goalCoordinates) {
+		System.out.println("Distance: " + distanceTo(goalCoordinates));
+		return distanceTo(goalCoordinates) <= minimumDistance;
+	}
 }

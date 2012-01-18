@@ -1,6 +1,7 @@
 package fr.alma.ihm.gmapszombiesmasher.model.factories;
 
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
+import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
@@ -16,15 +17,17 @@ public class CitizenFactory {
 	private int botLatitude;
 	private int leftLongitude;
 	private int rightLongitude;
+	private Spawn spawn;
 
 	public CitizenFactory(int topLatitude, int botLatitude, int leftLongitude,
-			int rightLongitude) {
+			int rightLongitude, Spawn spawn) {
 
 		this.topLatitude = topLatitude;
 		this.botLatitude = botLatitude;
 		this.leftLongitude = leftLongitude;
 		this.rightLongitude = rightLongitude;
 		
+		this.spawn = spawn;
 	}
 
 	public Entity getCitizen() {
@@ -37,7 +40,7 @@ public class CitizenFactory {
 		// -> d�finir une movespeed pour les zombies l�gerement superieur en
 		// moyenne a un citoyen
 		citizen.addComponent(new CMoveSpeed(citizen));
-		citizen.addComponent(new CAICitizen(citizen));
+		citizen.addComponent(new CAICitizen(citizen, spawn));
 
 		// Random position :
 		//Random random = new Random();

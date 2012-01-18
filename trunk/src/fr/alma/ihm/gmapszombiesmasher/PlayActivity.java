@@ -17,6 +17,7 @@ import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
 public class PlayActivity extends Activity {
 	
 	public static final int EDIT_WORLD_CODE = 1;
+	public static final int PLAY_CODE = 2;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,10 +48,19 @@ public class PlayActivity extends Activity {
 				Toast.makeText(this, "World updated!", Toast.LENGTH_LONG).show();
 			}
 			break;
-
+		case PLAY_CODE:
+			if (resultCode == RESULT_OK) {
+				Bundle objetbunble = data.getExtras();
+				int time = objetbunble.getInt(GameActivity.END_GAME_TIME);
+				int citizenSaved = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_SAVED);
+				int zombieKilled = objetbunble.getInt(GameActivity.END_GAME_ZOMBIES_KILLED);
+			}
+			break;
 		default:
 			break;
 		}
 	}
+	
+	
 
 }
