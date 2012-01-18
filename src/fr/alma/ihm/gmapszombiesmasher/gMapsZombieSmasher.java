@@ -76,10 +76,26 @@ public class gMapsZombieSmasher extends Activity {
 	
     private void updatePreference() {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    	
     	if(prefs.getBoolean(SettingPreferenceActivity.BACKGROUND_MUSIC, false)) {
     		this.startService(new Intent(this, BackgroundMusicService.class));
     	} else {
     		this.stopService(new Intent(this, BackgroundMusicService.class));
     	}
+    	
+    	if(prefs.getBoolean(SettingPreferenceActivity.SATELLITE_VIEW_IN_MAP, false)) {
+    		// to do ...
+    		
+    	} else {
+    		// to do ...
+    	}
+    	
+    	if(prefs.getBoolean(SettingPreferenceActivity.APPLICATION_SOUNDS, false)) {
+    		// to do ...
+    		
+    	} else {
+    		// to do ...
+    	}
+
     }
 }
