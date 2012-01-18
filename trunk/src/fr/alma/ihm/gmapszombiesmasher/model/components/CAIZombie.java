@@ -2,7 +2,6 @@ package fr.alma.ihm.gmapszombiesmasher.model.components;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
@@ -16,13 +15,12 @@ import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 public class CAIZombie extends Component implements ICAI {
 
 	private static int RANDOMBOUNDARY = 5; // bound of randomize a new target
-	private List<Entity> citizens;
 	private Spawn spawn;
+	private double distanceMin = 50;
 
 	public CAIZombie(Entity parent, Spawn spawn) {
 		super(parent);
 		this.spawn = spawn;
-		citizens = spawn.getCitizens();
 	}
 
 	@Override
@@ -47,24 +45,47 @@ public class CAIZombie extends Component implements ICAI {
 		// Prendre le citoyen le plus pres
 		Entity citizen = getCloserCitizen();
 		if (citizen != null) {
+
 			if (citizen.equals(goal.getGoal())) {
 				// Si le citizen est atteind ou assez proche alors le citizen
 				// est mange
-				if (goal.goalReached()
-						|| ((CCoordinates) getParent().getComponentMap().get(
-								CCoordinates.class.getName())).isNearOf(goal
-								.getGoalCoordinates())) {
-					// Liberation du citoyen
-					spawn.eatCitizen(goal.getGoal());
+				if ((goal.goalReached() || ((CCoordinates) getParent()
+						.getComponentMap().get(CCoordinates.class.getName()))
+						.isNearOf(goal.getGoalCoordinates(), distanceMin))) {
+					// Si le zombie est toujours près des véritables coordonnées 
+					// du citoyen
+					if (((CCoordinates) getParent().getComponentMap().get(
+							CCoordinates.class.getName()))
+							.isNearOf(((CCoordinates) citizen.getComponentMap()
+									.get(CCoordinates.class.getName())),
+									distanceMin)) {
+						// Liberation du citoyen
+						spawn.eatCitizen(goal.getGoal());
+					} else {
+						// Sinon, je recalibre le goal
+						spawn.setGoal(getParent(), citizen);
+					}
 				}
 			} else {
-				goal.setGoal(citizen);
+				System.out.println("[ZOMBIE] New Goal Citizen");
+				spawn.setGoal(getParent(), citizen);
+				// goal.setGoal(citizen);
 			}
 		}
 
 		// */
 
-		this.getParent().addComponent(goal.getNextPosition(0));
+		if (goal.goalReached()) {
+			System.out.println("[ZOMBIE] New Goal");
+			spawn.setNewGoal(getParent());
+		} else {
+			spawn.setNextPosition(getParent(), goal);
+			/*
+			 * CCoordinates c = goal.getNextPosition(0); // FIXME Pas de retour
+			 * null normalement if(c != null){ this.getParent().addComponent(c);
+			 * }
+			 */
+		}
 
 		/*
 		 * 
@@ -109,7 +130,7 @@ public class CAIZombie extends Component implements ICAI {
 		double maxDistance = 200;
 		double distance = 0;
 		Entity closer = null;
-		for (Entity citizen : spawn.getCitizens()) {
+		for (Entity citizen : spawn.getCitizen()) {
 			distance = ((((CCoordinates) getParent().getComponentMap().get(
 					CCoordinates.class.getName())))
 					.distanceTo((CCoordinates) citizen.getComponentMap().get(
@@ -121,14 +142,6 @@ public class CAIZombie extends Component implements ICAI {
 		}
 
 		return closer;
-	}
-
-	public List<Entity> getCitizens() {
-		return citizens;
-	}
-
-	public void setCitizens(LinkedList<Entity> citizens) {
-		this.citizens = citizens;
 	}
 
 }

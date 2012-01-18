@@ -13,8 +13,8 @@ import fr.alma.ihm.gmapszombiesmasher.SettingPreferenceActivity;
 
 public class ManagePreferences {
 
-	private static final int ZOMBIES_EASY = 5;
-	private static final int CITIZEN_EASY = 5;
+	private static final int ZOMBIES_EASY = 1;
+	private static final int CITIZEN_EASY = 1;
 	private static final int ZOMBIES_NORMAL = 10;
 	private static final int CITIZEN_NORMAL = 10;
 	private static final int ZOMBIES_HARD = 20;

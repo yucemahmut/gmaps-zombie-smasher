@@ -3,7 +3,10 @@ package fr.alma.ihm.gmapszombiesmasher.model.factories;
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CBoolean;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
 
 /**
@@ -35,12 +38,14 @@ public class CitizenFactory {
 		// TODO Component markerColor for citizen
 		Entity citizen = new Entity();
 		citizen.addComponent(new CCoordinates(citizen));
-		// TODO Cr�er une CMoveSpeed dans une fourchette
-		// -> d�finir une unit�
-		// -> d�finir une movespeed pour les zombies l�gerement superieur en
-		// moyenne a un citoyen
+		citizen.addComponent(new CGoal(citizen));
 		citizen.addComponent(new CMoveSpeed(citizen));
 		citizen.addComponent(new CAICitizen(citizen, spawn));
+		// Living
+		citizen.addComponent(new CBoolean(citizen));
+		CMarker marker = new CMarker(citizen);
+		marker.setCitizen();
+		citizen.addComponent(marker);
 
 		// Random position :
 		//Random random = new Random();

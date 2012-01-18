@@ -17,6 +17,7 @@ public class CAICitizen extends Component implements ICAI {
 	private ChopperFactory cF = new ChopperFactory();
 	private LinkedList<Entity> zombies;
 	private Spawn spawn;
+	private double distanceMin = 100;
 
 	public CAICitizen(Entity parent, Spawn spawn) {
 		super(parent);
@@ -36,24 +37,39 @@ public class CAICitizen extends Component implements ICAI {
 		CGoal goal = (CGoal) getParent().getComponentMap().get(CGoal.class.getName());
 		
 		// S'il existe un chopper sur la carte, alors on va vers le chopper
-		if (spawn.getChopper() != null && chopperClose(spawn.getChopper())) {
-			// On ajoute le chopper comme étant le but à atteindre
-			getParent().addComponent(goal.setGoal(spawn.getChopper()));
-
-			// Si le chopper est atteind ou assez proche alors le citizen est
-			// libéré
-			if (goal.goalReached()
-				|| ((CCoordinates) getParent().getComponentMap().get(
-				   CCoordinates.class.getName())).isNearOf(goal.getGoalCoordinates())) {
-				// Liberation du citoyen
-				spawn.freeCitizen(getParent());
+		if (spawn.getChopper() != null) {
+			
+			if(spawn.getChopper().equals(goal.getGoal())){
+				// Si le chopper est atteind ou assez proche alors le citizen est
+				// libéré
+				if (goal.goalReached()
+					|| ((CCoordinates) getParent().getComponentMap().get(
+					   CCoordinates.class.getName())).isNearOf(goal.getGoalCoordinates(), distanceMin)) {
+					// Liberation du citoyen
+					spawn.freeCitizen(getParent());
+				} else {
+					spawn.setNextPosition(getParent(), goal);
+				}
+			} else {
+				System.out.println("[CITIZEN] New Goal Chopper");
+				// On ajoute le chopper comme étant le but à atteindre
+				spawn.setGoal(getParent(), spawn.getChopper());
+				//getParent().addComponent(goal.setGoal(spawn.getChopper()));
 			}
 		} else {
 			// Si el but est atteind, on cherche un nouveau but
 			if(goal.goalReached()){
+				System.out.println("[CITIZEN] New Goal");
 				spawn.setNewGoal(getParent());
 			} else {
-				this.getParent().addComponent(goal.getNextPosition(0));
+				spawn.setNextPosition(getParent(), goal);
+				/*
+				CCoordinates c = goal.getNextPosition(0);
+				// FIXME Pas de retour null normalement 
+				if(c != null){
+					this.getParent().addComponent(c);
+				}
+				*/
 			}
 		}
 	}

@@ -7,6 +7,8 @@ import java.net.URLConnection;
 
 import org.json.JSONObject;
 
+import android.os.SystemClock;
+
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 
 /**
@@ -118,9 +120,10 @@ public class CGoal extends Component {
 						.setLongitude((int) (Float.parseFloat(firstLon) * 1e6));
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				try {
-					Thread.currentThread().sleep(250);
+					//Thread.currentThread().sleep(250);
+					SystemClock.sleep(250);
 					startCoordinates = updateSteps();
 				} catch (Exception ex) {
 					// TODO
@@ -214,6 +217,7 @@ public class CGoal extends Component {
 						}
 					}
 				} catch (Exception e) {
+					//FIXME
 					// e.printStackTrace();
 				}
 			}
