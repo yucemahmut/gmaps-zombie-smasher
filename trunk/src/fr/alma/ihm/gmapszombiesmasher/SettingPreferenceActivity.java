@@ -2,12 +2,14 @@ package fr.alma.ihm.gmapszombiesmasher;
 
 import fr.alma.ihm.gmapszombiesmasher.sounds.BackgroundMusicService;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 public class SettingPreferenceActivity extends PreferenceActivity {
@@ -33,9 +35,9 @@ public class SettingPreferenceActivity extends PreferenceActivity {
         		Toast.makeText(context, "Background music " +  ((Boolean)newValue?"On":"Off"), Toast.LENGTH_SHORT).show();
     
         		if((Boolean)newValue){
-        			BackgroundMusicService.player.start();
+        			context.startService(new Intent(context, BackgroundMusicService.class));
         		} else {
-        			BackgroundMusicService.player.pause();
+        			context.stopService(new Intent(context, BackgroundMusicService.class));
         		}        		
         		return true;
         	}
@@ -82,6 +84,14 @@ public class SettingPreferenceActivity extends PreferenceActivity {
         		return true;
         	}
         } );
+    }
+    
+	@Override
+    public void onAttachedToWindow() {
+		// disable home button
+    	this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
+    	super.onAttachedToWindow();
+    
     }
     
     protected void onStop (){
