@@ -54,6 +54,10 @@ public class PlayActivity extends Activity {
 				int time = objetbunble.getInt(GameActivity.END_GAME_TIME);
 				int citizenSaved = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_SAVED);
 				int zombieKilled = objetbunble.getInt(GameActivity.END_GAME_ZOMBIES_KILLED);
+				
+				System.out.println("time: " + time);
+				System.out.println("citizenSaved: " + citizenSaved);
+				System.out.println("zombieKilled: " + zombieKilled);
 			}
 			break;
 		default:

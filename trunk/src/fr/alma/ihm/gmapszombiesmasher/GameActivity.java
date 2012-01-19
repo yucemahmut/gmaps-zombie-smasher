@@ -4,12 +4,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +31,9 @@ import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
+import fr.alma.ihm.gmapszombiesmasher.sounds.BackgroundMusicService;
+import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
+import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManagerFactory;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSCoordinate;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSUtilities;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
@@ -36,16 +43,24 @@ import fr.alma.ihm.gmapszombiesmasher.utils.World;
 public class GameActivity extends MapActivity {
 
 	private static final int ZOOM_LEVEL = 18;
+	protected static final long SLEEPING_TIME = 500;
+	protected static final long TIME_BEFORE_NEXT_STEP = 100;
+	public static final long CHOPPER_LIFE_TIME = 10000;
+	private static final long CHOPPER_BUTTON_LIFE_TIME = 20000;
+	private static final long BOMB_BUTTON_LIFE_TIME = 20000;
+
 	private MapController mapController;
 	private MapView mapView;
-	private static final int GPS_CODE = 1;
-	private static final int SETTINGS_CODE = 2;
-
 	private Spawn spawn;
 	private Handler waittingHandler;
 	private ProgressDialog dialog;
-	private long startTime;
 	private Map<Integer, Boolean> selectedButton;
+	private long startTime;
+	private GameOnTouchListener onTouchListener;
+
+	private static final int GPS_CODE = 1;
+	private static final int SETTINGS_CODE = 2;
+
 	public static final int CHOPPER = 0;
 	public static final int BOMB = 1;
 
@@ -57,19 +72,15 @@ public class GameActivity extends MapActivity {
 	protected static final int REFRESH_MAP_CODE = 6;
 	protected static final int CLEAR_MAP_CODE = 7;
 	protected static final int END_GAME = 8;
-	protected static final long SLEEPING_TIME = 500;
-	protected static final long TIME_BEFORE_NEXT_STEP = 100;
 
-	protected static boolean threadStop = false;
-	protected static boolean threadSuspended = false;
+	protected static boolean onPause = false;
 	protected boolean notSpawn = true;
 	protected boolean started = false;
-	private GameOnTouchListener onTouchListener;
+	protected boolean endGame = false;
 
 	public static final String END_GAME_TIME = "time";
 	public static final String END_GAME_ZOMBIES_KILLED = "zombiesKilled";
 	public static final String END_GAME_CITIZEN_SAVED = "citizenSaved";
-	public static final long CHOPPER_LIFE_TIME = 10000;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -123,6 +134,31 @@ public class GameActivity extends MapActivity {
 		}
 
 	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		System.out.println("OUI");
+	}
+
+	/**
+	 * Thread that look if the game is ended
+	 */
+	private void startWatchingGame() {
+		Runnable chopperButtonLifeTime = new Runnable() {
+
+			@Override
+			public void run() {
+				while(!endGame){
+					if(GameActivity.this.spawn.getCitizenInGame() == 0){
+						endGame = true;
+						waittingHandler.sendEmptyMessage(END_GAME);
+					}
+				}
+			}
+		};
+
+		new Thread(chopperButtonLifeTime).start();
+	}
 
 	/**
 	 * Create the hashmap with the state of each button (selected or not) Add
@@ -135,24 +171,43 @@ public class GameActivity extends MapActivity {
 				new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						if (selectedButton.get(CHOPPER)) {
-							selectedButton.put(CHOPPER, false);
-						} else {
+						if (!selectedButton.get(CHOPPER)) {
 							selectedButton.put(CHOPPER, true);
 							putAllOtherToFalse(CHOPPER);
+
+							Runnable chopperButtonLifeTime = new Runnable() {
+
+								@Override
+								public void run() {
+									SystemClock.sleep(CHOPPER_BUTTON_LIFE_TIME);
+								}
+							};
+
+							new Thread(chopperButtonLifeTime).start();
 						}
 					}
 				});
+
 		this.findViewById(R.id.bomb_button).setOnClickListener(
 				new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						if (selectedButton.get(BOMB)) {
-							selectedButton.put(BOMB, false);
-						} else {
+						if (!selectedButton.get(BOMB)) {
 							selectedButton.put(BOMB, true);
 							putAllOtherToFalse(BOMB);
+
+							Runnable chopperButtonLifeTime = new Runnable() {
+
+								@Override
+								public void run() {
+									SystemClock.sleep(BOMB_BUTTON_LIFE_TIME);
+									selectedButton.put(BOMB, false);
+								}
+							};
+
+							new Thread(chopperButtonLifeTime).start();
 						}
+
 					}
 				});
 	}
@@ -199,6 +254,9 @@ public class GameActivity extends MapActivity {
 		waittingHandler.sendEmptyMessage(STOP_CODE);
 	}
 
+	/**
+	 * 
+	 */
 	protected void startMainLoop() {
 		if (!started) {
 			mapView.getOverlays().clear();
@@ -212,10 +270,23 @@ public class GameActivity extends MapActivity {
 						while (!mapView.isShown()) {
 							SystemClock.sleep(SLEEPING_TIME);
 						}
+
 						// Send a message to the handler
 						waittingHandler.sendEmptyMessage(SPAWN_CODE);
 
 						while (notSpawn) {
+						}
+						
+						for (Entity entity : spawn.getEntities()) {
+							if (entity.getComponentMap()
+									.containsKey(CAICitizen.class.getName())) {
+								((CAICitizen) entity.getComponentMap().get(
+										CAICitizen.class.getName())).update();
+							} else if (entity.getComponentMap().containsKey(
+									CAIZombie.class.getName())) {
+								((CAIZombie) entity.getComponentMap().get(
+										CAIZombie.class.getName())).update();
+							}
 						}
 
 						// Close waitting dialog
@@ -223,7 +294,9 @@ public class GameActivity extends MapActivity {
 							dialog.dismiss();
 						}
 
+						startWatchingGame();
 						startTime = new Date().getTime();
+						waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 					}
 				}
 			};
@@ -243,21 +316,24 @@ public class GameActivity extends MapActivity {
 					switch (msg.what) {
 					case SPAWN_CODE:
 						spawn();
-						// notSpawn = false;
 						break;
 					case NEXT_STEP_CODE:
 						nextStep();
 						break;
 					case WAIT_CODE:
-						threadSuspended = true;
+						onPause = true;
 						break;
 					case STOP_CODE:
-						threadStop = true;
 						started = false;
+						onPause = false;
+						notSpawn = true;
+						finish();
 						break;
 					case RESUME_CODE:
-						threadStop = false;
-						threadSuspended = false;
+						if (onPause) {
+							onPause = false;
+							nextStep();
+						}
 						break;
 					case CLEAR_MAP_CODE:
 						mapView.getOverlays().clear();
@@ -265,6 +341,8 @@ public class GameActivity extends MapActivity {
 					case REFRESH_MAP_CODE:
 						mapView.invalidate();
 					case END_GAME:
+						started = false;
+						notSpawn = true;
 						endGame();
 						break;
 					}
@@ -298,12 +376,11 @@ public class GameActivity extends MapActivity {
 						.getCitizenNumber(GameActivity.this));
 				spawn.spawnZombies(ManagePreferences
 						.getZombieNumber(GameActivity.this));
-				
+
 				spawn.putOnMap();
+				notSpawn = false;
 
 				onTouchListener.setSpawn(spawn);
-				waittingHandler.sendEmptyMessage(REFRESH_MAP_CODE);
-				waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 			}
 		};
 
@@ -316,42 +393,29 @@ public class GameActivity extends MapActivity {
 	 */
 	private void nextStep() {
 
-		Runnable nextStepLoop = new Runnable() {
-			@Override
-			public void run() {
-				//waittingHandler.sendEmptyMessage(CLEAR_MAP_CODE);
-				
-				// Update IA
-				for(Entity entity: spawn.getEntities()){
-					if(entity.getComponentMap().containsKey(CAICitizen.class.getName())){
-						((CAICitizen)entity.getComponentMap().get(CAICitizen.class.getName())).update();
-					} else if(entity.getComponentMap().containsKey(CAIZombie.class.getName())) {
-						((CAIZombie)entity.getComponentMap().get(CAIZombie.class.getName())).update();
-					}
-				}
-				
-				notSpawn = false;
-				
-				// Put On Map
-				spawn.putOnMap();
-
-				waittingHandler.sendEmptyMessage(REFRESH_MAP_CODE);
-
-				// Wait...
-				while (threadSuspended) {
-					// Do nothing, wait ...
-				}
-				
-				// If not ended
-				if(!threadStop){
-					waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
-				}
-
+		// Update IA
+		for (Entity entity : spawn.getEntities()) {
+			if (entity.getComponentMap()
+					.containsKey(CAICitizen.class.getName())) {
+				((CAICitizen) entity.getComponentMap().get(
+						CAICitizen.class.getName())).update();
+			} else if (entity.getComponentMap().containsKey(
+					CAIZombie.class.getName())) {
+				((CAIZombie) entity.getComponentMap().get(
+						CAIZombie.class.getName())).update();
 			}
-		};
+		}
 
-		Thread nextStep = new Thread(nextStepLoop);
-		nextStep.start();
+		// Put On Map
+		spawn.putOnMap();
+
+		// Refresh Map
+		mapView.invalidate();
+
+		// Next Step
+		if (!onPause && !endGame) {
+			waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
+		}
 	}
 
 	@Override
@@ -399,12 +463,30 @@ public class GameActivity extends MapActivity {
 	 * Get and return the results of the game to the PlayActivity
 	 */
 	private void endGame() {
-		Intent intent = new Intent();
-		intent.putExtra(END_GAME_TIME, new Date().getTime() - startTime);
-		intent.putExtra(END_GAME_CITIZEN_SAVED, spawn.getCitizenFree());
-		intent.putExtra(END_GAME_ZOMBIES_KILLED, spawn.getZombieKilled());
-
-		setResult(RESULT_OK, intent);
+		String textName = "";
+		String buttonName = "";
+		
+		if(spawn.getCitizenFree() > 5){
+			textName = "You Win !";
+			buttonName = "Fu%k Yea";
+		} else {
+			textName = "You LOOSE !!!";
+			buttonName = "Okay :(";
+		}
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(textName)
+		       .setCancelable(false)
+		       .setPositiveButton(buttonName, new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   Intent intent = new Intent();
+		        	   intent.putExtra(END_GAME_TIME, new Date().getTime() - startTime);
+		        	   intent.putExtra(END_GAME_CITIZEN_SAVED, spawn.getCitizenFree());
+		        	   intent.putExtra(END_GAME_ZOMBIES_KILLED, spawn.getZombieKilled());
+		        	   GameActivity.this.setResult(RESULT_OK, intent);
+		        	   GameActivity.this.finish();
+		           }
+		       }).create().show();
 	}
 
 	@Override
