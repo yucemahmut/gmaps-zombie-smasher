@@ -319,8 +319,8 @@ public class GameActivity extends MapActivity {
 		Runnable nextStepLoop = new Runnable() {
 			@Override
 			public void run() {
-				waittingHandler.sendEmptyMessage(CLEAR_MAP_CODE);
-
+				//waittingHandler.sendEmptyMessage(CLEAR_MAP_CODE);
+				
 				// Update IA
 				for(Entity entity: spawn.getEntities()){
 					if(entity.getComponentMap().containsKey(CAICitizen.class.getName())){

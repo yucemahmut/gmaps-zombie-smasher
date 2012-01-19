@@ -1,8 +1,5 @@
 package fr.alma.ihm.gmapszombiesmasher.model.components;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 
@@ -41,7 +38,7 @@ public class CAIZombie extends Component implements ICAI {
 					CGoal.class.getName());
 		}
 
-		// /*
+		 /*
 		// Prendre le citoyen le plus pres
 		Entity citizen = getCloserCitizen();
 		if (citizen != null) {
@@ -69,61 +66,34 @@ public class CAIZombie extends Component implements ICAI {
 			} else {
 				System.out.println("[ZOMBIE] New Goal Citizen");
 				spawn.setGoal(getParent(), citizen);
-				// goal.setGoal(citizen);
 			}
 		}
 
 		// */
 
+		eatCitizens();
+		
 		if (goal.goalReached()) {
 			System.out.println("[ZOMBIE] New Goal");
 			spawn.setNewGoal(getParent());
 		} else {
 			spawn.setNextPosition(getParent(), goal);
-			/*
-			 * CCoordinates c = goal.getNextPosition(0); // FIXME Pas de retour
-			 * null normalement if(c != null){ this.getParent().addComponent(c);
-			 * }
-			 */
 		}
+	}
 
-		/*
-		 * 
-		 * if (citizens.size() > 0) { // si citoyen il y a int percent = (int)
-		 * (Math.random() * 100);
-		 * 
-		 * if (percent < this.RANDOMBOUNDARY) { // Getting a random citizen for
-		 * target goal.setGoal(citizens.get((int) (Math.random() * citizens
-		 * .size()))); } else {
-		 * 
-		 * // TODO calcul des distances
-		 * 
-		 * } } else { System.out.println("Pouet"); goal.setGoal(null); }
-		 * 
-		 * if (goal.getGoal() != null) { // Une entit� est cibl�e // Par effet
-		 * de bord, changer les variables de CCoordinates en // fonction // de
-		 * la CMoveSpeed (ne pas oublier deltaTime => demander a Adrien // pour
-		 * // plus de pr�cisions) et de la route trouv�e par Gmaps ( que l on //
-		 * conserve en m�moire au cas o� la position // de l citizen ne change
-		 * pas a la frame suivante )
-		 * 
-		 * // Si le chopper est atteind ou assez proche alors le citizen est //
-		 * libéré if (goal.goalReached() || ((CCoordinates)
-		 * getParent().getComponentMap().get(
-		 * CCoordinates.class.getName())).isNearOf(goal .getGoalCoordinates()))
-		 * { // Liberation du citoyen spawn.eatCitizen(goal.getGoal()); } }
-		 * 
-		 * System.out.println("Reached= " + goal.goalReached());
-		 * this.getParent().addComponent(goal.getNextPosition(0));
-		 * 
-		 * // utilisation des distances calcul� pr�cedement pour la //
-		 * Verification de proximit� // Si un citizen se trouve proche, il est
-		 * transform� en zombi, son icone // devient celle d ' un zombi et son
-		 * IA aussi, movespeed recalcul�
-		 * 
-		 * System.out.println("ZOmbie= " + ((CCoordinates)
-		 * getParent().getComponentMap().get( CCoordinates.class.getName())));
-		 */
+	/**
+	 * 
+	 */
+	private void eatCitizens() {
+		for (Entity citizen : spawn.getCitizen()) {
+			if( (((CCoordinates) getParent().getComponentMap().get(
+					CCoordinates.class.getName()))
+					.isNearOf(((CCoordinates) citizen.getComponentMap()
+							.get(CCoordinates.class.getName())),
+							distanceMin))){
+				spawn.eatCitizen(citizen);
+			}
+		}
 	}
 
 	private Entity getCloserCitizen() {

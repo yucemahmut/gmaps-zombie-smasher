@@ -36,6 +36,7 @@ public class Spawn {
 	private int botLatitude;
 	private int leftLongitude;
 	private int rightLongitude;
+	private MapView mapView;
 	
 	public Spawn(Activity activity, MapView mapView, int topLatitude, int botLatitude, int leftLongitude,
 			int rightLongitude) {
@@ -53,7 +54,8 @@ public class Spawn {
 		
 		this.entities = new LinkedList<Entity>();
 
-		mapOverlays = mapView.getOverlays();
+		this.mapView = mapView;
+		//mapOverlays = mapView.getOverlays();
 	}
 	
 	public void spawnZombies(int number){
@@ -76,9 +78,12 @@ public class Spawn {
 	 * Put all the existing entities on the map
 	 */
 	public void putOnMap() {
-		if(getChopper() != null){
+		if(getChopper() != null && !getEntities().contains(getChopper())){
 			getEntities().add(getChopper());
 		}
+		
+		mapView.getOverlays().clear();
+		
 		for(Entity entity: getEntities()){
 			CBoolean exist = ((CBoolean) entity.getComponentMap().get(CBoolean.class.getName()));
 			if(exist.isExist()){
@@ -88,15 +93,17 @@ public class Spawn {
 				int id = ((CMarker)entity.getComponentMap().get(CMarker.class.getName())).getMarker();
 				EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(id));
 				entityOverlay.addOverlay(overlayitem);
-				mapOverlays.add(entityOverlay);
+				mapView.getOverlays().add(entityOverlay);
+				//mapOverlays.add(entityOverlay);
 			}
 		}
+		
+		//mapView.invalidate();
 	}
 	
 	public void createChopper(Entity entity){
 		System.out.println("CREATE CHOPPER");
 		((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).setExist(true);
-		//entities.add(entity);
 		chopper = entity;
 	}
 	
