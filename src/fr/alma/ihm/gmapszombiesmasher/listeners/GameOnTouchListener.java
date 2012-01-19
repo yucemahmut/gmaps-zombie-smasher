@@ -60,6 +60,7 @@ public class GameOnTouchListener implements OnTouchListener {
 						public void run() {
 							SystemClock.sleep(GameActivity.CHOPPER_LIFE_TIME);
 							spawn.destroyChopper();
+							selected.put(GameActivity.CHOPPER, false);
 						}
 					};
 

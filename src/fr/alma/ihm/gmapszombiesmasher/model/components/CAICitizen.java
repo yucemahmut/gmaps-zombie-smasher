@@ -17,7 +17,7 @@ public class CAICitizen extends Component implements ICAI {
 	private ChopperFactory cF = new ChopperFactory();
 	private LinkedList<Entity> zombies;
 	private Spawn spawn;
-	private double distanceMin = 100;
+	private double distanceMin = 50;
 
 	public CAICitizen(Entity parent, Spawn spawn) {
 		super(parent);
@@ -26,14 +26,6 @@ public class CAICitizen extends Component implements ICAI {
 
 	@Override
 	public void update() {
-		// TODO implemente algo suivant :
-
-		// Chercher le CGoal du parent
-		// Si aucun , alors le cr�er
-		/*
-		 * if (!(getParent().getComponentMap().containsKey("CGoal"))) {
-		 * getParent().addComponent(new CGoal(getParent())); }
-		 */
 		CGoal goal = (CGoal) getParent().getComponentMap().get(CGoal.class.getName());
 		
 		// S'il existe un chopper sur la carte, alors on va vers le chopper
@@ -54,7 +46,6 @@ public class CAICitizen extends Component implements ICAI {
 				System.out.println("[CITIZEN] New Goal Chopper");
 				// On ajoute le chopper comme étant le but à atteindre
 				spawn.setGoal(getParent(), spawn.getChopper());
-				//getParent().addComponent(goal.setGoal(spawn.getChopper()));
 			}
 		} else {
 			// Si el but est atteind, on cherche un nouveau but
@@ -63,25 +54,8 @@ public class CAICitizen extends Component implements ICAI {
 				spawn.setNewGoal(getParent());
 			} else {
 				spawn.setNextPosition(getParent(), goal);
-				/*
-				CCoordinates c = goal.getNextPosition(0);
-				// FIXME Pas de retour null normalement 
-				if(c != null){
-					this.getParent().addComponent(c);
-				}
-				*/
 			}
 		}
-	}
-
-	private boolean chopperClose(Entity chopper) {
-		double distanceMax = 200;
-		CCoordinates chopperCoord = (CCoordinates)chopper.getComponentMap().get(CCoordinates.class.getName());
-		CCoordinates citizenCoord = (CCoordinates)getParent().getComponentMap().get(CCoordinates.class.getName());
-		if((chopperCoord.distanceTo(citizenCoord)) <= distanceMax){
-			return true;
-		}
-		return false;
 	}
 
 	public ChopperFactory getcF() {

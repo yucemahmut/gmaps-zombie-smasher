@@ -7,7 +7,6 @@ import android.app.Activity;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
@@ -25,11 +24,12 @@ public class Spawn {
 	
 	private List<Entity> entities;
 	private Entity chopper;
+	private int citizenInGame = 0;
+	private int zombiesInGame = 0;
 	private int citizenFree = 0;
 	private int citizenEated = 0;
 	private int zombieKilled = 0;
-	
-	private List<Overlay> mapOverlays;
+
 	private Activity activity;
 	
 	private int topLatitude;
@@ -60,6 +60,7 @@ public class Spawn {
 	
 	public void spawnZombies(int number){
 		Entity zombie = null;
+		zombiesInGame = number;
 		for(int i=0; i<number; i++){
 			zombie = zombieFactory.getZombie();
 			entities.add(zombie);
@@ -67,6 +68,7 @@ public class Spawn {
 	}
 
 	public void spawnCitizen(int number){
+		citizenInGame = number;
 		Entity citizen = null;
 		for(int i=0; i<number; i++){
 			citizen = citizenFactory.getCitizen();
@@ -78,6 +80,7 @@ public class Spawn {
 	 * Put all the existing entities on the map
 	 */
 	public void putOnMap() {
+		
 		if(getChopper() != null && !getEntities().contains(getChopper())){
 			getEntities().add(getChopper());
 		}
@@ -94,21 +97,26 @@ public class Spawn {
 				EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(id));
 				entityOverlay.addOverlay(overlayitem);
 				mapView.getOverlays().add(entityOverlay);
-				//mapOverlays.add(entityOverlay);
 			}
 		}
 		
 		//mapView.invalidate();
 	}
 	
+	/**
+	 * Create the chopper
+	 * @param entity
+	 */
 	public void createChopper(Entity entity){
 		System.out.println("CREATE CHOPPER");
 		((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).setExist(true);
 		chopper = entity;
 	}
 	
+	/**
+	 * Destroy the chopper
+	 */
 	public void destroyChopper() {
-		
 		((CBoolean)chopper.getComponentMap().get(CBoolean.class.getName())).setExist(false);
 		chopper = null;
 	}
@@ -120,15 +128,10 @@ public class Spawn {
 		return entities;
 	}
 	
-	public List<Entity> getClone() {
-		
-		List<Entity> entities = new LinkedList<Entity>();
-		for(Entity entity: getEntities()){
-			entities.add((Entity) entity.clone());
-		}	
-		return entities;
-	}
-	
+	/**
+	 * Return the list of citizens
+	 * @return
+	 */
 	public List<Entity> getCitizen() {
 		
 		List<Entity> citizens = new LinkedList<Entity>();
@@ -141,12 +144,20 @@ public class Spawn {
 		
 		return citizens;
 	}
-	 
 	
+	/**
+	 * Return the chopper 
+	 * @return the chopper, null if not exist
+	 */
 	public Entity getChopper() {
 		return chopper;
 	}
 	
+	/**
+	 * Return random position on the map for the entity
+	 * @param entity
+	 * @return a random position on the map
+	 */
 	private CCoordinates getRandomPosition(Entity entity){
 		int tempLatitude = (int) (botLatitude
 				+ Math.random() * (topLatitude - botLatitude));
@@ -160,6 +171,11 @@ public class Spawn {
 		return coordinates;
 	}
 	
+	/**
+	 * Set the goal <i>goal</i> for the chosen entity
+	 * @param entity the entity
+	 * @param goal the goal
+	 */
 	public void setGoal(Entity entity, Entity goal) {
 		entity.addComponent(((CGoal)entity.getComponentMap().get(CGoal.class.getName())).setGoal(goal));
 	}
@@ -190,6 +206,7 @@ public class Spawn {
 	 */
 	public void freeCitizen(Entity entity) {
 		System.out.println("FREE");
+		citizenInGame--;
 		CBoolean isFree = new CBoolean(entity);
 		isFree.setExist(false);
 		entity.addComponent(isFree);
@@ -204,6 +221,7 @@ public class Spawn {
 	 */
 	public void eatCitizen(Entity entity) {
 		System.out.println("EATED");
+		citizenInGame--;
 		// Changement d'IA
 		entity.removeComponent(CAICitizen.class.getName());
 		entity.addComponent(new CAIZombie(entity, this));
@@ -247,6 +265,25 @@ public class Spawn {
 		return zombieKilled;
 	}
 
+	/**
+	 * @return the citizenInGame
+	 */
+	public int getCitizenInGame() {
+		return citizenInGame;
+	}
+
+	/**
+	 * @return the zombiesInGame
+	 */
+	public int getZombiesInGame() {
+		return zombiesInGame;
+	}
+
+	/**
+	 * Get and set the next position on <i>parent</i> for the goal <i>goal</i>
+	 * @param parent the parent to set
+	 * @param goal the goal to reach
+	 */
 	public void setNextPosition(Entity parent, CGoal goal) {
 		CCoordinates c = goal.getNextPosition(0); 
 		if(c != null){
