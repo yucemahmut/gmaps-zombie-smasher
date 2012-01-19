@@ -25,7 +25,7 @@ public class PlayButtonListener implements OnClickListener {
 		Intent intent = new Intent().setClass(this.parent, PlayActivity.class);
         this.parent.startActivity(intent);
         parent.stopService(new Intent(parent, BackgroundMusicService.class));
-        soundManager.playSound(SoundsManager.EXPLOSION);
+        //soundManager.playSound(SoundsManager.EXPLOSION);
 
 	}
 
