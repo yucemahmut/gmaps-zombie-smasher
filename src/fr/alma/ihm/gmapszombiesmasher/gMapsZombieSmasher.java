@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.widget.Button;
 import fr.alma.ihm.gmapszombiesmasher.listeners.AchievementsButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.PlayButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.SettingsButtonListener;

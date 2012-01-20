@@ -134,4 +134,14 @@ public class ManagePreferences {
 	    }
 	}
 
+	/**
+	 * Return the min number of citizens the player have to save to win
+	 * 
+	 * @param activity the current activity
+	 * @return the min number of citizen to save to win
+	 */
+	public static int getMinCitizenSavedToWin(Activity activity) {
+		return getCitizenNumber(activity) / 2;
+	}
+
 }

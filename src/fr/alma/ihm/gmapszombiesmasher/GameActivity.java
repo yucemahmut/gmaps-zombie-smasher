@@ -38,19 +38,19 @@ import fr.alma.ihm.gmapszombiesmasher.utils.World;
 
 public class GameActivity extends MapActivity {
 
-	private static final int ZOOM_LEVEL = 18;
+	public static final int ZOOM_LEVEL = 10;
 	protected static final long SLEEPING_TIME = 500;
 	protected static final long TIME_BEFORE_NEXT_STEP = 100;
 	// CHOPPER
 	public static final long CHOPPER_LIFE_TIME = 10000;
 	public static final long CHOPPER_BUTTON_LIFE_TIME = 20000;
-	
+
 	// BOMB
 	public static final long BOMB_LIFE_TIME = 5000;
 	public static final long BOMB_BUTTON_LIFE_TIME = 20000;
 
 	private MapController mapController;
-	private MapView mapView;
+	private static MapView mapView;
 	private Spawn spawn;
 	private Handler waittingHandler;
 	private ProgressDialog dialog;
@@ -137,7 +137,11 @@ public class GameActivity extends MapActivity {
 		}
 
 	}
-	
+
+	public static int getZoom() {
+		return mapView.getZoomLevel();
+	}
+
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		System.out.println("OUI");
@@ -151,9 +155,9 @@ public class GameActivity extends MapActivity {
 
 			@Override
 			public void run() {
-				while(!endGame){
-					if(GameActivity.this.spawn.getCitizenInGame() == 0 ||
-					   GameActivity.this.spawn.getZombiesInGame() == 0	){
+				while (!endGame) {
+					if (GameActivity.this.spawn.getCitizenInGame() == 0
+							|| GameActivity.this.spawn.getZombiesInGame() == 0) {
 						endGame = true;
 						waittingHandler.sendEmptyMessage(END_GAME);
 					}
@@ -179,7 +183,6 @@ public class GameActivity extends MapActivity {
 							selectedButton.put(CHOPPER, true);
 							putAllOtherToFalse(CHOPPER);
 
-							
 						}
 					}
 				});
@@ -191,17 +194,6 @@ public class GameActivity extends MapActivity {
 						if (!selectedButton.get(BOMB)) {
 							selectedButton.put(BOMB, true);
 							putAllOtherToFalse(BOMB);
-
-							Runnable chopperButtonLifeTime = new Runnable() {
-
-								@Override
-								public void run() {
-									SystemClock.sleep(BOMB_BUTTON_LIFE_TIME);
-									selectedButton.put(BOMB, false);
-								}
-							};
-
-							new Thread(chopperButtonLifeTime).start();
 						}
 
 					}
@@ -272,10 +264,10 @@ public class GameActivity extends MapActivity {
 
 						while (notSpawn) {
 						}
-						
+
 						for (Entity entity : spawn.getEntities()) {
-							if (entity.getComponentMap()
-									.containsKey(CAICitizen.class.getName())) {
+							if (entity.getComponentMap().containsKey(
+									CAICitizen.class.getName())) {
 								((CAICitizen) entity.getComponentMap().get(
 										CAICitizen.class.getName())).update();
 							} else if (entity.getComponentMap().containsKey(
@@ -337,10 +329,14 @@ public class GameActivity extends MapActivity {
 					case REFRESH_MAP_CODE:
 						mapView.invalidate();
 					case CHOPPER_BUTTON_SELECTION:
-						GameActivity.this.setSelected((Button)GameActivity.this.findViewById(R.id.helicopter_button));
+						GameActivity.this
+								.setSelected((Button) GameActivity.this
+										.findViewById(R.id.helicopter_button));
 						break;
 					case BOMB_BUTTON_SELECTION:
-						GameActivity.this.setSelected((Button)GameActivity.this.findViewById(R.id.bomb_button));
+						GameActivity.this
+								.setSelected((Button) GameActivity.this
+										.findViewById(R.id.bomb_button));
 						break;
 					case END_GAME:
 						started = false;
@@ -415,7 +411,7 @@ public class GameActivity extends MapActivity {
 		mapView.invalidate();
 
 		// Next Step
-    spawn.updateSeconds();
+		spawn.updateSeconds();
 		if (!onPause && !endGame) {
 			waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 		}
@@ -468,29 +464,35 @@ public class GameActivity extends MapActivity {
 	private void endGame() {
 		String textName = "";
 		String buttonName = "";
-		
-		if(spawn.getCitizenFree() > 5){
+
+		if (spawn.getCitizenFree() >= ManagePreferences
+				.getMinCitizenSavedToWin(this)) {
 			textName = "You Win !";
 			buttonName = "Fu%k Yea";
 		} else {
 			textName = "You LOOSE !!!";
 			buttonName = "Okay :(";
 		}
-		
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(textName)
-		       .setCancelable(false)
-		       .setPositiveButton(buttonName, new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		        	   Intent intent = new Intent();
-		        	   intent.putExtra(END_GAME_TIME, new Date().getTime() - startTime);
-		        	   intent.putExtra(END_GAME_CITIZEN_SAVED, spawn.getCitizenFree());
-		        	   intent.putExtra(END_GAME_CITIZEN_KILLED, spawn.getCitizenKilled());
-		        	   intent.putExtra(END_GAME_ZOMBIES_KILLED, spawn.getZombieKilled());
-		        	   GameActivity.this.setResult(RESULT_OK, intent);
-		        	   GameActivity.this.finish();
-		           }
-		       }).create().show();
+				.setCancelable(false)
+				.setPositiveButton(buttonName,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								Intent intent = new Intent();
+								intent.putExtra(END_GAME_TIME,
+										new Date().getTime() - startTime);
+								intent.putExtra(END_GAME_CITIZEN_SAVED,
+										spawn.getCitizenFree());
+								intent.putExtra(END_GAME_CITIZEN_KILLED,
+										spawn.getCitizenKilled());
+								intent.putExtra(END_GAME_ZOMBIES_KILLED,
+										spawn.getZombieKilled());
+								GameActivity.this.setResult(RESULT_OK, intent);
+								GameActivity.this.finish();
+							}
+						}).create().show();
 	}
 
 	@Override
@@ -532,17 +534,17 @@ public class GameActivity extends MapActivity {
 	 * @param b
 	 */
 	public void setSelected(Button button) {
-		if(button.isSelected()){
+		if (button.isSelected()) {
 			button.setEnabled(false);
 			button.setClickable(false);
 		} else {
 			button.setEnabled(true);
 			button.setClickable(true);
 		}
-		
+
 	}
-	
-	public Handler getWaitingHandler(){
+
+	public Handler getWaitingHandler() {
 		return waittingHandler;
 	}
 }

@@ -60,6 +60,11 @@ public class PlayActivity extends Activity {
 				System.out.println("citizenSaved: " + citizenSaved);
 				System.out.println("citizenKilled: " + citizenKilled);
 				System.out.println("zombieKilled: " + zombieKilled);
+				
+				//Update Achievements
+				AchievementsActivity.updateAchievement(AchievementsActivity.TOTAL_TIME_ACHIEVEMENT, time);
+				AchievementsActivity.updateAchievement(AchievementsActivity.SAVED_CITIZEN_ACHIEVEMENT, citizenSaved - citizenKilled);
+				AchievementsActivity.updateAchievement(AchievementsActivity.KILLED_ZOMBIE_ACHIEVEMENT, zombieKilled);
 			}
 			break;
 		default:
