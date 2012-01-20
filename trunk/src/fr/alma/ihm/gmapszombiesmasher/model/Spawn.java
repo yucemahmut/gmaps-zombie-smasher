@@ -17,6 +17,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CBoolean;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.CitizenFactory;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.ZombieFactory;
 
@@ -264,6 +265,10 @@ public class Spawn {
 		entity.addComponent(new CAIZombie(entity, this));
 		// Changement de marker
 		((CMarker)entity.getComponentMap().get(CMarker.class.getName())).setZombie();
+		// diminution de la vitesse
+		CMoveSpeed speed = (CMoveSpeed) entity.getComponentMap().get(CMoveSpeed.class.getName());
+		speed.setMoveSpeed(ZombieFactory.SPEED);
+		
 		citizenEated++;
 	}
 	

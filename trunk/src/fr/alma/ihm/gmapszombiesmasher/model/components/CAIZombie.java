@@ -13,7 +13,6 @@ public class CAIZombie extends Component implements ICAI {
 
 	private static int RANDOMBOUNDARY = 5; // bound of randomize a new target
 	private Spawn spawn;
-	private boolean afterDinner = false;
 
 	public CAIZombie(Entity parent, Spawn spawn) {
 		super(parent);
@@ -71,9 +70,6 @@ public class CAIZombie extends Component implements ICAI {
 			if (goal.goalReached()) {
 				System.out.println("[ZOMBIE] New Goal");
 				spawn.setNewGoal(getParent());
-				if(afterDinner){
-					increaseSpeed(getParent(), 2);
-				}
 			} else {
 				spawn.setNextPosition(getParent(), goal);
 			}
@@ -90,16 +86,8 @@ public class CAIZombie extends Component implements ICAI {
 					((CCoordinates) citizen.getComponentMap().get(
 							CCoordinates.class.getName())), distanceMin))) {
 				spawn.eatCitizen(citizen);
-				if(!afterDinner ){
-					increaseSpeed(getParent(), 0.5);
-				}
 			}
 		}
-	}
-	
-	private void increaseSpeed(Entity entity, double d){
-		CMoveSpeed speed = (CMoveSpeed) getParent().getComponentMap().get(CMoveSpeed.class.getName());
-		speed.setMoveSpeed((speed.getMoveSpeed()*d));
 	}
 
 	private Entity getCloserCitizen() {
