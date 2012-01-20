@@ -17,8 +17,6 @@ public class CAICitizen extends Component implements ICAI {
 	private ChopperFactory cF = new ChopperFactory();
 	private LinkedList<Entity> zombies;
 	private Spawn spawn;
-	private double distanceMin = 50;
-	private double distanceBombMin = 500;
 
 	public CAICitizen(Entity parent, Spawn spawn) {
 		super(parent);
