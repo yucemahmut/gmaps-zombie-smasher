@@ -2,7 +2,7 @@ package fr.alma.ihm.gmapszombiesmasher.model.components;
 
 public interface ICAI {
 	
-	double distanceMin = 50;
+	double distanceMin = 10;
 	double distanceBombMin = 100;
 
 	/**
