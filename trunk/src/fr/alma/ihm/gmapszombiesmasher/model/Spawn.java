@@ -24,10 +24,13 @@ public class Spawn {
 	
 	private List<Entity> entities;
 	private Entity chopper;
+	private Entity bomb;
+	
 	private int citizenInGame = 0;
 	private int zombiesInGame = 0;
 	private int citizenFree = 0;
 	private int citizenEated = 0;
+	private int citizenKilled = 0;
 	private int zombieKilled = 0;
 
 	private Activity activity;
@@ -85,6 +88,10 @@ public class Spawn {
 			getEntities().add(getChopper());
 		}
 		
+		if(getBomb() != null && !getEntities().contains(getBomb())){
+			getEntities().add(getBomb());
+		}
+		
 		mapView.getOverlays().clear();
 		
 		for(Entity entity: getEntities()){
@@ -120,6 +127,24 @@ public class Spawn {
 		((CBoolean)chopper.getComponentMap().get(CBoolean.class.getName())).setExist(false);
 		chopper = null;
 	}
+	
+	/**
+	 * Create the bomb
+	 * @param entity
+	 */
+	public void createBomb(Entity entity){
+		System.out.println("CREATE BOMB");
+		((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).setExist(true);
+		bomb = entity;
+	}
+	
+	/**
+	 * Destroy the bomb
+	 */
+	public void destroyBomb() {
+		((CBoolean)bomb.getComponentMap().get(CBoolean.class.getName())).setExist(false);
+		bomb = null;
+	}
 
 	/**
 	 * @return the entities
@@ -151,6 +176,14 @@ public class Spawn {
 	 */
 	public Entity getChopper() {
 		return chopper;
+	}
+	
+	/**
+	 * Return the bomb 
+	 * @return the bolb, null if not exist
+	 */
+	public Entity getBomb() {
+		return bomb;
 	}
 	
 	/**
@@ -231,12 +264,27 @@ public class Spawn {
 	}
 	
 	/**
+	 * Kill a citizen
+	 * 
+	 * @param entity the citizen to free
+	 */
+	public void killCitizen(Entity entity) {
+		System.out.println("KILL CITIZEN");
+		citizenInGame--;
+		CBoolean isKilled = new CBoolean(entity);
+		isKilled.setExist(false);
+		entity.addComponent(isKilled);
+		entity.removeComponent(CAICitizen.class.getName());
+		citizenKilled++;
+	}
+	
+	/**
 	 * Kill Zombie
 	 * 
 	 * @param entity
 	 */
 	public void killZombie(Entity entity) {
-		System.out.println("KILLED");
+		System.out.println("KILL ZOMBIE");
 		CBoolean isKilled = new CBoolean(entity);
 		isKilled.setExist(false);
 		entity.addComponent(isKilled);
@@ -277,6 +325,13 @@ public class Spawn {
 	 */
 	public int getZombiesInGame() {
 		return zombiesInGame;
+	}
+
+	/**
+	 * @return the citizenKilled
+	 */
+	public int getCitizenKilled() {
+		return citizenKilled;
 	}
 
 	/**
