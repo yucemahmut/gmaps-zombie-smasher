@@ -120,8 +120,7 @@ public class CGoal extends Component {
 						.setLongitude((int) (Float.parseFloat(firstLon) * 1e6));
 
 			} catch (Exception e) {
-				System.out.println("String: " + jsonString);
-				e.printStackTrace();
+				//e.printStackTrace();
 				SystemClock.sleep(250);
 				startCoordinates = updateSteps();
 			}
@@ -219,7 +218,7 @@ public class CGoal extends Component {
 					}
 				} catch (Exception e) {
 					//FIXME
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		}

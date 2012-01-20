@@ -1,5 +1,6 @@
 package fr.alma.ihm.gmapszombiesmasher.model.factories;
 
+import fr.alma.ihm.gmapszombiesmasher.GameActivity;
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
@@ -15,7 +16,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
  * 
  */
 public class ZombieFactory {
-  public static final double SPEED = 2.0;
+  public static final double SPEED = 2.0 * (GameActivity.getZoom() - GameActivity.ZOOM_LEVEL);
 
 	private int topLatitude;
 	private int botLatitude;
@@ -35,7 +36,7 @@ public class ZombieFactory {
 	}
 
 	public Entity getZombie() {
-		// TODO Component markerColor for zombie
+		System.out.println("ZOOM: " + (GameActivity.getZoom() - GameActivity.ZOOM_LEVEL));
 		Entity zombie = new Entity();
     CMoveSpeed speed = new CMoveSpeed(zombie);
 		zombie.addComponent(new CAIZombie(zombie, spawn));

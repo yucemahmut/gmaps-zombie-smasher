@@ -25,13 +25,14 @@ public class GameOnTouchListener implements OnTouchListener {
 	private Map<Integer, Boolean> selected;
 	private Spawn spawn;
 	private SoundsManager soundManager;
-	
+
 	private int selectedButton = -1;
 	private long lifeTime = -1;
 	private int buttonSelection = -1;
 	private long buttonLifeTime = -1;
 
-	public GameOnTouchListener(GameActivity parent, Map<Integer, Boolean> selected) {
+	public GameOnTouchListener(GameActivity parent,
+			Map<Integer, Boolean> selected) {
 		super();
 		this.parent = parent;
 		this.selected = selected;
@@ -62,7 +63,7 @@ public class GameOnTouchListener implements OnTouchListener {
 				break;
 			case GameActivity.BOMB:
 				// If the bomb doesn't exist yet
-				if (spawn.getChopper() == null) {
+				if (spawn.getBomb() == null) {
 					// Play explosion sound
 					soundManager.playSound(SoundsManager.EXPLOSION);
 					createEntity(GameActivity.BOMB, point);
@@ -82,18 +83,21 @@ public class GameOnTouchListener implements OnTouchListener {
 
 	/**
 	 * Create the entity
-	 * @param id the is of the entity to create (chopper, bomb, etc ...)
-	 * @param point the GeoPoint where place the entity
+	 * 
+	 * @param id
+	 *            the is of the entity to create (chopper, bomb, etc ...)
+	 * @param point
+	 *            the GeoPoint where place the entity
 	 */
 	private void createEntity(int id, GeoPoint point) {
 		Entity entity = null;
 		selectedButton = id;
-		
+
 		switch (id) {
 		case GameActivity.CHOPPER:
 			entity = ChopperFactory.get();
 			spawn.createChopper(entity);
-			
+
 			lifeTime = GameActivity.CHOPPER_LIFE_TIME;
 			buttonSelection = GameActivity.CHOPPER_BUTTON_SELECTION;
 			buttonLifeTime = GameActivity.CHOPPER_BUTTON_LIFE_TIME;
@@ -102,13 +106,13 @@ public class GameOnTouchListener implements OnTouchListener {
 		case GameActivity.BOMB:
 			entity = BombFactory.get();
 			spawn.createBomb(entity);
-			
+
 			lifeTime = GameActivity.BOMB_LIFE_TIME;
 			buttonSelection = GameActivity.BOMB_BUTTON_SELECTION;
 			buttonLifeTime = GameActivity.BOMB_BUTTON_LIFE_TIME;
 			break;
 		}
-		
+
 		CCoordinates coordinates = new CCoordinates(entity);
 		coordinates.setLatitude(point.getLatitudeE6());
 		coordinates.setLongitude(point.getLongitudeE6());
@@ -129,7 +133,7 @@ public class GameOnTouchListener implements OnTouchListener {
 				selected.put(selectedButton, false);
 			}
 		};
-		
+
 		Runnable ButtonLifeTime = new Runnable() {
 			@Override
 			public void run() {
@@ -145,10 +149,9 @@ public class GameOnTouchListener implements OnTouchListener {
 	}
 
 	/**
-	 * Get The selected button:
-	 *  - -1 -> nothing selected
-	 *  - 0 -> CHOPPER
-	 *  - 1 -> BOMB
+	 * Get The selected button: - -1 -> nothing selected - 0 -> CHOPPER - 1 ->
+	 * BOMB
+	 * 
 	 * @return
 	 */
 	private int getSelectedButton() {

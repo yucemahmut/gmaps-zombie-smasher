@@ -1,5 +1,6 @@
 package fr.alma.ihm.gmapszombiesmasher.model.factories;
 
+import fr.alma.ihm.gmapszombiesmasher.GameActivity;
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
@@ -15,7 +16,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
  * 
  */
 public class CitizenFactory {
-  public static final double SPEED = 10.0;
+  public static final double SPEED = 10.0 * (GameActivity.getZoom() - GameActivity.ZOOM_LEVEL);
 
 	private int topLatitude;
 	private int botLatitude;

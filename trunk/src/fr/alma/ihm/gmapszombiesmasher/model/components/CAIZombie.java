@@ -31,7 +31,7 @@ public class CAIZombie extends Component implements ICAI {
 					.getComponentMap().get(CCoordinates.class.getName());
 			// If the bomb is near
 			if (parentCoordinates.isNearOf(bombCoordinates, distanceBombMin)) {
-				spawn.killCitizen(getParent());
+				spawn.killZombie(getParent());
 			}
 		} else {
 			CGoal goal = (CGoal) getParent().getComponentMap().get(

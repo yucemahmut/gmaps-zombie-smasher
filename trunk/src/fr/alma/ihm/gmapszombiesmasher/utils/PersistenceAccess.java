@@ -16,6 +16,7 @@ public class PersistenceAccess {
 	private static final String SDCARD = Environment.getExternalStorageDirectory() + "/gmapszombiesmasher/";
 
 	public static final String MANAGE_LEVELS_LIST = SDCARD + "manage_levels.alma";
+	public static final String ACHIEVEMENTS_LIST = SDCARD + "achievements.alma";
 
 	public static void saveObject(String objectName, Object object) {
 		ObjectOutputStream oos = null;
