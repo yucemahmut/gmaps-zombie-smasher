@@ -15,7 +15,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
  * 
  */
 public class ZombieFactory {
-  private static final double SPEED = 0.5;
+  private static final double SPEED = 2.0;
 
 	private int topLatitude;
 	private int botLatitude;
