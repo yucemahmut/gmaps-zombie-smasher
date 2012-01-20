@@ -15,6 +15,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
  * 
  */
 public class CitizenFactory {
+  private static final double SPEED = 3.0;
 
 	private int topLatitude;
 	private int botLatitude;
@@ -37,9 +38,11 @@ public class CitizenFactory {
 		// create a citizen
 		// TODO Component markerColor for citizen
 		Entity citizen = new Entity();
+    CMoveSpeed speed = new CMoveSpeed(citizen);
 		citizen.addComponent(new CCoordinates(citizen));
 		citizen.addComponent(new CGoal(citizen));
-		citizen.addComponent(new CMoveSpeed(citizen));
+    speed.setMoveSpeed(SPEED);
+		citizen.addComponent(speed);
 		citizen.addComponent(new CAICitizen(citizen, spawn));
 		// Living
 		citizen.addComponent(new CBoolean(citizen));
@@ -50,7 +53,7 @@ public class CitizenFactory {
 		// Random position :
 		//Random random = new Random();
 
-		// TODO Verification de formule aux p�les
+		// TODO Verification de formule aux pôles
 		int tempLatitude = (int) (botLatitude
 				+ Math.random() * (topLatitude - botLatitude));
 		int tempLongitude = (int) (leftLongitude

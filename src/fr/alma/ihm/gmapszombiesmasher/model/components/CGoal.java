@@ -121,13 +121,8 @@ public class CGoal extends Component {
 
 			} catch (Exception e) {
 				//e.printStackTrace();
-				try {
-					//Thread.currentThread().sleep(250);
-					SystemClock.sleep(250);
-					startCoordinates = updateSteps();
-				} catch (Exception ex) {
-					// TODO
-				}
+        SystemClock.sleep(250);
+        startCoordinates = updateSteps();
 			}
 		} else {
 			// TODO exception
@@ -145,7 +140,7 @@ public class CGoal extends Component {
 	 * @return The new coordinate of the entity. NULL if there is no valide
 	 *         goal.
 	 */
-	public CCoordinates getNextPosition(int delta) {
+	public CCoordinates getNextPosition(double delta) {
 		CCoordinates coordinates = null;
 
 		if (roadSteps != null) {
@@ -166,7 +161,8 @@ public class CGoal extends Component {
 							.optString("lng");
 					CCoordinates lastStepCoordinates = new CCoordinates(
 							getParent());
-					double distance = 0.0;
+          CMoveSpeed speed = null;
+					double distance = 2.0;
 
 					// recalculate the steps if the target has moved
 					if (!goal.getComponentMap()
@@ -180,9 +176,13 @@ public class CGoal extends Component {
 
 					coordinates = new CCoordinates(getParent());
 
-					// TODO calculate the traveled distance using the speed and
-					// the delta
-					distance = 2.0;
+					// calculate the traveled distance using the speed and the delta
+          if(getParent().getComponentMap().containsKey(CMoveSpeed.class.getName())) {
+            speed = (CMoveSpeed) getParent().getComponentMap().get(CMoveSpeed.class.getName());
+            distance = speed.getMoveSpeed() * delta;
+          }
+
+          // get the last position of the current step
 					lastStepCoordinates.setLatitude((int) (Float
 							.parseFloat(lastStepLat) * 1e6));
 					lastStepCoordinates.setLongitude((int) (Float
