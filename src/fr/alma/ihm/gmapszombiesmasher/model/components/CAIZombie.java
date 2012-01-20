@@ -13,8 +13,6 @@ public class CAIZombie extends Component implements ICAI {
 
 	private static int RANDOMBOUNDARY = 5; // bound of randomize a new target
 	private Spawn spawn;
-	private double distanceMin = 50;
-	private double distanceBombMin = 500;
 
 	public CAIZombie(Entity parent, Spawn spawn) {
 		super(parent);
