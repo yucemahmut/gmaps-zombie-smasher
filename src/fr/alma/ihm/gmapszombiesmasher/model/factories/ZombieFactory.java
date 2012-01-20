@@ -40,7 +40,7 @@ public class ZombieFactory {
     CMoveSpeed speed = new CMoveSpeed(zombie);
 		zombie.addComponent(new CAIZombie(zombie, spawn));
 		zombie.addComponent(new CGoal(zombie));
-    speed.setMoveSpeed(SPEED);
+		speed.setMoveSpeed(SPEED);
 		zombie.addComponent(speed);
 		// Living
 		zombie.addComponent(new CBoolean(zombie));

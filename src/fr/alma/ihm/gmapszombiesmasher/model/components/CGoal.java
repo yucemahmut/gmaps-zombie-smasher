@@ -60,7 +60,8 @@ public class CGoal extends Component {
 
 	private CCoordinates updateSteps() {
 		CCoordinates startCoordinates = null;
-
+		String jsonString = "";
+		
 		// get the path from the parent position to the goal
 		if (getParent().getComponentMap().containsKey(
 				CCoordinates.class.getName())
@@ -89,7 +90,6 @@ public class CGoal extends Component {
 						directionConnection.getInputStream());
 				BufferedReader reader = new BufferedReader(response);
 				StringBuffer jsonBuffer = new StringBuffer();
-				String jsonString = "";
 				JSONObject jsonDirection = null;
 
 				for (String l = reader.readLine(); l != null; l = reader
@@ -120,9 +120,10 @@ public class CGoal extends Component {
 						.setLongitude((int) (Float.parseFloat(firstLon) * 1e6));
 
 			} catch (Exception e) {
-				//e.printStackTrace();
-        SystemClock.sleep(250);
-        startCoordinates = updateSteps();
+				System.out.println("String: " + jsonString);
+				e.printStackTrace();
+				SystemClock.sleep(250);
+				startCoordinates = updateSteps();
 			}
 		} else {
 			// TODO exception
@@ -218,7 +219,7 @@ public class CGoal extends Component {
 					}
 				} catch (Exception e) {
 					//FIXME
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
 			}
 		}
