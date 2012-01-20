@@ -5,6 +5,8 @@ import java.util.List;
 
 import android.app.Activity;
 
+import java.util.Calendar;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
@@ -39,6 +41,7 @@ public class Spawn {
 	private int botLatitude;
 	private int leftLongitude;
 	private int rightLongitude;
+  private double pastMillis;
 	private MapView mapView;
 	
 	public Spawn(Activity activity, MapView mapView, int topLatitude, int botLatitude, int leftLongitude,
@@ -51,6 +54,7 @@ public class Spawn {
 		this.botLatitude = botLatitude;
 		this.leftLongitude = leftLongitude;
 		this.rightLongitude = rightLongitude;
+    this.pastMillis = -1;
 		
 		this.citizenFactory = new CitizenFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this);
 		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this);
@@ -334,14 +338,26 @@ public class Spawn {
 		return citizenKilled;
 	}
 
+  /**
+   * Change the pastSeconds used to calculate the delta time.
+   */
+  public void updateSeconds() {
+    this.pastMillis = Calendar.getInstance().getTimeInMillis();
+  }
+
 	/**
 	 * Get and set the next position on <i>parent</i> for the goal <i>goal</i>
 	 * @param parent the parent to set
 	 * @param goal the goal to reach
 	 */
 	public void setNextPosition(Entity parent, CGoal goal) {
-    // TODO 1.0 must be the delat
-		CCoordinates c = goal.getNextPosition(1.0); 
+    if(this.pastMillis == -1) {
+      this.pastMillis = Calendar.getInstance().getTimeInMillis();
+    }
+
+    double pastMillis = Calendar.getInstance().getTimeInMillis();
+    double delta = (pastMillis - this.pastMillis) / 1000;
+		CCoordinates c = goal.getNextPosition(delta); 
 		if(c != null){
 			parent.addComponent(c);
 		}

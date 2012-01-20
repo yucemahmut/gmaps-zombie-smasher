@@ -415,6 +415,7 @@ public class GameActivity extends MapActivity {
 		mapView.invalidate();
 
 		// Next Step
+    spawn.updateSeconds();
 		if (!onPause && !endGame) {
 			waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 		}
