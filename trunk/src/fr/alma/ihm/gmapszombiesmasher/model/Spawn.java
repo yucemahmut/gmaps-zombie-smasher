@@ -285,7 +285,8 @@ public class Spawn {
 	 * @param goal the goal to reach
 	 */
 	public void setNextPosition(Entity parent, CGoal goal) {
-		CCoordinates c = goal.getNextPosition(0); 
+    // TODO 1.0 must be the delat
+		CCoordinates c = goal.getNextPosition(1.0); 
 		if(c != null){
 			parent.addComponent(c);
 		}

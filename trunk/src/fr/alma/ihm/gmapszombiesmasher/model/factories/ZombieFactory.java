@@ -15,6 +15,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
  * 
  */
 public class ZombieFactory {
+  private static final double SPEED = 0.5;
 
 	private int topLatitude;
 	private int botLatitude;
@@ -34,12 +35,13 @@ public class ZombieFactory {
 	}
 
 	public Entity getZombie() {
-		// TODO setMovespeedcomponent for zombie
 		// TODO Component markerColor for zombie
 		Entity zombie = new Entity();
+    CMoveSpeed speed = new CMoveSpeed(zombie);
 		zombie.addComponent(new CAIZombie(zombie, spawn));
 		zombie.addComponent(new CGoal(zombie));
-		zombie.addComponent(new CMoveSpeed(zombie));
+    speed.setMoveSpeed(SPEED);
+		zombie.addComponent(speed);
 		// Living
 		zombie.addComponent(new CBoolean(zombie));
 		CMarker marker = new CMarker(zombie);
