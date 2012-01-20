@@ -8,17 +8,16 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -31,9 +30,6 @@ import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
-import fr.alma.ihm.gmapszombiesmasher.sounds.BackgroundMusicService;
-import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
-import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManagerFactory;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSCoordinate;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSUtilities;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
@@ -45,9 +41,13 @@ public class GameActivity extends MapActivity {
 	private static final int ZOOM_LEVEL = 18;
 	protected static final long SLEEPING_TIME = 500;
 	protected static final long TIME_BEFORE_NEXT_STEP = 100;
+	// CHOPPER
 	public static final long CHOPPER_LIFE_TIME = 10000;
-	private static final long CHOPPER_BUTTON_LIFE_TIME = 20000;
-	private static final long BOMB_BUTTON_LIFE_TIME = 20000;
+	public static final long CHOPPER_BUTTON_LIFE_TIME = 20000;
+	
+	// BOMB
+	public static final long BOMB_LIFE_TIME = 5000;
+	public static final long BOMB_BUTTON_LIFE_TIME = 20000;
 
 	private MapController mapController;
 	private MapView mapView;
@@ -72,6 +72,8 @@ public class GameActivity extends MapActivity {
 	protected static final int REFRESH_MAP_CODE = 6;
 	protected static final int CLEAR_MAP_CODE = 7;
 	protected static final int END_GAME = 8;
+	public static final int CHOPPER_BUTTON_SELECTION = 9;
+	public static final int BOMB_BUTTON_SELECTION = 10;
 
 	protected static boolean onPause = false;
 	protected boolean notSpawn = true;
@@ -81,6 +83,7 @@ public class GameActivity extends MapActivity {
 	public static final String END_GAME_TIME = "time";
 	public static final String END_GAME_ZOMBIES_KILLED = "zombiesKilled";
 	public static final String END_GAME_CITIZEN_SAVED = "citizenSaved";
+	public static final String END_GAME_CITIZEN_KILLED = "citizenKilled";
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -149,7 +152,8 @@ public class GameActivity extends MapActivity {
 			@Override
 			public void run() {
 				while(!endGame){
-					if(GameActivity.this.spawn.getCitizenInGame() == 0){
+					if(GameActivity.this.spawn.getCitizenInGame() == 0 ||
+					   GameActivity.this.spawn.getZombiesInGame() == 0	){
 						endGame = true;
 						waittingHandler.sendEmptyMessage(END_GAME);
 					}
@@ -175,15 +179,7 @@ public class GameActivity extends MapActivity {
 							selectedButton.put(CHOPPER, true);
 							putAllOtherToFalse(CHOPPER);
 
-							Runnable chopperButtonLifeTime = new Runnable() {
-
-								@Override
-								public void run() {
-									SystemClock.sleep(CHOPPER_BUTTON_LIFE_TIME);
-								}
-							};
-
-							new Thread(chopperButtonLifeTime).start();
+							
 						}
 					}
 				});
@@ -219,7 +215,7 @@ public class GameActivity extends MapActivity {
 	 * @param notThis
 	 *            except this element
 	 */
-	private void putAllOtherToFalse(int notThis) {
+	public void putAllOtherToFalse(int notThis) {
 		for (int element : this.selectedButton.keySet()) {
 			if (element != notThis) {
 				this.selectedButton.put(element, false);
@@ -340,6 +336,12 @@ public class GameActivity extends MapActivity {
 						break;
 					case REFRESH_MAP_CODE:
 						mapView.invalidate();
+					case CHOPPER_BUTTON_SELECTION:
+						GameActivity.this.setSelected((Button)GameActivity.this.findViewById(R.id.helicopter_button));
+						break;
+					case BOMB_BUTTON_SELECTION:
+						GameActivity.this.setSelected((Button)GameActivity.this.findViewById(R.id.bomb_button));
+						break;
 					case END_GAME:
 						started = false;
 						notSpawn = true;
@@ -482,6 +484,7 @@ public class GameActivity extends MapActivity {
 		        	   Intent intent = new Intent();
 		        	   intent.putExtra(END_GAME_TIME, new Date().getTime() - startTime);
 		        	   intent.putExtra(END_GAME_CITIZEN_SAVED, spawn.getCitizenFree());
+		        	   intent.putExtra(END_GAME_CITIZEN_KILLED, spawn.getCitizenKilled());
 		        	   intent.putExtra(END_GAME_ZOMBIES_KILLED, spawn.getZombieKilled());
 		        	   GameActivity.this.setResult(RESULT_OK, intent);
 		        	   GameActivity.this.finish();
@@ -519,5 +522,26 @@ public class GameActivity extends MapActivity {
 		default:
 			break;
 		}
+	}
+
+	/**
+	 * Set if the button is selected or not
+	 * 
+	 * @param button
+	 * @param b
+	 */
+	public void setSelected(Button button) {
+		if(button.isSelected()){
+			button.setEnabled(false);
+			button.setClickable(false);
+		} else {
+			button.setEnabled(true);
+			button.setClickable(true);
+		}
+		
+	}
+	
+	public Handler getWaitingHandler(){
+		return waittingHandler;
 	}
 }

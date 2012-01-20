@@ -8,6 +8,7 @@ public class CMarker extends Component {
 	private static final int zombieMarker = R.drawable.zombies_marker;
 	private static final int citizenMarker = R.drawable.citizens_marker;
 	private static final int chopperMarker = R.drawable.chopper_marker;
+	private static final int bombMarker = R.drawable.bomb_marker;
 	
 	private int marker;
 	
@@ -29,6 +30,10 @@ public class CMarker extends Component {
 	
 	public void setChopper(){
 		this.marker = chopperMarker;
+	}
+
+	public void setBomb() {
+		this.marker = bombMarker;
 	}
 
 }

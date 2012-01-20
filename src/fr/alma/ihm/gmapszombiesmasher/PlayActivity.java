@@ -51,12 +51,14 @@ public class PlayActivity extends Activity {
 		case PLAY_CODE:
 			if (resultCode == RESULT_OK) {
 				Bundle objetbunble = data.getExtras();
-				int time = objetbunble.getInt(GameActivity.END_GAME_TIME);
+				double time = objetbunble.getDouble(GameActivity.END_GAME_TIME);
 				int citizenSaved = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_SAVED);
+				int citizenKilled = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_KILLED);
 				int zombieKilled = objetbunble.getInt(GameActivity.END_GAME_ZOMBIES_KILLED);
 				
 				System.out.println("time: " + time);
 				System.out.println("citizenSaved: " + citizenSaved);
+				System.out.println("citizenKilled: " + citizenKilled);
 				System.out.println("zombieKilled: " + zombieKilled);
 			}
 			break;

@@ -218,7 +218,7 @@ public class CGoal extends Component {
 					}
 				} catch (Exception e) {
 					//FIXME
-					// e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		}
