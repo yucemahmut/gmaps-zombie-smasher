@@ -152,7 +152,7 @@ public class GameActivity extends MapActivity {
 	 * Thread that look if the game is ended
 	 */
 	private void startWatchingGame() {
-		Runnable chopperButtonLifeTime = new Runnable() {
+		Runnable watchingGame = new Runnable() {
 
 			@Override
 			public void run() {
@@ -166,7 +166,7 @@ public class GameActivity extends MapActivity {
 			}
 		};
 
-		new Thread(chopperButtonLifeTime).start();
+		new Thread(watchingGame).start();
 	}
 
 	/**
@@ -183,7 +183,6 @@ public class GameActivity extends MapActivity {
 						if (!selectedButton.get(CHOPPER)) {
 							selectedButton.put(CHOPPER, true);
 							putAllOtherToFalse(CHOPPER);
-
 						}
 					}
 				});
@@ -276,7 +275,8 @@ public class GameActivity extends MapActivity {
 
 						startWatchingGame();
 						startTime = Calendar.getInstance().getTimeInMillis();
-						gMapsZombieSmasher.soundsManager.playSound(SoundsManager.BUILD_FINISHED);
+						gMapsZombieSmasher.soundsManager
+								.playSound(SoundsManager.BUILD_FINISHED);
 						waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 					}
 				}
@@ -395,7 +395,8 @@ public class GameActivity extends MapActivity {
 	 */
 	private void updatePlacementsEntities() {
 		for (Entity entity : spawn.getEntities()) {
-			if (entity.getComponentMap().containsKey(CAICitizen.class.getName())) {
+			if (entity.getComponentMap()
+					.containsKey(CAICitizen.class.getName())) {
 				((CAICitizen) entity.getComponentMap().get(
 						CAICitizen.class.getName())).update();
 			} else if (entity.getComponentMap().containsKey(
@@ -461,7 +462,7 @@ public class GameActivity extends MapActivity {
 			textName = "You Win !";
 			buttonName = "Fu%k Yea";
 			// update background music setting
-	    	this.startService(new Intent(this, BackgroundMusicService.class));
+			this.startService(new Intent(this, BackgroundMusicService.class));
 		} else {
 			textName = "You LOOSE !!!";
 			buttonName = "Okay :(";
@@ -475,8 +476,9 @@ public class GameActivity extends MapActivity {
 							public void onClick(DialogInterface dialog, int id) {
 								Intent intent = new Intent();
 								intent.putExtra(END_GAME_WIN, win);
-								intent.putExtra(END_GAME_TIME,
-										Calendar.getInstance().getTimeInMillis() - startTime);
+								intent.putExtra(END_GAME_TIME, Calendar
+										.getInstance().getTimeInMillis()
+										- startTime);
 								intent.putExtra(END_GAME_CITIZEN_SAVED,
 										spawn.getCitizenFree());
 								intent.putExtra(END_GAME_CITIZEN_KILLED,
@@ -525,15 +527,14 @@ public class GameActivity extends MapActivity {
 	 * Set if the button is selected or not
 	 * 
 	 * @param button
-	 * @param b
 	 */
 	public void setSelected(Button button) {
-		if (button.isSelected()) {
+		System.out.println("ISSelected: " + button.getId() + " -> "
+				+ button.isEnabled());
+		if (button.isEnabled()) {
 			button.setEnabled(false);
-			button.setClickable(false);
 		} else {
 			button.setEnabled(true);
-			button.setClickable(true);
 		}
 
 	}

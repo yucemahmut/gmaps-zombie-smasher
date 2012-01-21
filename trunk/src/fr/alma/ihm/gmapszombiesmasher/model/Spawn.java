@@ -121,7 +121,6 @@ public class Spawn {
 			}
 			chopperLife--;
 			if(chopperLife == 0){
-				System.out.println("chopperLife: " + getChopper());
 				destroyChopper();
 				chopperLife = GameActivity.CHOPPER_LIFE_TIME;
 			}
@@ -133,7 +132,6 @@ public class Spawn {
 			}
 			bombLife--;
 			if(bombLife == 0){
-				System.out.println("Bomb: " + getBomb());
 				destroyBomb();
 				bombLife = GameActivity.BOMB_LIFE_TIME;
 			}
