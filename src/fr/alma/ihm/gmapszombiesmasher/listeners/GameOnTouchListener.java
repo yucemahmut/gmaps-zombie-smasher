@@ -25,8 +25,6 @@ public class GameOnTouchListener implements OnTouchListener {
 	private Map<Integer, Boolean> selected;
 	private Spawn spawn;
 
-	private int selectedButton = -1;
-	private long lifeTime = -1;
 	private int buttonSelection = -1;
 	private long buttonLifeTime = -1;
 
@@ -89,14 +87,12 @@ public class GameOnTouchListener implements OnTouchListener {
 	 */
 	private void createEntity(int id, GeoPoint point) {
 		Entity entity = null;
-		selectedButton = id;
 
 		switch (id) {
 		case GameActivity.CHOPPER:
 			entity = ChopperFactory.get();
 			spawn.createChopper(entity);
 
-			lifeTime = GameActivity.CHOPPER_LIFE_TIME;
 			buttonSelection = GameActivity.CHOPPER_BUTTON_SELECTION;
 			buttonLifeTime = GameActivity.CHOPPER_BUTTON_LIFE_TIME;
 			break;
@@ -105,7 +101,6 @@ public class GameOnTouchListener implements OnTouchListener {
 			entity = BombFactory.get();
 			spawn.createBomb(entity);
 
-			lifeTime = GameActivity.BOMB_LIFE_TIME;
 			buttonSelection = GameActivity.BOMB_BUTTON_SELECTION;
 			buttonLifeTime = GameActivity.BOMB_BUTTON_LIFE_TIME;
 			break;
@@ -116,35 +111,17 @@ public class GameOnTouchListener implements OnTouchListener {
 		coordinates.setLongitude(point.getLongitudeE6());
 		entity.addComponent(coordinates);
 
-		Runnable LifeTime = new Runnable() {
-			@Override
-			public void run() {
-				SystemClock.sleep(lifeTime);
-				System.out.println("SELECTED: " + selectedButton);
-				switch (selectedButton) {
-				case GameActivity.CHOPPER:
-					spawn.destroyChopper();
-					break;
-				case GameActivity.BOMB:
-					spawn.destroyBomb();
-					break;
-				}
-				selected.put(selectedButton, false);
-			}
-		};
-
 		Runnable ButtonLifeTime = new Runnable() {
 			@Override
 			public void run() {
+				parent.putAllOtherToFalse(-1);
 				parent.getWaitingHandler().sendEmptyMessage(buttonSelection);
 				SystemClock.sleep(buttonLifeTime);
 				parent.getWaitingHandler().sendEmptyMessage(buttonSelection);
-				parent.putAllOtherToFalse(-1);
 			}
 		};
 
-		//new Thread(ButtonLifeTime).start();
-		//new Thread(LifeTime).start();
+		new Thread(ButtonLifeTime).start();
 	}
 
 	/**
