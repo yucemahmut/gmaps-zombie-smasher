@@ -39,6 +39,7 @@
     <!-- Result Pop-Up -->
     <string name="played_time">Played Time</string>
     <string name="citizens_saved">Citizens Saved</string>
+    <string name="citizens_killed">Citizens Killed</string>
     <string name="zombies_killed">Zombies Killed</string>
     
     

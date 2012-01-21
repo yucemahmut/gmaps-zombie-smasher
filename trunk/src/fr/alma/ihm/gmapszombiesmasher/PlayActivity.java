@@ -81,15 +81,18 @@ public class PlayActivity extends Activity {
     View resultView = getLayoutInflater().inflate(R.layout.game_results, null);
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     String playedTime = "  " + time + " seconds";
-    String citizensStat = "  " + savedCitizens + " / " + citizens;
+    String citizensStat1 = "  " + savedCitizens + " / " + citizens;
+    String citizensStat2 = "  " + (citizens - savedCitizens) + " / " + citizens;
     String zombiesStat = "  " + killedZombies;
     String closeText = (win)? ":)" : ":(";
     TextView playedTimeView = (TextView) resultView.findViewById(R.id.played_time_value);
-    TextView citizensView = (TextView) resultView.findViewById(R.id.citizens_saved_value);
+    TextView citizensView1 = (TextView) resultView.findViewById(R.id.citizens_saved_value);
+    TextView citizensView2 = (TextView) resultView.findViewById(R.id.citizens_killed_value);
     TextView zombiesView = (TextView) resultView.findViewById(R.id.zombies_killed_value);
 
     playedTimeView.setText(playedTime);
-    citizensView.setText(citizensStat);
+    citizensView1.setText(citizensStat1);
+    citizensView2.setText(citizensStat2);
     zombiesView.setText(zombiesStat);
 
     builder.setTitle("Results");
