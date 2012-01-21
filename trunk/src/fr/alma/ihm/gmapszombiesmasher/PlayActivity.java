@@ -51,6 +51,7 @@ public class PlayActivity extends Activity {
 		case PLAY_CODE:
 			if (resultCode == RESULT_OK) {
 				Bundle objetbunble = data.getExtras();
+				boolean win = objetbunble.getBoolean(GameActivity.END_GAME_WIN);
 				double time = objetbunble.getDouble(GameActivity.END_GAME_TIME);
 				int citizenSaved = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_SAVED);
 				int citizenKilled = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_KILLED);
@@ -71,7 +72,4 @@ public class PlayActivity extends Activity {
 			break;
 		}
 	}
-	
-	
-
 }

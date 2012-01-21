@@ -120,6 +120,7 @@ public class GameOnTouchListener implements OnTouchListener {
 			@Override
 			public void run() {
 				SystemClock.sleep(lifeTime);
+				System.out.println("SELECTED: " + selectedButton);
 				switch (selectedButton) {
 				case GameActivity.CHOPPER:
 					spawn.destroyChopper();
@@ -142,8 +143,8 @@ public class GameOnTouchListener implements OnTouchListener {
 			}
 		};
 
-		new Thread(ButtonLifeTime).start();
-		new Thread(LifeTime).start();
+		//new Thread(ButtonLifeTime).start();
+		//new Thread(LifeTime).start();
 	}
 
 	/**

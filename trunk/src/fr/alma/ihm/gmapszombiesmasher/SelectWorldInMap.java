@@ -25,7 +25,6 @@ import fr.alma.ihm.gmapszombiesmasher.utils.World;
 
 public class SelectWorldInMap extends MapActivity {
 
-	private static final int ZOOM_LEVEL = 16;
 	private static MapView mapView;
 	private static MapController mapController;
 	private static int longitude = 0;
@@ -41,7 +40,7 @@ public class SelectWorldInMap extends MapActivity {
 
 		mapView.setBuiltInZoomControls(true);
 		mapController.setCenter(new GeoPoint(40769800, -73960500));
-		mapController.setZoom(ZOOM_LEVEL);
+		mapController.setZoom(GameActivity.ZOOM_LEVEL_MIN);
 	}
 
 	@Override
@@ -62,8 +61,12 @@ public class SelectWorldInMap extends MapActivity {
 			this.startActivityForResult(intent, 1);
 
 			return true;
-		case R.id.set_zoom:
-			mapController.setZoom(ZOOM_LEVEL);
+		case R.id.set_zoom_min:
+			mapController.setZoom(GameActivity.ZOOM_LEVEL_MIN);
+
+			return true;
+		case R.id.set_zoom_max:
+			mapController.setZoom(GameActivity.ZOOM_LEVEL_MAX);
 
 			return true;
 		case R.id.select_world_here:
@@ -145,6 +148,7 @@ public class SelectWorldInMap extends MapActivity {
 						.findViewById(R.id.new_world_name);
 
 				world.setName(newName.getText().toString());
+				System.out.println("ZOOM: " + mapView.getZoomLevel());
 				world.setZoom(mapView.getZoomLevel());
 
 				try {

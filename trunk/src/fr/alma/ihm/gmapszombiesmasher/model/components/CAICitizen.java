@@ -12,14 +12,14 @@ import fr.alma.ihm.gmapszombiesmasher.model.factories.ChopperFactory;
  * the chopper if one is around
  * 
  */
-public class CAICitizen extends Component implements ICAI {
+public class CAICitizen extends ICAI {
 
 	private ChopperFactory cF = new ChopperFactory();
 	private LinkedList<Entity> zombies;
 	private Spawn spawn;
 
-	public CAICitizen(Entity parent, Spawn spawn) {
-		super(parent);
+	public CAICitizen(Entity parent, Spawn spawn, int zoomLevel) {
+		super(parent, zoomLevel);
 		this.spawn = spawn;
 	}
 
@@ -33,7 +33,7 @@ public class CAICitizen extends Component implements ICAI {
 			CCoordinates bombCoordinates = (CCoordinates) spawn.getBomb()
 					.getComponentMap().get(CCoordinates.class.getName());
 			// If the bomb is near
-			if (parentCoordinates.isNearOf(bombCoordinates, distanceBombMin)) {
+			if (parentCoordinates.isNearOf(bombCoordinates, getDistanceBombMin())) {
 				spawn.killCitizen(getParent());
 			}
 		} else {
@@ -41,24 +41,33 @@ public class CAICitizen extends Component implements ICAI {
 					CGoal.class.getName());
 
 			// S'il existe un chopper sur la carte, alors on va vers le chopper
+			// s'il est à une distance convenable
 			if (spawn.getChopper() != null) {
-
-				if (spawn.getChopper().equals(goal.getGoal())) {
-					// Si le chopper est atteind ou assez proche alors le
-					// citizen est
-					// libéré
-					if (goal.goalReached()
-							|| parentCoordinates.isNearOf(
-									goal.getGoalCoordinates(), distanceMin)) {
-						// Liberation du citoyen
-						spawn.freeCitizen(getParent());
+				if (parentCoordinates
+						.isNearOf(
+								(CCoordinates) spawn.getChopper()
+										.getComponentMap()
+										.get(CCoordinates.class.getName()),
+										getDistanceChopperMin())) {
+					if (spawn.getChopper().equals(goal.getGoal())) {
+						// Si le chopper est atteind ou assez proche alors le
+						// citizen est
+						// libéré
+						if (goal.goalReached()
+								|| parentCoordinates.isNearOf(
+										goal.getGoalCoordinates(), getDistanceMin())) {
+							// Liberation du citoyen
+							spawn.freeCitizen(getParent());
+						} else {
+							spawn.setNextPosition(getParent(), goal);
+						}
 					} else {
-						spawn.setNextPosition(getParent(), goal);
+						System.out.println("[CITIZEN] New Goal Chopper");
+						// On ajoute le chopper comme étant le but à atteindre
+						spawn.setGoal(getParent(), spawn.getChopper());
 					}
 				} else {
-					System.out.println("[CITIZEN] New Goal Chopper");
-					// On ajoute le chopper comme étant le but à atteindre
-					spawn.setGoal(getParent(), spawn.getChopper());
+					spawn.setNextPosition(getParent(), goal);
 				}
 			} else {
 				// Si el but est atteind, on cherche un nouveau but

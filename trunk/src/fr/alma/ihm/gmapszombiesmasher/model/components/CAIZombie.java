@@ -9,13 +9,13 @@ import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
  * the nearest citizen in order to eat him
  * 
  */
-public class CAIZombie extends Component implements ICAI {
+public class CAIZombie extends ICAI {
 
-	private static int RANDOMBOUNDARY = 5; // bound of randomize a new target
+	//private static int RANDOMBOUNDARY = 5; // bound of randomize a new target
 	private Spawn spawn;
 
-	public CAIZombie(Entity parent, Spawn spawn) {
-		super(parent);
+	public CAIZombie(Entity parent, Spawn spawn, int zoomLevel) {
+		super(parent, zoomLevel);
 		this.spawn = spawn;
 	}
 
@@ -30,7 +30,7 @@ public class CAIZombie extends Component implements ICAI {
 			CCoordinates bombCoordinates = (CCoordinates) spawn.getBomb()
 					.getComponentMap().get(CCoordinates.class.getName());
 			// If the bomb is near
-			if (parentCoordinates.isNearOf(bombCoordinates, distanceBombMin)) {
+			if (parentCoordinates.isNearOf(bombCoordinates, getDistanceBombMin())) {
 				spawn.killZombie(getParent());
 			}
 		} else {
@@ -84,7 +84,7 @@ public class CAIZombie extends Component implements ICAI {
 			if ((((CCoordinates) getParent().getComponentMap().get(
 					CCoordinates.class.getName())).isNearOf(
 					((CCoordinates) citizen.getComponentMap().get(
-							CCoordinates.class.getName())), distanceMin))) {
+							CCoordinates.class.getName())), getDistanceMin()))) {
 				spawn.eatCitizen(citizen);
 			}
 		}

@@ -97,10 +97,8 @@ public class AchievementsActivity extends Activity{
 	public static void updateAchievement(String id, double update){
 		List<Map<String, String>> listItem = getItemList();
 		for(Map<String, String> map: listItem){
-			System.out.println("Map: " + map.get(ID));
-			System.out.println("Map: " + id);
 			if(map.get(ID).equals(id)){
-				map.put(PROGRESS, map.get(PROGRESS) + update);
+				map.put(PROGRESS, String.valueOf(map.get(PROGRESS) + update));
 			}
 		}
 		

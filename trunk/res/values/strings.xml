@@ -30,7 +30,8 @@
     <string name="delete_world">Delete Selected World</string>
     <string name="new_world_name">Enter a new Name:</string>
     <string name="get_current_position">Get Current Position</string>
-    <string name="set_zoom">In Game Zoom</string>
+    <string name="set_zoom_min">Get Zoom Min</string>
+    <string name="set_zoom_max">Get Zoom Max</string>
     <string name="select_world_here">New World Here</string>
     <string name="edit_ok">Validate World Edition</string>
     <string name="edit_cancel">Cancel World Edition</string>
