@@ -9,15 +9,17 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.WindowManager;
-import android.widget.Button;
 import fr.alma.ihm.gmapszombiesmasher.listeners.AchievementsButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.PlayButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.SettingsButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.sounds.BackgroundMusicService;
+import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
+import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManagerFactory;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
 
 public class gMapsZombieSmasher extends Activity {
 		
+	public static SoundsManager soundsManager;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,9 @@ public class gMapsZombieSmasher extends Activity {
 		//this.findViewById(R.id.level).setOnClickListener(new ManageLevelsButtonListener(this));
 		this.findViewById(R.id.achievements).setOnClickListener(new AchievementsButtonListener(this));
 		this.findViewById(R.id.settings).setOnClickListener(new SettingsButtonListener(this));
+		
+		// get sound manager
+		soundsManager = SoundsManagerFactory.get(this);
 		
 		// set preference
 		updatePreference();
@@ -73,16 +78,27 @@ public class gMapsZombieSmasher extends Activity {
 		}
 		return true;
 	}
+    
+    @Override
+    protected void onRestart() {
+    	super.onRestart();
+    	updatePreference();
+    }
 	
     private void updatePreference() {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     	
+    	// update background music setting
     	if(prefs.getBoolean(SettingPreferenceActivity.BACKGROUND_MUSIC, false)) {
     		this.startService(new Intent(this, BackgroundMusicService.class));
     	} else {
     		this.stopService(new Intent(this, BackgroundMusicService.class));
     	}
     	
+    	// update game sound setting
+    	gMapsZombieSmasher.soundsManager.setSoundOn(prefs.getBoolean(SettingPreferenceActivity.APPLICATION_SOUNDS, false));
+    	
+    	// update satellite setting
     	if(prefs.getBoolean(SettingPreferenceActivity.SATELLITE_VIEW_IN_MAP, false)) {
     		// to do ...
     		
@@ -90,12 +106,6 @@ public class gMapsZombieSmasher extends Activity {
     		// to do ...
     	}
     	
-    	if(prefs.getBoolean(SettingPreferenceActivity.APPLICATION_SOUNDS, false)) {
-    		// to do ...
-    		
-    	} else {
-    		// to do ...
-    	}
-
+		
     }
 }
