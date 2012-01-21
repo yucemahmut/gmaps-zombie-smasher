@@ -11,6 +11,8 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
+import fr.alma.ihm.gmapszombiesmasher.GameActivity;
+import fr.alma.ihm.gmapszombiesmasher.gMapsZombieSmasher;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CBoolean;
@@ -20,6 +22,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.CitizenFactory;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.ZombieFactory;
+import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
 
 public class Spawn {
 	private CitizenFactory citizenFactory;
@@ -44,6 +47,8 @@ public class Spawn {
 	private int rightLongitude;
   private double pastMillis;
 	private MapView mapView;
+	private int chopperLife;
+	private int bombLife;
 	
 	public Spawn(Activity activity, MapView mapView, int topLatitude, int botLatitude, int leftLongitude,
 			int rightLongitude) {
@@ -57,13 +62,15 @@ public class Spawn {
 		this.rightLongitude = rightLongitude;
     this.pastMillis = -1;
 		
-		this.citizenFactory = new CitizenFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this);
-		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this);
+		this.citizenFactory = new CitizenFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this, mapView.getZoomLevel());
+		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this, mapView.getZoomLevel());
 		
 		this.entities = new LinkedList<Entity>();
 
 		this.mapView = mapView;
-		//mapOverlays = mapView.getOverlays();
+		
+		this.chopperLife = GameActivity.CHOPPER_LIFE_TIME;
+		this.bombLife = GameActivity.BOMB_LIFE_TIME;
 	}
 	
 	public void spawnZombies(int number){
@@ -89,13 +96,7 @@ public class Spawn {
 	 */
 	public void putOnMap() {
 		
-		if(getChopper() != null && !getEntities().contains(getChopper())){
-			getEntities().add(getChopper());
-		}
-		
-		if(getBomb() != null && !getEntities().contains(getBomb())){
-			getEntities().add(getBomb());
-		}
+		initialize();
 		
 		mapView.getOverlays().clear();
 		
@@ -111,8 +112,32 @@ public class Spawn {
 				mapView.getOverlays().add(entityOverlay);
 			}
 		}
+	}
+
+	private void initialize() {
+		if(getChopper() != null){
+			if(!getEntities().contains(getChopper())){
+				getEntities().add(getChopper());
+			}
+			chopperLife--;
+			if(chopperLife == 0){
+				System.out.println("chopperLife: " + getChopper());
+				destroyChopper();
+				chopperLife = GameActivity.CHOPPER_LIFE_TIME;
+			}
+		}
 		
-		//mapView.invalidate();
+		if(getBomb() != null){
+			if(!getEntities().contains(getBomb())){
+				getEntities().add(getBomb());
+			}
+			bombLife--;
+			if(bombLife == 0){
+				System.out.println("Bomb: " + getBomb());
+				destroyBomb();
+				bombLife = GameActivity.BOMB_LIFE_TIME;
+			}
+		}
 	}
 	
 	/**
@@ -121,6 +146,7 @@ public class Spawn {
 	 */
 	public void createChopper(Entity entity){
 		System.out.println("CREATE CHOPPER");
+		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.STANDING_BY);
 		((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).setExist(true);
 		chopper = entity;
 	}
@@ -147,7 +173,7 @@ public class Spawn {
 	 * Destroy the bomb
 	 */
 	public void destroyBomb() {
-		((CBoolean)bomb.getComponentMap().get(CBoolean.class.getName())).setExist(false);
+			((CBoolean)bomb.getComponentMap().get(CBoolean.class.getName())).setExist(false);
 		bomb = null;
 	}
 
@@ -259,10 +285,11 @@ public class Spawn {
 	 */
 	public void eatCitizen(Entity entity) {
 		System.out.println("EATED");
+		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.ZOMBIE);
 		citizenInGame--;
 		// Changement d'IA
 		entity.removeComponent(CAICitizen.class.getName());
-		entity.addComponent(new CAIZombie(entity, this));
+		entity.addComponent(new CAIZombie(entity, this, mapView.getZoomLevel()));
 		// Changement de marker
 		((CMarker)entity.getComponentMap().get(CMarker.class.getName())).setZombie();
 		// diminution de la vitesse
@@ -280,6 +307,13 @@ public class Spawn {
 	public void killCitizen(Entity entity) {
 		System.out.println("KILL CITIZEN");
 		citizenInGame--;
+		int rand = (int) (Math.random() * 2);
+		System.out.println("Rand: " + rand);
+		if(rand == 0){
+			gMapsZombieSmasher.soundsManager.playSound(SoundsManager.MAN_DEAD);
+		} else {
+			gMapsZombieSmasher.soundsManager.playSound(SoundsManager.WOMAN_DEAD);
+		}
 		CBoolean isKilled = new CBoolean(entity);
 		isKilled.setExist(false);
 		entity.addComponent(isKilled);

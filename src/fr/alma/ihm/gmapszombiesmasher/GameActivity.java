@@ -1,5 +1,6 @@
 package fr.alma.ihm.gmapszombiesmasher;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,8 @@ import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
+import fr.alma.ihm.gmapszombiesmasher.sounds.BackgroundMusicService;
+import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSCoordinate;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSUtilities;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
@@ -38,19 +41,20 @@ import fr.alma.ihm.gmapszombiesmasher.utils.World;
 
 public class GameActivity extends MapActivity {
 
-	public static final int ZOOM_LEVEL = 10;
+	public static final int ZOOM_LEVEL_MIN = 18;
+	public static final int ZOOM_LEVEL_MAX = 16;
 	protected static final long SLEEPING_TIME = 500;
 	protected static final long TIME_BEFORE_NEXT_STEP = 100;
 	// CHOPPER
-	public static final long CHOPPER_LIFE_TIME = 10000;
+	public static final int CHOPPER_LIFE_TIME = 100;
 	public static final long CHOPPER_BUTTON_LIFE_TIME = 20000;
 
 	// BOMB
-	public static final long BOMB_LIFE_TIME = 5000;
+	public static final int BOMB_LIFE_TIME = 35;
 	public static final long BOMB_BUTTON_LIFE_TIME = 20000;
 
 	private MapController mapController;
-	private static MapView mapView;
+	private MapView mapView;
 	private Spawn spawn;
 	private Handler waittingHandler;
 	private ProgressDialog dialog;
@@ -79,11 +83,13 @@ public class GameActivity extends MapActivity {
 	protected boolean notSpawn = true;
 	protected boolean started = false;
 	protected boolean endGame = false;
+	private boolean win;
 
 	public static final String END_GAME_TIME = "time";
 	public static final String END_GAME_ZOMBIES_KILLED = "zombiesKilled";
 	public static final String END_GAME_CITIZEN_SAVED = "citizenSaved";
 	public static final String END_GAME_CITIZEN_KILLED = "citizenKilled";
+	public static final String END_GAME_WIN = "win";
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -138,13 +144,8 @@ public class GameActivity extends MapActivity {
 
 	}
 
-	public static int getZoom() {
+	public int getZoom() {
 		return mapView.getZoomLevel();
-	}
-
-	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		System.out.println("OUI");
 	}
 
 	/**
@@ -246,6 +247,7 @@ public class GameActivity extends MapActivity {
 	 * 
 	 */
 	protected void startMainLoop() {
+		System.out.println("Started: " + started + " - notSpawn: " + notSpawn);
 		if (!started) {
 			mapView.getOverlays().clear();
 			started = true;
@@ -265,17 +267,7 @@ public class GameActivity extends MapActivity {
 						while (notSpawn) {
 						}
 
-						for (Entity entity : spawn.getEntities()) {
-							if (entity.getComponentMap().containsKey(
-									CAICitizen.class.getName())) {
-								((CAICitizen) entity.getComponentMap().get(
-										CAICitizen.class.getName())).update();
-							} else if (entity.getComponentMap().containsKey(
-									CAIZombie.class.getName())) {
-								((CAIZombie) entity.getComponentMap().get(
-										CAIZombie.class.getName())).update();
-							}
-						}
+						updatePlacementsEntities();
 
 						// Close waitting dialog
 						if (dialog.isShowing()) {
@@ -283,7 +275,8 @@ public class GameActivity extends MapActivity {
 						}
 
 						startWatchingGame();
-						startTime = new Date().getTime();
+						startTime = Calendar.getInstance().getTimeInMillis();
+						gMapsZombieSmasher.soundsManager.playSound(SoundsManager.BUILD_FINISHED);
 						waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 					}
 				}
@@ -315,7 +308,7 @@ public class GameActivity extends MapActivity {
 						started = false;
 						onPause = false;
 						notSpawn = true;
-						finish();
+						GameActivity.this.finish();
 						break;
 					case RESUME_CODE:
 						if (onPause) {
@@ -353,37 +346,27 @@ public class GameActivity extends MapActivity {
 	 * Create and place citizen and zombies on the map Set a goal for each
 	 */
 	private void spawn() {
-		Runnable spawnLoop = new Runnable() {
-			@Override
-			public void run() {
-				int height = mapView.getHeight();
-				int width = mapView.getWidth();
+		int height = mapView.getHeight();
+		int width = mapView.getWidth();
 
-				GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
-				GeoPoint topRight = mapView.getProjection()
-						.fromPixels(width, 0);
-				GeoPoint botLeft = mapView.getProjection()
-						.fromPixels(0, height);
-				// GeoPoint botRight =
-				// mapView.getProjection().fromPixels(width,height);
+		GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
+		GeoPoint topRight = mapView.getProjection().fromPixels(width, 0);
+		GeoPoint botLeft = mapView.getProjection().fromPixels(0, height);
+		// GeoPoint botRight =
+		// mapView.getProjection().fromPixels(width,height);
 
-				spawn = new Spawn(GameActivity.this, mapView,
-						topLeft.getLatitudeE6(), botLeft.getLatitudeE6(),
-						topLeft.getLongitudeE6(), topRight.getLongitudeE6());
-				spawn.spawnCitizen(ManagePreferences
-						.getCitizenNumber(GameActivity.this));
-				spawn.spawnZombies(ManagePreferences
-						.getZombieNumber(GameActivity.this));
+		spawn = new Spawn(GameActivity.this, mapView, topLeft.getLatitudeE6(),
+				botLeft.getLatitudeE6(), topLeft.getLongitudeE6(),
+				topRight.getLongitudeE6());
+		spawn.spawnCitizen(ManagePreferences
+				.getCitizenNumber(GameActivity.this));
+		spawn.spawnZombies(ManagePreferences.getZombieNumber(GameActivity.this));
 
-				spawn.putOnMap();
-				notSpawn = false;
+		spawn.putOnMap();
+		notSpawn = false;
 
-				onTouchListener.setSpawn(spawn);
-			}
-		};
+		onTouchListener.setSpawn(spawn);
 
-		Thread spawnThread = new Thread(spawnLoop);
-		spawnThread.start();
 	}
 
 	/**
@@ -392,17 +375,7 @@ public class GameActivity extends MapActivity {
 	private void nextStep() {
 
 		// Update IA
-		for (Entity entity : spawn.getEntities()) {
-			if (entity.getComponentMap()
-					.containsKey(CAICitizen.class.getName())) {
-				((CAICitizen) entity.getComponentMap().get(
-						CAICitizen.class.getName())).update();
-			} else if (entity.getComponentMap().containsKey(
-					CAIZombie.class.getName())) {
-				((CAIZombie) entity.getComponentMap().get(
-						CAIZombie.class.getName())).update();
-			}
-		}
+		updatePlacementsEntities();
 
 		// Put On Map
 		spawn.putOnMap();
@@ -414,6 +387,22 @@ public class GameActivity extends MapActivity {
 		spawn.updateSeconds();
 		if (!onPause && !endGame) {
 			waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
+		}
+	}
+
+	/**
+	 * Update all the entities placements
+	 */
+	private void updatePlacementsEntities() {
+		for (Entity entity : spawn.getEntities()) {
+			if (entity.getComponentMap().containsKey(CAICitizen.class.getName())) {
+				((CAICitizen) entity.getComponentMap().get(
+						CAICitizen.class.getName())).update();
+			} else if (entity.getComponentMap().containsKey(
+					CAIZombie.class.getName())) {
+				((CAIZombie) entity.getComponentMap().get(
+						CAIZombie.class.getName())).update();
+			}
 		}
 	}
 
@@ -465,10 +454,14 @@ public class GameActivity extends MapActivity {
 		String textName = "";
 		String buttonName = "";
 
-		if (spawn.getCitizenFree() >= ManagePreferences
-				.getMinCitizenSavedToWin(this)) {
+		System.out.println("TIME: " + new Date().getTime());
+		win = spawn.getCitizenFree() >= ManagePreferences
+				.getMinCitizenSavedToWin(this);
+		if (win) {
 			textName = "You Win !";
 			buttonName = "Fu%k Yea";
+			// update background music setting
+	    	this.startService(new Intent(this, BackgroundMusicService.class));
 		} else {
 			textName = "You LOOSE !!!";
 			buttonName = "Okay :(";
@@ -481,8 +474,9 @@ public class GameActivity extends MapActivity {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								Intent intent = new Intent();
+								intent.putExtra(END_GAME_WIN, win);
 								intent.putExtra(END_GAME_TIME,
-										new Date().getTime() - startTime);
+										Calendar.getInstance().getTimeInMillis() - startTime);
 								intent.putExtra(END_GAME_CITIZEN_SAVED,
 										spawn.getCitizenFree());
 								intent.putExtra(END_GAME_CITIZEN_KILLED,
@@ -516,7 +510,7 @@ public class GameActivity extends MapActivity {
 
 				mapController.setCenter(new GeoPoint(world.getLatitude(), world
 						.getLongitude()));
-				mapController.setZoom(ZOOM_LEVEL);
+				mapController.setZoom(ZOOM_LEVEL_MIN);
 			}
 			break;
 		case SETTINGS_CODE:

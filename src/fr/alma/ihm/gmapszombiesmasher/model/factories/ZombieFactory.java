@@ -16,32 +16,33 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
  * 
  */
 public class ZombieFactory {
-  public static final double SPEED = 2.0 * (GameActivity.getZoom() - GameActivity.ZOOM_LEVEL);
+  public static final double SPEED = 2.0;
 
 	private int topLatitude;
 	private int botLatitude;
 	private int leftLongitude;
 	private int rightLongitude;
 	private Spawn spawn;
+	private int zoomLevel;
 	
 
 	public ZombieFactory(int topLatitude, int botLatitude, int leftLongitude,
-			int rightLongitude, Spawn spawn) {
+			int rightLongitude, Spawn spawn, int zoomLevel) {
 
 		this.topLatitude = topLatitude;
 		this.botLatitude = botLatitude;
 		this.leftLongitude = leftLongitude;
 		this.rightLongitude = rightLongitude;
 		this.spawn = spawn;
+		this.zoomLevel = zoomLevel;
 	}
 
 	public Entity getZombie() {
-		System.out.println("ZOOM: " + (GameActivity.getZoom() - GameActivity.ZOOM_LEVEL));
 		Entity zombie = new Entity();
     CMoveSpeed speed = new CMoveSpeed(zombie);
-		zombie.addComponent(new CAIZombie(zombie, spawn));
+		zombie.addComponent(new CAIZombie(zombie, spawn, zoomLevel));
 		zombie.addComponent(new CGoal(zombie));
-		speed.setMoveSpeed(SPEED);
+		speed.setMoveSpeed(SPEED * (zoomLevel - GameActivity.ZOOM_LEVEL_MIN));
 		zombie.addComponent(speed);
 		// Living
 		zombie.addComponent(new CBoolean(zombie));

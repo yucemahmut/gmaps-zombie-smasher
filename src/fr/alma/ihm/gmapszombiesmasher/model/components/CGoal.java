@@ -49,7 +49,6 @@ public class CGoal extends Component {
 	 */
 	public CCoordinates setGoal(Entity goal) {
 		this.goal = goal;
-
 		if (goal.getComponentMap().containsKey(CCoordinates.class.getName())) {
 			lastGoalCoordinates = (CCoordinates) goal.getComponentMap().get(
 					CCoordinates.class.getName());
@@ -121,6 +120,7 @@ public class CGoal extends Component {
 
 			} catch (Exception e) {
 				//e.printStackTrace();
+				//System.out.println("jsonString: " + jsonString);
 				SystemClock.sleep(250);
 				startCoordinates = updateSteps();
 			}

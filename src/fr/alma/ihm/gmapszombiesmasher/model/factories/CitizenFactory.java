@@ -16,16 +16,17 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
  * 
  */
 public class CitizenFactory {
-  public static final double SPEED = 10.0 * (GameActivity.getZoom() - GameActivity.ZOOM_LEVEL);
+  public static final double SPEED = 10.0;
 
 	private int topLatitude;
 	private int botLatitude;
 	private int leftLongitude;
 	private int rightLongitude;
 	private Spawn spawn;
+	private int zoomLevel;
 
 	public CitizenFactory(int topLatitude, int botLatitude, int leftLongitude,
-			int rightLongitude, Spawn spawn) {
+			int rightLongitude, Spawn spawn, int zoomLevel) {
 
 		this.topLatitude = topLatitude;
 		this.botLatitude = botLatitude;
@@ -33,18 +34,18 @@ public class CitizenFactory {
 		this.rightLongitude = rightLongitude;
 		
 		this.spawn = spawn;
+		this.zoomLevel = zoomLevel;
 	}
 
 	public Entity getCitizen() {
 		// create a citizen
-		// TODO Component markerColor for citizen
 		Entity citizen = new Entity();
     CMoveSpeed speed = new CMoveSpeed(citizen);
 		citizen.addComponent(new CCoordinates(citizen));
 		citizen.addComponent(new CGoal(citizen));
-    speed.setMoveSpeed(SPEED);
+    speed.setMoveSpeed(SPEED * (zoomLevel - GameActivity.ZOOM_LEVEL_MIN));
 		citizen.addComponent(speed);
-		citizen.addComponent(new CAICitizen(citizen, spawn));
+		citizen.addComponent(new CAICitizen(citizen, spawn, zoomLevel));
 		// Living
 		citizen.addComponent(new CBoolean(citizen));
 		CMarker marker = new CMarker(citizen);
