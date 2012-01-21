@@ -11,20 +11,19 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
 import fr.alma.ihm.gmapszombiesmasher.GameActivity;
+import fr.alma.ihm.gmapszombiesmasher.gMapsZombieSmasher;
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.BombFactory;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.ChopperFactory;
 import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
-import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManagerFactory;
 
 public class GameOnTouchListener implements OnTouchListener {
 
 	private GameActivity parent;
 	private Map<Integer, Boolean> selected;
 	private Spawn spawn;
-	private SoundsManager soundManager;
 
 	private int selectedButton = -1;
 	private long lifeTime = -1;
@@ -36,7 +35,6 @@ public class GameOnTouchListener implements OnTouchListener {
 		super();
 		this.parent = parent;
 		this.selected = selected;
-		soundManager = SoundsManagerFactory.get(parent);
 	}
 
 	@Override
@@ -65,7 +63,7 @@ public class GameOnTouchListener implements OnTouchListener {
 				// If the bomb doesn't exist yet
 				if (spawn.getBomb() == null) {
 					// Play explosion sound
-					soundManager.playSound(SoundsManager.EXPLOSION);
+					gMapsZombieSmasher.soundsManager.playSound(SoundsManager.EXPLOSION);
 					createEntity(GameActivity.BOMB, point);
 				}
 				break;

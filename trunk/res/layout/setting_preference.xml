@@ -7,14 +7,15 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="check_backgroundMusic"
-            android:summaryOn="Zombie: Did I scare you?"
             android:summaryOff="Silence hill"
+            android:summaryOn="Zombie: Did I scare you?"
             android:title="Background music" />
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="check_sound"
-            android:summary="Zombie: Did I scare you?"
+            android:summaryOff="Sound off"
+            android:summaryOn="Sound on"
             android:title="Sound" />
 
         <CheckBoxPreference

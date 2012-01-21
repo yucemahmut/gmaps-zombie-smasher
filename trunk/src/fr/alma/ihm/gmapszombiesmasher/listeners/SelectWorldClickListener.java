@@ -8,11 +8,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import fr.alma.ihm.gmapszombiesmasher.GameActivity;
 import fr.alma.ihm.gmapszombiesmasher.PlayActivity;
+import fr.alma.ihm.gmapszombiesmasher.gMapsZombieSmasher;
+import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
 
 public class SelectWorldClickListener implements OnItemClickListener {
 	
 	private Activity parent;
+
 
 	public SelectWorldClickListener(Activity activity) {
 		this.parent = activity;
@@ -33,6 +36,8 @@ public class SelectWorldClickListener implements OnItemClickListener {
 		Intent intent = new Intent().setClass(this.parent, GameActivity.class);
 		//On affecte à l'Intent le Bundle que l'on a créé
 		intent.putExtras(objetbunble);
+		
+		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.EXPLOSION_2);
 		
 	    this.parent.startActivityForResult(intent, PlayActivity.PLAY_CODE);
 	}

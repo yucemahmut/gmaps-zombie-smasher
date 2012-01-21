@@ -49,9 +49,8 @@ public class SettingPreferenceActivity extends PreferenceActivity {
         	@Override
         	public boolean onPreferenceChange(Preference arg0, Object newValue) {
         		Toast.makeText(context, "Sound " +  ((Boolean)newValue?"On":"Off"), Toast.LENGTH_SHORT).show();
-        		
-        		// to do: sound control method
-        		// ...        
+        		  
+        		gMapsZombieSmasher.soundsManager.setSoundOn((Boolean)newValue);
         		
         		return true;
         	}
