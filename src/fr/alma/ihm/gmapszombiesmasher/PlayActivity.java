@@ -4,11 +4,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.content.DialogInterface;
+
 import fr.alma.ihm.gmapszombiesmasher.listeners.ManageLevelsButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.SelectWorldClickListener;
 import fr.alma.ihm.gmapszombiesmasher.listeners.SelectWorldLongClickListener;
@@ -57,10 +62,8 @@ public class PlayActivity extends Activity {
 				int citizenKilled = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_KILLED);
 				int zombieKilled = objetbunble.getInt(GameActivity.END_GAME_ZOMBIES_KILLED);
 				
-				System.out.println("time: " + time);
-				System.out.println("citizenSaved: " + citizenSaved);
-				System.out.println("citizenKilled: " + citizenKilled);
-				System.out.println("zombieKilled: " + zombieKilled);
+        displayResults(time, citizenSaved + citizenKilled, citizenSaved,
+                       zombieKilled, win);
 				
 				//Update Achievements
 				AchievementsActivity.updateAchievement(AchievementsActivity.TOTAL_TIME_ACHIEVEMENT, time);
@@ -72,4 +75,31 @@ public class PlayActivity extends Activity {
 			break;
 		}
 	}
+
+  private void displayResults(double time, int citizens, int savedCitizens,
+                             int killedZombies, boolean win) {
+    View resultView = getLayoutInflater().inflate(R.layout.game_results, null);
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    String playedTime = "  " + time + " seconds";
+    String citizensStat = "  " + savedCitizens + " / " + citizens;
+    String zombiesStat = "  " + killedZombies;
+    String closeText = (win)? ":)" : ":(";
+    TextView playedTimeView = (TextView) resultView.findViewById(R.id.played_time_value);
+    TextView citizensView = (TextView) resultView.findViewById(R.id.citizens_saved_value);
+    TextView zombiesView = (TextView) resultView.findViewById(R.id.zombies_killed_value);
+
+    playedTimeView.setText(playedTime);
+    citizensView.setText(citizensStat);
+    zombiesView.setText(zombiesStat);
+
+    builder.setTitle("Results");
+    builder.setView(resultView);
+    builder.setPositiveButton(closeText, new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int id) {
+        dialog.cancel();
+      }
+    });
+
+    builder.show();
+  }
 }

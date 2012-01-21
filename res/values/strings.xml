@@ -35,6 +35,11 @@
     <string name="select_world_here">New World Here</string>
     <string name="edit_ok">Validate World Edition</string>
     <string name="edit_cancel">Cancel World Edition</string>
+        
+    <!-- Result Pop-Up -->
+    <string name="played_time">Played Time</string>
+    <string name="citizens_saved">Citizens Saved</string>
+    <string name="zombies_killed">Zombies Killed</string>
     
     
 </resources>
