@@ -43,7 +43,7 @@ public class CitizenFactory {
     CMoveSpeed speed = new CMoveSpeed(citizen);
 		citizen.addComponent(new CCoordinates(citizen));
 		citizen.addComponent(new CGoal(citizen));
-    speed.setMoveSpeed(SPEED * (zoomLevel - GameActivity.ZOOM_LEVEL_MIN));
+    speed.setMoveSpeed(SPEED * (GameActivity.ZOOM_LEVEL_MIN - zoomLevel + 2));
 		citizen.addComponent(speed);
 		citizen.addComponent(new CAICitizen(citizen, spawn, zoomLevel));
 		// Living

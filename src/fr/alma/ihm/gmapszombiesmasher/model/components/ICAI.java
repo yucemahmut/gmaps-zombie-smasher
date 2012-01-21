@@ -7,7 +7,7 @@ public abstract class ICAI extends Component{
 	
 	private int zoomLevel;
 	private double distanceMin = 10 ;
-	private double distanceBombMin = 50;
+	private double distanceBombMin = 100;
 	private double distanceChopperMin = 70;
 
 	public ICAI(Entity parent, int zoomLevel){
@@ -21,13 +21,13 @@ public abstract class ICAI extends Component{
 	public abstract void update();
 	
 	public double getDistanceMin(){
-		return distanceMin * (zoomLevel - GameActivity.ZOOM_LEVEL_MIN);
+		return distanceMin * (GameActivity.ZOOM_LEVEL_MIN - zoomLevel + 1);
 	}
 	public double getDistanceBombMin(){
-		return distanceBombMin * (zoomLevel - GameActivity.ZOOM_LEVEL_MIN);
+		return distanceBombMin * (GameActivity.ZOOM_LEVEL_MIN - zoomLevel + 1);
 	}
 	public double getDistanceChopperMin(){
-		return distanceChopperMin * (zoomLevel - GameActivity.ZOOM_LEVEL_MIN);
+		return distanceChopperMin * (GameActivity.ZOOM_LEVEL_MIN - zoomLevel + 1);
 	}
 	
 }
