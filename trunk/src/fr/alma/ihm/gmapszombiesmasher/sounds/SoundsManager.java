@@ -43,6 +43,7 @@ public class SoundsManager {
 		soundMap.put(STANDING_BY, sounds.load(context, R.raw.standing_by, 1));
 		soundMap.put(BUILD_FINISHED, sounds.load(context, R.raw.build_finished, 1));
 		soundMap.put(SHIOO, sounds.load(context, R.raw.shioo, 1));
+		soundMap.put(ZOMBIE, sounds.load(context, R.raw.zombie, 1));
 		
 	}
 	

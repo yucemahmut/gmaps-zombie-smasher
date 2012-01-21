@@ -16,7 +16,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
  * 
  */
 public class ZombieFactory {
-  public static final double SPEED = 2.0;
+  public static final double SPEED = 5.0;
 
 	private int topLatitude;
 	private int botLatitude;
@@ -42,7 +42,7 @@ public class ZombieFactory {
     CMoveSpeed speed = new CMoveSpeed(zombie);
 		zombie.addComponent(new CAIZombie(zombie, spawn, zoomLevel));
 		zombie.addComponent(new CGoal(zombie));
-		speed.setMoveSpeed(SPEED * (zoomLevel - GameActivity.ZOOM_LEVEL_MIN));
+		speed.setMoveSpeed(SPEED * (GameActivity.ZOOM_LEVEL_MIN - zoomLevel + 2));
 		zombie.addComponent(speed);
 		// Living
 		zombie.addComponent(new CBoolean(zombie));

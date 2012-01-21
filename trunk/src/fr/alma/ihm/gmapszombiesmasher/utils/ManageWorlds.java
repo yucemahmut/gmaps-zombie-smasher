@@ -3,6 +3,7 @@ package fr.alma.ihm.gmapszombiesmasher.utils;
 import java.util.LinkedList;
 import java.util.List;
 
+import fr.alma.ihm.gmapszombiesmasher.GameActivity;
 import fr.alma.ihm.gmapszombiesmasher.exceptions.AlreadyExistingWorldException;
 
 public class ManageWorlds {
@@ -10,7 +11,7 @@ public class ManageWorlds {
 	private final static String DEFAULT_WORLD_NAME = "Manhattan";
 	private final static int DEFAULT_WORLD_LONGITUDE = -73960500;
 	private final static int DEFAULT_WORLD_LATITUDE = 40769800;
-	private final static int DEFAULT_WORLD_ZOOM = 18;
+	private final static int DEFAULT_WORLD_ZOOM = GameActivity.ZOOM_LEVEL_MIN;
 	
 	private static List<World> worlds;
 	
