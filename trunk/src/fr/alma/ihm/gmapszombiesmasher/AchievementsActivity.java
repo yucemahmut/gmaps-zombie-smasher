@@ -135,6 +135,13 @@ public class AchievementsActivity extends Activity {
 				listItem);
 	}
 
+	/**
+	 * Return a string with the update time added to the existing time
+	 * 
+	 * @param string the existing time with format %d h %d m %d s
+	 * @param update the time in miliseconde to update
+	 * @return the updated time with format %d h %d m %d s
+	 */
 	private static String getTotalTime(String string, long update) {
 		long hoursMili = 0;
 		long minutesMili = 0;
@@ -151,7 +158,7 @@ public class AchievementsActivity extends Activity {
 
 		int seconds = (int) (newTime / 1000) % 60;
 		int minutes = (int) ((newTime / (1000 * 60)) % 60);
-		int hours = (int) ((newTime / (1000 * 60 * 60)) % 24);
+		int hours = (int) (newTime / (1000 * 60 * 60));
 
 		return hours + " h " + minutes + " m " + seconds + " s ";
 	}

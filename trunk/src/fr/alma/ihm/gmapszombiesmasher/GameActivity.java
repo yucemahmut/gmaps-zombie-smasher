@@ -140,6 +140,10 @@ public class GameActivity extends MapActivity {
 
 	}
 
+	/**
+	 * 
+	 * @return the current zoom level
+	 */
 	public int getZoom() {
 		return mapView.getZoomLevel();
 	}
@@ -166,8 +170,8 @@ public class GameActivity extends MapActivity {
 	}
 
 	/**
-	 * Create the hashmap with the state of each button (selected or not) Add
-	 * listeners to the buttons
+	 * Create a listener on each button and update "selectedButton" if one is
+	 * selected
 	 */
 	private void initButtons() {
 
@@ -193,7 +197,7 @@ public class GameActivity extends MapActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		startMainLoop();
+		startGameProcess();
 	}
 
 	@Override
@@ -218,10 +222,10 @@ public class GameActivity extends MapActivity {
 	}
 
 	/**
-	 * 
+	 * Start the main process that load the map, spawn the citizen and zombies
+	 * on the map
 	 */
-	protected void startMainLoop() {
-		System.out.println("Started: " + started + " - notSpawn: " + notSpawn);
+	protected void startGameProcess() {
 		if (!started) {
 			mapView.getOverlays().clear();
 			started = true;
@@ -266,6 +270,10 @@ public class GameActivity extends MapActivity {
 			spawnTread.start();
 
 			// Handler waitting for spawn
+			/**
+			 * Waitting handler that allways listen if an incoming message came.
+			 * 
+			 */
 			waittingHandler = new Handler() {
 				@Override
 				public void handleMessage(Message msg) {
@@ -288,7 +296,7 @@ public class GameActivity extends MapActivity {
 					case RESUME_CODE:
 						if (onPause) {
 							onPause = false;
-							nextStep();
+							waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 						}
 						break;
 					case CLEAR_MAP_CODE:
@@ -408,17 +416,6 @@ public class GameActivity extends MapActivity {
 		case R.id.it_resume:
 			waittingHandler.sendEmptyMessage(RESUME_CODE);
 			return true;
-
-		case R.id.it_achievements:
-			// TODO
-			return true;
-
-		case R.id.it_settings:
-			Intent intent = new Intent().setClass(this,
-					SettingPreferenceActivity.class);
-			this.startActivityForResult(intent, 2);
-			return true;
-
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -522,14 +519,25 @@ public class GameActivity extends MapActivity {
 
 	}
 
+	/**
+	 * 
+	 * @return return the handler
+	 */
 	public Handler getWaitingHandler() {
 		return waittingHandler;
 	}
 
+	/**
+	 *
+	 * @return the selected button (CHOPPER or BOMB)
+	 */
 	public int getSelectedButton() {
 		return selectedButton;
 	}
 	
+	/**
+	 * Set that no button is selected
+	 */
 	public void removeSelectedButton() {
 		selectedButton = -1;
 	}
