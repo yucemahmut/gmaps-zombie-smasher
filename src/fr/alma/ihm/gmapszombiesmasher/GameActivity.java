@@ -296,6 +296,7 @@ public class GameActivity extends MapActivity {
 					case RESUME_CODE:
 						if (onPause) {
 							onPause = false;
+							spawn.updateSeconds();
 							waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 						}
 						break;
