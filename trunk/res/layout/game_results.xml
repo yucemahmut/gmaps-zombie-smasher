@@ -10,7 +10,7 @@
     <ImageView android:id="@+id/played_time_img"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:src="@drawable/btn_helicopter"/>
+               android:src="@drawable/time_achievements"/>
     <LinearLayout android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:orientation="vertical"
@@ -32,7 +32,7 @@
     <ImageView android:id="@+id/citizens_saved_img"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:src="@drawable/btn_helicopter"/>
+               android:src="@drawable/citizens_saved_achievements"/>
     <LinearLayout android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:orientation="vertical"
@@ -51,32 +51,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="5dp">
-    <ImageView android:id="@+id/citizens_killed_img"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:src="@drawable/btn_helicopter"/>
-    <LinearLayout android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:padding="5dp">
-      <TextView android:id="@+id/citizens_killed_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="@string/citizens_killed"/>
-      <TextView android:id="@+id/citizens_killed_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-    </LinearLayout>
-  </LinearLayout>
-  <LinearLayout android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="5dp">
     <ImageView android:id="@+id/zombies_killed_img"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:src="@drawable/btn_helicopter"/>
+               android:src="@drawable/zombies_killed_achievements"/>
     <LinearLayout android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:orientation="vertical"
