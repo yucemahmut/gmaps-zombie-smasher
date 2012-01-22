@@ -23,12 +23,28 @@ public class AchievementsActivity extends Activity {
 	public static final String TOTAL_TIME_ACHIEVEMENT = "total_time";
 	public static final String KILLED_CITIZENS_ACHIEVEMENT = "killed_citizens";
 	public static final String EATED_CITIZENS_ACHIEVEMENT = "eated_citizens";
+	private Activity parent = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.achievements);
+		initialisation();
+	}
 
+	public AchievementsActivity(Activity activity) {
+		this.parent = activity;
+	}
+	
+	private Activity getActivity(){
+		if(this.parent == null){
+			return this;
+		}
+		
+		return parent;
+	}
+
+	private void initialisation() {
 		// Récupération de la listview créée dans le fichier main.xml
 		ListView maListViewPerso = (ListView) findViewById(R.id.achievements_list);
 
@@ -74,16 +90,17 @@ public class AchievementsActivity extends Activity {
 	 */
 	private void initList(List<Map<String, String>> listItem) {
 		listItem.add(createAchievement(TOTAL_TIME_ACHIEVEMENT,
-				R.drawable.time_achievements, getString(R.string.played_time)));
+				R.drawable.time_achievements, getActivity().getString(R.string.played_time)));
 		listItem.add(createAchievement(SAVED_CITIZEN_ACHIEVEMENT,
-				R.drawable.citizens_saved_achievements, getString(R.string.citizens_saved)));
+				R.drawable.citizens_saved_achievements,
+				getActivity().getString(R.string.citizens_saved)));
 		listItem.add(createAchievement(KILLED_ZOMBIE_ACHIEVEMENT,
 				R.drawable.zombies_killed_achievements,
-				getString(R.string.zombies_killed)));
+				getActivity().getString(R.string.zombies_killed)));
 		listItem.add(createAchievement(KILLED_CITIZENS_ACHIEVEMENT,
-				R.drawable.bomb_marker, getString(R.string.citizens_killed)));
+				R.drawable.bomb_marker, getActivity().getString(R.string.citizens_killed)));
 		listItem.add(createAchievement(EATED_CITIZENS_ACHIEVEMENT,
-				R.drawable.bomb_marker, getString(R.string.citizens_eated)));
+				R.drawable.bomb_marker, getActivity().getString(R.string.citizens_eated)));
 	}
 
 	/**
@@ -138,8 +155,10 @@ public class AchievementsActivity extends Activity {
 	/**
 	 * Return a string with the update time added to the existing time
 	 * 
-	 * @param string the existing time with format %d h %d m %d s
-	 * @param update the time in miliseconde to update
+	 * @param string
+	 *            the existing time with format %d h %d m %d s
+	 * @param update
+	 *            the time in miliseconde to update
 	 * @return the updated time with format %d h %d m %d s
 	 */
 	private String getTotalTime(String string, long update) {
@@ -153,7 +172,7 @@ public class AchievementsActivity extends Activity {
 			minutesMili = Integer.parseInt(split[2]) * (1000 * 60);
 			secondsMili = Integer.parseInt(split[4]) * (1000);
 		}
-		
+
 		long newTime = update + hoursMili + minutesMili + secondsMili;
 
 		int seconds = (int) (newTime / 1000) % 60;
