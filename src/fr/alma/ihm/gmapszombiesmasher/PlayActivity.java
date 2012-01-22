@@ -63,7 +63,7 @@ public class PlayActivity extends Activity {
 				int citizenEated = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_EATED);
 				int zombieKilled = objetbunble.getInt(GameActivity.END_GAME_ZOMBIES_KILLED);
 				
-        displayResults(time, citizenSaved + citizenKilled, citizenSaved,
+        displayResults(time, citizenSaved + citizenKilled + citizenEated, citizenSaved,
                        zombieKilled, win);
         
         		System.out.println("TIME: " + time);
@@ -85,7 +85,7 @@ public class PlayActivity extends Activity {
                              int killedZombies, boolean win) {
     View resultView = getLayoutInflater().inflate(R.layout.game_results, null);
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    String playedTime = "  " + time + " seconds";
+    String playedTime = "  " + time / 1000 + " seconds";
     String citizensStat1 = "  " + savedCitizens + " / " + citizens;
     String citizensStat2 = "  " + (citizens - savedCitizens) + " / " + citizens;
     String zombiesStat = "  " + killedZombies;
