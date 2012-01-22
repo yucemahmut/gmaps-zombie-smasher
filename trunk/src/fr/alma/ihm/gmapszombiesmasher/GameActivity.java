@@ -2,8 +2,6 @@ package fr.alma.ihm.gmapszombiesmasher;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -453,9 +451,9 @@ public class GameActivity extends MapActivity {
 							public void onClick(DialogInterface dialog, int id) {
 								Intent intent = new Intent();
 								intent.putExtra(END_GAME_WIN, win);
-								System.out.println(Calendar
+								System.out.println("TIIIIIIIIIIIIIIIIME: " +( Calendar
 										.getInstance().getTimeInMillis()
-										- startTime);
+										- startTime));
 
 								intent.putExtra(END_GAME_TIME, Calendar
 										.getInstance().getTimeInMillis()

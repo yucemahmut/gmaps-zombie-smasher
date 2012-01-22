@@ -8,7 +8,6 @@ import android.app.Activity;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import fr.alma.ihm.gmapszombiesmasher.GameActivity;
@@ -116,17 +115,17 @@ public class Spawn {
 			CBoolean exist = ((CBoolean) entity.getComponentMap().get(CBoolean.class.getName()));
 			if(exist.isExist()){
 				int id = ((CMarker)entity.getComponentMap().get(CMarker.class.getName())).getMarker();
-				createPutOverlay(entity, id);
+				createPutOverlay(entity, id, true);
 			}
 		}
 	}
 	
-	private void createPutOverlay(Entity entity, int id) {
+	private void createPutOverlay(Entity entity, int id, boolean shadow) {
 		CCoordinates coordinates = ((CCoordinates) entity.getComponentMap().get(CCoordinates.class.getName()));
 		GeoPoint point = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
 		OverlayItem overlayitem = new OverlayItem(point, null, null);
 		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(id));
-		entityOverlay.addOverlay(overlayitem);
+		entityOverlay.addOverlay(overlayitem, shadow);
 		mapView.getOverlays().add(entityOverlay);
 	}
 
@@ -134,7 +133,7 @@ public class Spawn {
 		if(getChopper() != null){
 			int id = ((CMarker)getChopper().getComponentMap().get(CMarker.class.getName())).getMarker();
 			int tmp = (id + (chopperCurrentFrame++%chopperTotalFrame));
-			createPutOverlay(getChopper(), tmp);
+			createPutOverlay(getChopper(), tmp, false);
 			
 			if(Calendar.getInstance().getTimeInMillis() - chopperStart >= GameActivity.CHOPPER_LIFE_TIME){
 				destroyChopper();
@@ -145,7 +144,7 @@ public class Spawn {
 		if(getBomb() != null){
 			int id = ((CMarker)getBomb().getComponentMap().get(CMarker.class.getName())).getMarker();
 			int tmp = (id + (bombCurrentFrame++%bombTotalFrame));
-			createPutOverlay(getBomb(), tmp);
+			createPutOverlay(getBomb(), tmp, true);
 			if(Calendar.getInstance().getTimeInMillis() - bombStart >= GameActivity.BOMB_LIFE_TIME){
 				destroyBomb();
 				bombCurrentFrame = 0;

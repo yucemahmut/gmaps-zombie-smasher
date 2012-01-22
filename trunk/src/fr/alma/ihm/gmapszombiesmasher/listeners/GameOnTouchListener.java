@@ -1,7 +1,5 @@
 package fr.alma.ihm.gmapszombiesmasher.listeners;
 
-import java.util.Map;
-
 import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;

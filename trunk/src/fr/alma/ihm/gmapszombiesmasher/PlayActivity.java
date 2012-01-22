@@ -57,7 +57,7 @@ public class PlayActivity extends Activity {
 			if (resultCode == RESULT_OK) {
 				Bundle objetbunble = data.getExtras();
 				boolean win = objetbunble.getBoolean(GameActivity.END_GAME_WIN);
-				double time = objetbunble.getDouble(GameActivity.END_GAME_TIME);
+				long time = objetbunble.getLong(GameActivity.END_GAME_TIME);
 				int citizenSaved = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_SAVED);
 				int citizenKilled = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_KILLED);
 				int citizenEated = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_EATED);
@@ -65,6 +65,8 @@ public class PlayActivity extends Activity {
 				
         displayResults(time, citizenSaved + citizenKilled, citizenSaved,
                        zombieKilled, win);
+        
+        		System.out.println("TIME: " + time);
 				
 				//Update Achievements
 				AchievementsActivity.updateAchievement(AchievementsActivity.TOTAL_TIME_ACHIEVEMENT, time);
