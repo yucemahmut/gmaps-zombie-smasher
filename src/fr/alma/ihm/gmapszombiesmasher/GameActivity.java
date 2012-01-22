@@ -89,6 +89,7 @@ public class GameActivity extends MapActivity {
 	public static final String END_GAME_CITIZEN_KILLED = "citizenKilled";
 	public static final String END_GAME_WIN = "win";
 	public static final String END_GAME_CITIZEN_EATED = "citizenEated";
+	public static final String END_GAME_ZOMBIES_TOTAL = "zombiesTotal";
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -466,6 +467,7 @@ public class GameActivity extends MapActivity {
 										spawn.getCitizenKilled());
 								intent.putExtra(END_GAME_ZOMBIES_KILLED,
 										spawn.getZombieKilled());
+								intent.putExtra(END_GAME_ZOMBIES_TOTAL, ManagePreferences.getZombieNumber(GameActivity.this));
 								GameActivity.this.setResult(RESULT_OK, intent);
 								GameActivity.this.finish();
 							}

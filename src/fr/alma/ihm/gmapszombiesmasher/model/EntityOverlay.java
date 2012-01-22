@@ -38,7 +38,9 @@ public class EntityOverlay extends ItemizedOverlay<OverlayItem> {
 	@Override
     public void draw(Canvas canvas, MapView mapView, boolean shadow)
     {
-		if(!shadow)
+		if(!shadow){
 			super.draw(canvas, mapView, false);
+		}
+			
     }
 }
