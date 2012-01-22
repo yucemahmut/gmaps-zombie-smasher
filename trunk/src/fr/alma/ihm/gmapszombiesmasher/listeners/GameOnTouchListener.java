@@ -106,17 +106,19 @@ public class GameOnTouchListener implements OnTouchListener {
 		Runnable ButtonLifeTime = new Runnable() {
 			@Override
 			public void run() {
+        int buttonID = buttonSelection;
+
 				parent.removeSelectedButton();
-				parent.getWaitingHandler().sendEmptyMessage(buttonSelection);
-				System.out.println("BEFORE SLEEP: " + buttonSelection);
+				parent.getWaitingHandler().sendEmptyMessage(buttonID);
+				System.out.println("BEFORE SLEEP: " + buttonID);
 				SystemClock.sleep(buttonLifeTime);
-				System.out.println("AFTER SLEEP: " + buttonSelection);
-				parent.getWaitingHandler().sendEmptyMessage(buttonSelection);
+				System.out.println("AFTER SLEEP: " + buttonID);
+				parent.getWaitingHandler().sendEmptyMessage(buttonID);
 			}
 		};
 
 		Thread buttonLife = new Thread(ButtonLifeTime);
-		//buttonLife.start();
+		buttonLife.start();
 	}
 
 	public void setSpawn(Spawn spawn) {

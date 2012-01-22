@@ -296,6 +296,7 @@ public class GameActivity extends MapActivity {
 					case REFRESH_MAP_CODE:
 						mapView.invalidate();
 					case CHOPPER_BUTTON_SELECTION:
+            System.out.println("###########----#############");
 						GameActivity.this
 								.setSelected((Button) GameActivity.this
 										.findViewById(R.id.helicopter_button));
