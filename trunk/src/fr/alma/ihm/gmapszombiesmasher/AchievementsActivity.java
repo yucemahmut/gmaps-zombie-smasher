@@ -29,22 +29,6 @@ public class AchievementsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.achievements);
-		initialisation();
-	}
-
-	public AchievementsActivity(Activity activity) {
-		this.parent = activity;
-	}
-	
-	private Activity getActivity(){
-		if(this.parent == null){
-			return this;
-		}
-		
-		return parent;
-	}
-
-	private void initialisation() {
 		// Récupération de la listview créée dans le fichier main.xml
 		ListView maListViewPerso = (ListView) findViewById(R.id.achievements_list);
 
@@ -60,6 +44,22 @@ public class AchievementsActivity extends Activity {
 
 		// On attribut à notre listView l'adapter que l'on vient de créer
 		maListViewPerso.setAdapter(mSchedule);
+	}
+	
+	public AchievementsActivity() {
+		super();
+	}
+
+	public AchievementsActivity(Activity activity) {
+		this.parent = activity;
+	}
+
+	private Activity getActivity() {
+		if (this.parent == null) {
+			return this;
+		}
+
+		return parent;
 	}
 
 	/**
@@ -90,17 +90,20 @@ public class AchievementsActivity extends Activity {
 	 */
 	private void initList(List<Map<String, String>> listItem) {
 		listItem.add(createAchievement(TOTAL_TIME_ACHIEVEMENT,
-				R.drawable.time_achievements, getActivity().getString(R.string.played_time)));
+				R.drawable.time_achievements,
+				getActivity().getString(R.string.played_time)));
 		listItem.add(createAchievement(SAVED_CITIZEN_ACHIEVEMENT,
-				R.drawable.citizens_saved_achievements,
-				getActivity().getString(R.string.citizens_saved)));
+				R.drawable.citizens_saved_achievements, getActivity()
+						.getString(R.string.citizens_saved)));
 		listItem.add(createAchievement(KILLED_ZOMBIE_ACHIEVEMENT,
-				R.drawable.zombies_killed_achievements,
-				getActivity().getString(R.string.zombies_killed)));
+				R.drawable.zombies_killed_achievements, getActivity()
+						.getString(R.string.zombies_killed)));
 		listItem.add(createAchievement(KILLED_CITIZENS_ACHIEVEMENT,
-				R.drawable.bomb_marker, getActivity().getString(R.string.citizens_killed)));
+				R.drawable.citizens_killed_bomb_achievement,
+				getActivity().getString(R.string.citizens_killed)));
 		listItem.add(createAchievement(EATED_CITIZENS_ACHIEVEMENT,
-				R.drawable.bomb_marker, getActivity().getString(R.string.citizens_eated)));
+				R.drawable.citizens_eated_achievement,
+				getActivity().getString(R.string.citizens_eated)));
 	}
 
 	/**
