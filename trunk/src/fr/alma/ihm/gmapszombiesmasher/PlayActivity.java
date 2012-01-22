@@ -62,6 +62,7 @@ public class PlayActivity extends Activity {
 				int citizenKilled = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_KILLED);
 				int citizenEated = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_EATED);
 				int zombieKilled = objetbunble.getInt(GameActivity.END_GAME_ZOMBIES_KILLED);
+				int zombieTotal = objetbunble.getInt(GameActivity.END_GAME_ZOMBIES_TOTAL);
 				
         displayResults(time, citizenSaved + citizenKilled + citizenEated, citizenSaved,
                        zombieKilled, win);
