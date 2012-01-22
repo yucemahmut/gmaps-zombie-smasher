@@ -68,7 +68,7 @@ public class PlayActivity extends Activity {
                        citizenSaved,zombieTotal, zombieKilled, win);
         
         		System.out.println("TIME: " + time);
-        		AchievementsActivity achievementsActivity = new AchievementsActivity();
+        		AchievementsActivity achievementsActivity = new AchievementsActivity(this);
         		
 				//Update Achievements
 				achievementsActivity.updateAchievement(AchievementsActivity.TOTAL_TIME_ACHIEVEMENT, time);
