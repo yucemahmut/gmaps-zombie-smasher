@@ -465,7 +465,9 @@ public class GameActivity extends MapActivity {
 										spawn.getCitizenKilled());
 								intent.putExtra(END_GAME_ZOMBIES_KILLED,
 										spawn.getZombieKilled());
-								intent.putExtra(END_GAME_ZOMBIES_TOTAL, ManagePreferences.getZombieNumber(GameActivity.this));
+								intent.putExtra(END_GAME_ZOMBIES_TOTAL, 
+										ManagePreferences.getZombieNumber(GameActivity.this) 
+										+ spawn.getCitizenEated());
 								GameActivity.this.setResult(RESULT_OK, intent);
 								GameActivity.this.finish();
 							}
