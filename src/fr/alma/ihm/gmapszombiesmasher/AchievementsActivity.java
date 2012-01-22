@@ -1,4 +1,4 @@
-package fr.alma.ihm.gmapszombiesmasher;
+	package fr.alma.ihm.gmapszombiesmasher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +21,8 @@ public class AchievementsActivity extends Activity{
 	public static final String SAVED_CITIZEN_ACHIEVEMENT = "saved_citizen";
 	public static final String KILLED_ZOMBIE_ACHIEVEMENT = "killed_zombie";
 	public static final String TOTAL_TIME_ACHIEVEMENT = "total_time";
+	public static final String KILLED_CITIZENS_ACHIEVEMENT = "killed_citizens";
+	public static final String EATED_CITIZENS_ACHIEVEMENT = "eated_citizens";
 	
 	
 	@Override
@@ -48,6 +50,7 @@ public class AchievementsActivity extends Activity{
 	 * @return le item list
 	 */
 	private static List<Map<String, String>> getItemList(){
+		@SuppressWarnings("unchecked")
 		List<Map<String, String>> listItem = 
         		(List<Map<String, String>>)PersistenceAccess.getObject(PersistenceAccess.ACHIEVEMENTS_LIST);
 		if(listItem == null){
@@ -55,9 +58,7 @@ public class AchievementsActivity extends Activity{
 			initList(listItem);
 			PersistenceAccess.saveObject(PersistenceAccess.ACHIEVEMENTS_LIST, listItem);
 		}
-		
-		System.out.println("ListItem:" + listItem);
-		
+
 		return listItem;
 	}
 
@@ -68,7 +69,9 @@ public class AchievementsActivity extends Activity{
 	private static void initList(List<Map<String, String>> listItem) {
 		listItem.add(createAchievement(TOTAL_TIME_ACHIEVEMENT, R.drawable.chopper_marker, "Total Game Time"));
 		listItem.add(createAchievement(SAVED_CITIZEN_ACHIEVEMENT, R.drawable.chopper_marker, "Citizens Saved"));
-		listItem.add(createAchievement(KILLED_ZOMBIE_ACHIEVEMENT, R.drawable.bomb_marker, "Zombies Killed"));
+		listItem.add(createAchievement(KILLED_ZOMBIE_ACHIEVEMENT, R.drawable.bomb_marker, "Zombies Killed by Bomb"));
+		listItem.add(createAchievement(KILLED_CITIZENS_ACHIEVEMENT, R.drawable.bomb_marker, "Citizens Killed by Bomb"));
+		listItem.add(createAchievement(EATED_CITIZENS_ACHIEVEMENT, R.drawable.bomb_marker, "Citizens eated by Zombie"));
 	}
 	
 	/**
@@ -98,7 +101,8 @@ public class AchievementsActivity extends Activity{
 		List<Map<String, String>> listItem = getItemList();
 		for(Map<String, String> map: listItem){
 			if(map.get(ID).equals(id)){
-				map.put(PROGRESS, String.valueOf(map.get(PROGRESS) + update));
+				double total = Double.valueOf(map.get(PROGRESS)) + update;
+				map.put(PROGRESS, String.valueOf(total));
 			}
 		}
 		

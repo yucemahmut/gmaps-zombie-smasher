@@ -58,7 +58,7 @@ public class GameActivity extends MapActivity {
 	private Spawn spawn;
 	private Handler waittingHandler;
 	private ProgressDialog dialog;
-	private Map<Integer, Boolean> selectedButton;
+	private int selectedButton;
 	private long startTime;
 	private GameOnTouchListener onTouchListener;
 
@@ -90,6 +90,7 @@ public class GameActivity extends MapActivity {
 	public static final String END_GAME_CITIZEN_SAVED = "citizenSaved";
 	public static final String END_GAME_CITIZEN_KILLED = "citizenKilled";
 	public static final String END_GAME_WIN = "win";
+	public static final String END_GAME_CITIZEN_EATED = "citizenEated";
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -102,10 +103,6 @@ public class GameActivity extends MapActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
 
-		selectedButton = new HashMap<Integer, Boolean>();
-		selectedButton.put(CHOPPER, false);
-		selectedButton.put(BOMB, false);
-
 		initButtons();
 
 		// Keep Screen On
@@ -117,7 +114,7 @@ public class GameActivity extends MapActivity {
 		// Disable controls and set up the view
 		mapView.setClickable(false);
 		mapView.setFocusable(false);
-		onTouchListener = new GameOnTouchListener(this, selectedButton);
+		onTouchListener = new GameOnTouchListener(this);
 		mapView.setOnTouchListener(onTouchListener);
 		mapView.setBuiltInZoomControls(false);
 
@@ -180,10 +177,7 @@ public class GameActivity extends MapActivity {
 				new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						if (!selectedButton.get(CHOPPER)) {
-							selectedButton.put(CHOPPER, true);
-							putAllOtherToFalse(CHOPPER);
-						}
+						selectedButton = CHOPPER;
 					}
 				});
 
@@ -191,28 +185,10 @@ public class GameActivity extends MapActivity {
 				new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						if (!selectedButton.get(BOMB)) {
-							selectedButton.put(BOMB, true);
-							putAllOtherToFalse(BOMB);
-						}
+						selectedButton = BOMB;
 
 					}
 				});
-	}
-
-	/**
-	 * Put all the element of the selectedButton hashMap to false excepted
-	 * "notThis"
-	 * 
-	 * @param notThis
-	 *            except this element
-	 */
-	public void putAllOtherToFalse(int notThis) {
-		for (int element : this.selectedButton.keySet()) {
-			if (element != notThis) {
-				this.selectedButton.put(element, false);
-			}
-		}
 	}
 
 	@Override
@@ -456,7 +432,8 @@ public class GameActivity extends MapActivity {
 		String buttonName = "";
 
 		System.out.println("TIME: " + new Date().getTime());
-		win = spawn.getCitizenFree() >= ManagePreferences
+		
+		win = (spawn.getCitizenFree() + spawn.getCitizenInGame()) >= ManagePreferences
 				.getMinCitizenSavedToWin(this);
 		if (win) {
 			textName = "You Win !";
@@ -476,11 +453,16 @@ public class GameActivity extends MapActivity {
 							public void onClick(DialogInterface dialog, int id) {
 								Intent intent = new Intent();
 								intent.putExtra(END_GAME_WIN, win);
+								System.out.println(Calendar
+										.getInstance().getTimeInMillis()
+										- startTime);
+
 								intent.putExtra(END_GAME_TIME, Calendar
 										.getInstance().getTimeInMillis()
 										- startTime);
 								intent.putExtra(END_GAME_CITIZEN_SAVED,
-										spawn.getCitizenFree());
+										spawn.getCitizenFree() + spawn.getCitizenInGame());
+								intent.putExtra(END_GAME_CITIZEN_EATED,	spawn.getCitizenEated());
 								intent.putExtra(END_GAME_CITIZEN_KILLED,
 										spawn.getCitizenKilled());
 								intent.putExtra(END_GAME_ZOMBIES_KILLED,
@@ -529,7 +511,7 @@ public class GameActivity extends MapActivity {
 	 * @param button
 	 */
 	public void setSelected(Button button) {
-		System.out.println("ISSelected: " + button.getId() + " -> "
+		System.out.println("IsEnabled: " + button.getId() + " -> "
 				+ button.isEnabled());
 		if (button.isEnabled()) {
 			button.setEnabled(false);
@@ -541,5 +523,13 @@ public class GameActivity extends MapActivity {
 
 	public Handler getWaitingHandler() {
 		return waittingHandler;
+	}
+
+	public int getSelectedButton() {
+		return selectedButton;
+	}
+	
+	public void removeSelectedButton() {
+		selectedButton = -1;
 	}
 }

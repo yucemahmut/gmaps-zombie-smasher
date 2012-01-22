@@ -60,6 +60,7 @@ public class PlayActivity extends Activity {
 				double time = objetbunble.getDouble(GameActivity.END_GAME_TIME);
 				int citizenSaved = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_SAVED);
 				int citizenKilled = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_KILLED);
+				int citizenEated = objetbunble.getInt(GameActivity.END_GAME_CITIZEN_EATED);
 				int zombieKilled = objetbunble.getInt(GameActivity.END_GAME_ZOMBIES_KILLED);
 				
         displayResults(time, citizenSaved + citizenKilled, citizenSaved,
@@ -67,7 +68,9 @@ public class PlayActivity extends Activity {
 				
 				//Update Achievements
 				AchievementsActivity.updateAchievement(AchievementsActivity.TOTAL_TIME_ACHIEVEMENT, time);
-				AchievementsActivity.updateAchievement(AchievementsActivity.SAVED_CITIZEN_ACHIEVEMENT, citizenSaved - citizenKilled);
+				AchievementsActivity.updateAchievement(AchievementsActivity.SAVED_CITIZEN_ACHIEVEMENT, citizenSaved);
+				AchievementsActivity.updateAchievement(AchievementsActivity.KILLED_CITIZENS_ACHIEVEMENT, citizenKilled);
+				AchievementsActivity.updateAchievement(AchievementsActivity.EATED_CITIZENS_ACHIEVEMENT, citizenEated);
 				AchievementsActivity.updateAchievement(AchievementsActivity.KILLED_ZOMBIE_ACHIEVEMENT, zombieKilled);
 			}
 			break;
