@@ -1,14 +1,14 @@
 package fr.alma.ihm.gmapszombiesmasher.model;
 
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
 
-import java.util.Calendar;
-
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import fr.alma.ihm.gmapszombiesmasher.GameActivity;
@@ -49,6 +49,10 @@ public class Spawn {
 	private MapView mapView;
 	private long chopperStart;
 	private long bombStart;
+	private int chopperCurrentFrame = 0;
+	private int chopperTotalFrame = 2;
+	private int bombCurrentFrame = 0;
+	private int bombTotalFrame = 11;
 	
 	public Spawn(Activity activity, MapView mapView, int topLatitude, int botLatitude, int leftLongitude,
 			int rightLongitude) {
@@ -103,40 +107,48 @@ public class Spawn {
 	 */
 	public void putOnMap() {
 		
-		initialize();
-		
 		mapView.getOverlays().clear();
+		//clear();
+		
+		initialize();
 		
 		for(Entity entity: getEntities()){
 			CBoolean exist = ((CBoolean) entity.getComponentMap().get(CBoolean.class.getName()));
 			if(exist.isExist()){
-				CCoordinates coordinates = ((CCoordinates) entity.getComponentMap().get(CCoordinates.class.getName()));
-				GeoPoint point = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
-				OverlayItem overlayitem = new OverlayItem(point, null, null);
 				int id = ((CMarker)entity.getComponentMap().get(CMarker.class.getName())).getMarker();
-				EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(id));
-				entityOverlay.addOverlay(overlayitem);
-				mapView.getOverlays().add(entityOverlay);
+				createPutOverlay(entity, id);
 			}
 		}
+	}
+	
+	private void createPutOverlay(Entity entity, int id) {
+		CCoordinates coordinates = ((CCoordinates) entity.getComponentMap().get(CCoordinates.class.getName()));
+		GeoPoint point = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
+		OverlayItem overlayitem = new OverlayItem(point, null, null);
+		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(id));
+		entityOverlay.addOverlay(overlayitem);
+		mapView.getOverlays().add(entityOverlay);
 	}
 
 	private void initialize() {
 		if(getChopper() != null){
-			if(!getEntities().contains(getChopper())){
-				getEntities().add(getChopper());
-			}
+			int id = ((CMarker)getChopper().getComponentMap().get(CMarker.class.getName())).getMarker();
+			int tmp = (id + (chopperCurrentFrame++%chopperTotalFrame));
+			createPutOverlay(getChopper(), tmp);
+			
 			if(Calendar.getInstance().getTimeInMillis() - chopperStart >= GameActivity.CHOPPER_LIFE_TIME){
 				destroyChopper();
+				chopperCurrentFrame = 0;
 			}
 		}
 		
 		if(getBomb() != null){
-			if(!getEntities().contains(getBomb())){
-				getEntities().add(getBomb());
-			}
+			int id = ((CMarker)getBomb().getComponentMap().get(CMarker.class.getName())).getMarker();
+			int tmp = (id + (bombCurrentFrame++%bombTotalFrame));
+			createPutOverlay(getBomb(), tmp);
 			if(Calendar.getInstance().getTimeInMillis() - bombStart >= GameActivity.BOMB_LIFE_TIME){
 				destroyBomb();
+				bombCurrentFrame = 0;
 			}
 		}
 	}
@@ -292,6 +304,7 @@ public class Spawn {
 		System.out.println("EATED");
 		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.ZOMBIE);
 		citizenInGame--;
+		zombiesInGame++;
 		// Changement d'IA
 		entity.removeComponent(CAICitizen.class.getName());
 		entity.addComponent(new CAIZombie(entity, this, mapView.getZoomLevel()));
@@ -338,6 +351,7 @@ public class Spawn {
 		entity.addComponent(isKilled);
 		entity.removeComponent(CAIZombie.class.getName());
 		zombieKilled++;
+		zombiesInGame--;
 	}
 
 	/**
