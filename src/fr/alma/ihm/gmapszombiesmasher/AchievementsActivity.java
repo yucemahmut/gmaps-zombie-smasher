@@ -67,7 +67,7 @@ public class AchievementsActivity extends Activity{
 	 * @param listItem the list to initialise
 	 */
 	private static void initList(List<Map<String, String>> listItem) {
-		listItem.add(createAchievement(TOTAL_TIME_ACHIEVEMENT, R.drawable.chopper_marker, "Total Game Time"));
+		listItem.add(createAchievement(TOTAL_TIME_ACHIEVEMENT, R.drawable.time_achievements, "Total Game Time"));
 		listItem.add(createAchievement(SAVED_CITIZEN_ACHIEVEMENT, R.drawable.chopper_marker, "Citizens Saved"));
 		listItem.add(createAchievement(KILLED_ZOMBIE_ACHIEVEMENT, R.drawable.bomb_marker, "Zombies Killed by Bomb"));
 		listItem.add(createAchievement(KILLED_CITIZENS_ACHIEVEMENT, R.drawable.bomb_marker, "Citizens Killed by Bomb"));
