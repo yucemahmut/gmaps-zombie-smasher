@@ -52,7 +52,7 @@ public class AchievementsActivity extends Activity {
 	 * 
 	 * @return le item list
 	 */
-	private static List<Map<String, String>> getItemList() {
+	private List<Map<String, String>> getItemList() {
 		@SuppressWarnings("unchecked")
 		List<Map<String, String>> listItem = (List<Map<String, String>>) PersistenceAccess
 				.getObject(PersistenceAccess.ACHIEVEMENTS_LIST);
@@ -72,18 +72,18 @@ public class AchievementsActivity extends Activity {
 	 * @param listItem
 	 *            the list to initialise
 	 */
-	private static void initList(List<Map<String, String>> listItem) {
+	private void initList(List<Map<String, String>> listItem) {
 		listItem.add(createAchievement(TOTAL_TIME_ACHIEVEMENT,
-				R.drawable.time_achievements, "Total Game Time"));
+				R.drawable.time_achievements, getString(R.string.played_time)));
 		listItem.add(createAchievement(SAVED_CITIZEN_ACHIEVEMENT,
-				R.drawable.citizens_saved_achievements, "Citizens Saved"));
+				R.drawable.citizens_saved_achievements, getString(R.string.citizens_saved)));
 		listItem.add(createAchievement(KILLED_ZOMBIE_ACHIEVEMENT,
 				R.drawable.zombies_killed_achievements,
-				"Zombies Killed by Bomb"));
+				getString(R.string.zombies_killed)));
 		listItem.add(createAchievement(KILLED_CITIZENS_ACHIEVEMENT,
-				R.drawable.bomb_marker, "Citizens Killed by Bomb"));
+				R.drawable.bomb_marker, getString(R.string.citizens_killed)));
 		listItem.add(createAchievement(EATED_CITIZENS_ACHIEVEMENT,
-				R.drawable.bomb_marker, "Citizens eated by Zombie"));
+				R.drawable.bomb_marker, getString(R.string.citizens_eated)));
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class AchievementsActivity extends Activity {
 	 *            the title of the achivement
 	 * @return
 	 */
-	private static Map<String, String> createAchievement(String id, int img,
+	private Map<String, String> createAchievement(String id, int img,
 			String title) {
 		Map<String, String> achievement = new HashMap<String, String>();
 		achievement.put(ID, id);
@@ -117,7 +117,7 @@ public class AchievementsActivity extends Activity {
 	 * @param update
 	 *            the value of the update
 	 */
-	public static void updateAchievement(String id, long update) {
+	public void updateAchievement(String id, long update) {
 		List<Map<String, String>> listItem = getItemList();
 		for (Map<String, String> map : listItem) {
 			if (map.get(ID).equals(id)) {
@@ -142,7 +142,7 @@ public class AchievementsActivity extends Activity {
 	 * @param update the time in miliseconde to update
 	 * @return the updated time with format %d h %d m %d s
 	 */
-	private static String getTotalTime(String string, long update) {
+	private String getTotalTime(String string, long update) {
 		long hoursMili = 0;
 		long minutesMili = 0;
 		long secondsMili = 0;

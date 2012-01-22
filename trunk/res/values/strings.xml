@@ -12,17 +12,24 @@
     <string name="select_world_in_map">Select world in map</string>
     <string name="gps_utilities">GPS utilities</string>
     <string name="edit_world_in_map">Edit world in map</string>
+    <string name="internet_connection">You need an Internet connection to play this game.
+          "Please, enable your internet connection</string>
     
     <!-- SD CARD -->
     <string name="welcome_dialog_sdcard_error">SD CARD Error</string>
     <string name="welcome_dialog_sdcard_ok">SD CARD Ok</string>
     
     <!-- Play -->
-    <string name="play_here">Play in your current location</string>
+    <string name="play_here">Play Here</string>
     <string name="new_world">Create a New World</string>    
     
     <!-- Game -->
     <string name="game">Game</string>
+    <string name="you_win">You Win !</string>
+    <string name="you_win_button">F%$k Yea !</string>
+    <string name="you_loose">You Loose !</string>
+    <string name="you_loose_button">Okay :(</string>
+    <string name="unable_current_location">Unable to get your current location</string>
     <string name="api_key">0qsMDe7mnD957X3mV4eaM9Gw_pF6UQHdntSuZ7g</string>
     
     <!-- Manage Levels -->
@@ -36,12 +43,22 @@
     <string name="select_world_here">New World Here</string>
     <string name="edit_ok">Validate World Edition</string>
     <string name="edit_cancel">Cancel World Edition</string>
+    <string name="no_changes">No changes done!</string>
+    <string name="changes">World updated!</string>
+    
+    <!-- GPS -->
+    <string name="wait">Loading. Please wait...</string>
+    <string name="receiving">Retrieving GPS data ...</string>
+    <string name="enable_gps_question">Your GPS is disabled! Would you like to enable it?</string>
+    <string name="enable_gps">Enable GPS</string>
+    <string name="disable_gps">Do nothing</string>
         
     <!-- Result Pop-Up -->
     <string name="played_time">Played Time</string>
     <string name="citizens_saved">Citizens Saved</string>
-    <string name="citizens_killed">Citizens Killed</string>
-    <string name="zombies_killed">Zombies Killed</string>
+    <string name="citizens_killed">Citizens Killed by Bomb</string>
+    <string name="zombies_killed">Zombies Killed by Bomb</string>
+    <string name="citizens_eated">Citizens eated by Zombies</string>
     
     
 </resources>

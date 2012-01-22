@@ -11,7 +11,7 @@ public class ManageWorlds {
 	private final static String DEFAULT_WORLD_NAME = "Manhattan";
 	private final static int DEFAULT_WORLD_LONGITUDE = -73960500;
 	private final static int DEFAULT_WORLD_LATITUDE = 40769800;
-	private final static int DEFAULT_WORLD_ZOOM = GameActivity.ZOOM_LEVEL_MIN;
+	private final static int DEFAULT_WORLD_ZOOM = GameActivity.ZOOM_LEVEL_MAX;
 	
 	private static List<World> worlds;
 	

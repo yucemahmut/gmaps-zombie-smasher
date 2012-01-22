@@ -1,5 +1,6 @@
 package fr.alma.ihm.gmapszombiesmasher.utils;
 
+import fr.alma.ihm.gmapszombiesmasher.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -67,14 +68,10 @@ public class GPSUtilities extends Activity {
 				@Override
 				public void run() {
 					
-					System.out.println("Sleep");
-					//SystemClock.sleep(10000);		
-					//while ((latitude == 0 && longitude == 0) && time > 0) {
 					while ((latitude == 0 && longitude == 0)) {
 						// Waiting...
 					}
 					
-					System.out.println("End");
 					// After receiving first GPS Fix dismiss the Progress Dialog
 					dialog.dismiss();
 
@@ -95,8 +92,8 @@ public class GPSUtilities extends Activity {
 			// Create a Dialog to let the User know that we're waiting for a GPS
 			// Fix
 			//protected void onStop ()
-			dialog = ProgressDialog.show(this, "Please wait...",
-					"Retrieving GPS data ...", true, true, new DialogInterface.OnCancelListener(){
+			dialog = ProgressDialog.show(this, getString(R.string.wait),
+					getString(R.string.receiving), true, true, new DialogInterface.OnCancelListener(){
 
 						@Override
 						public void onCancel(DialogInterface arg0) {
@@ -122,15 +119,15 @@ public class GPSUtilities extends Activity {
 
 	private void createGpsDisabledAlert() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Your GPS is disabled! Would you like to enable it?")
+		builder.setMessage(getString(R.string.enable_gps_question))
 				.setCancelable(false)
-				.setPositiveButton("Enable GPS",
+				.setPositiveButton(getString(R.string.enable_gps),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								showGpsOptions();
 							}
 						});
-		builder.setNegativeButton("Do nothing",
+		builder.setNegativeButton(getString(R.string.disable_gps),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();

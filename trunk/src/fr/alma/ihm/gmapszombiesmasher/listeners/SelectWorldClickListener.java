@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import fr.alma.ihm.gmapszombiesmasher.GameActivity;
 import fr.alma.ihm.gmapszombiesmasher.PlayActivity;
+import fr.alma.ihm.gmapszombiesmasher.R;
 import fr.alma.ihm.gmapszombiesmasher.gMapsZombieSmasher;
 import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManageWorlds;
@@ -29,7 +30,7 @@ public class SelectWorldClickListener implements OnItemClickListener {
 
 		//Cela fonctionne plus ou moins comme une HashMap, on entre une clef et sa valeur en face
 		if(position == 0){
-			objetbunble.putString("selectedWorldName", "Play Here");
+			objetbunble.putString("selectedWorldName", this.parent.getString(R.string.play_here));
 		} else {
 			objetbunble.putString("selectedWorldName", ManageWorlds.getWorld(position).getName());
 		}

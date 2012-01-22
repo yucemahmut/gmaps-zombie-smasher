@@ -31,7 +31,7 @@ public class PlayActivity extends Activity {
 		setContentView(R.layout.play);
 
 		List<String> worlds = new LinkedList<String>();
-		worlds.add("Play Here");
+		worlds.add(getString(R.string.play_here));
 		worlds.addAll(ManageWorlds.getWorldsName());
 		
 		ListView lv = (ListView)this.findViewById(R.id.list_play);
@@ -48,9 +48,9 @@ public class PlayActivity extends Activity {
 		switch (requestCode) {
 		case EDIT_WORLD_CODE:
 			if (resultCode == RESULT_CANCELED) {
-				Toast.makeText(this, "No changes done!",Toast.LENGTH_LONG).show();
+				Toast.makeText(this, getString(R.string.no_changes),Toast.LENGTH_LONG).show();
 			} else {
-				Toast.makeText(this, "World updated!", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, getString(R.string.changes), Toast.LENGTH_LONG).show();
 			}
 			break;
 		case PLAY_CODE:
@@ -68,13 +68,14 @@ public class PlayActivity extends Activity {
                        citizenSaved,zombieTotal, zombieKilled, win);
         
         		System.out.println("TIME: " + time);
-				
+        		AchievementsActivity achievementsActivity = new AchievementsActivity();
+        		
 				//Update Achievements
-				AchievementsActivity.updateAchievement(AchievementsActivity.TOTAL_TIME_ACHIEVEMENT, time);
-				AchievementsActivity.updateAchievement(AchievementsActivity.SAVED_CITIZEN_ACHIEVEMENT, citizenSaved);
-				AchievementsActivity.updateAchievement(AchievementsActivity.KILLED_CITIZENS_ACHIEVEMENT, citizenKilled);
-				AchievementsActivity.updateAchievement(AchievementsActivity.EATED_CITIZENS_ACHIEVEMENT, citizenEated);
-				AchievementsActivity.updateAchievement(AchievementsActivity.KILLED_ZOMBIE_ACHIEVEMENT, zombieKilled);
+				achievementsActivity.updateAchievement(AchievementsActivity.TOTAL_TIME_ACHIEVEMENT, time);
+				achievementsActivity.updateAchievement(AchievementsActivity.SAVED_CITIZEN_ACHIEVEMENT, citizenSaved);
+				achievementsActivity.updateAchievement(AchievementsActivity.KILLED_CITIZENS_ACHIEVEMENT, citizenKilled);
+				achievementsActivity.updateAchievement(AchievementsActivity.EATED_CITIZENS_ACHIEVEMENT, citizenEated);
+				achievementsActivity.updateAchievement(AchievementsActivity.KILLED_ZOMBIE_ACHIEVEMENT, zombieKilled);
 			}
 			break;
 		default:
