@@ -61,8 +61,15 @@ public class Spawn {
 		this.leftLongitude = leftLongitude;
 		this.rightLongitude = rightLongitude;
     this.pastMillis = -1;
+
+    int gapLatitude = (topLatitude - botLatitude) / 4;
+    int gapLongitude = (leftLongitude - rightLongitude) / 6;
 		
-		this.citizenFactory = new CitizenFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this, mapView.getZoomLevel());
+		this.citizenFactory = new CitizenFactory(topLatitude - gapLatitude,
+                                             botLatitude + gapLatitude,
+                                             leftLongitude - gapLongitude,
+                                             rightLongitude + gapLongitude,
+                                             this, mapView.getZoomLevel());
 		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this, mapView.getZoomLevel());
 		
 		this.entities = new LinkedList<Entity>();
