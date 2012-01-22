@@ -45,7 +45,7 @@ public class GameActivity extends MapActivity {
 	protected static final long TIME_BEFORE_NEXT_STEP = 100;
 	// CHOPPER
 	public static final int CHOPPER_LIFE_TIME = 10000;
-	public static final long CHOPPER_BUTTON_LIFE_TIME = 10000;
+	public static final long CHOPPER_BUTTON_LIFE_TIME = 15000;
 
 	// BOMB
 	public static final int BOMB_LIFE_TIME = 2000;
