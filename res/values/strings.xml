@@ -23,6 +23,7 @@
     
     <!-- Game -->
     <string name="game">Game</string>
+    <string name="api_key">05k7HM_cKtQYm88WCmJX6KKz0BtQ07_h9SVQPAQ</string>
     
     <!-- Manage Levels -->
     <string name="select_world">Select World In Map</string>
