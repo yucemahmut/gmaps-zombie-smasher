@@ -22,17 +22,14 @@ import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
 public class GameOnTouchListener implements OnTouchListener {
 
 	private GameActivity parent;
-	private Map<Integer, Boolean> selected;
 	private Spawn spawn;
 
 	private int buttonSelection = -1;
 	private long buttonLifeTime = -1;
 
-	public GameOnTouchListener(GameActivity parent,
-			Map<Integer, Boolean> selected) {
+	public GameOnTouchListener(GameActivity parent) {
 		super();
 		this.parent = parent;
-		this.selected = selected;
 	}
 
 	@Override
@@ -47,10 +44,7 @@ public class GameOnTouchListener implements OnTouchListener {
 			GeoPoint point = mV.getProjection().fromPixels((int) event.getX(),
 					(int) event.getY());
 
-			System.out.println("Point: " + point.toString() + " - Selected: "
-					+ getSelectedButton());
-
-			switch (getSelectedButton()) {
+			switch (parent.getSelectedButton()) {
 			case GameActivity.CHOPPER:
 				// If the chopper doesn't exist yet
 				if (spawn.getChopper() == null) {
@@ -114,29 +108,17 @@ public class GameOnTouchListener implements OnTouchListener {
 		Runnable ButtonLifeTime = new Runnable() {
 			@Override
 			public void run() {
-				parent.putAllOtherToFalse(-1);
+				parent.removeSelectedButton();
 				parent.getWaitingHandler().sendEmptyMessage(buttonSelection);
+				System.out.println("BEFORE SLEEP: " + buttonSelection);
 				SystemClock.sleep(buttonLifeTime);
+				System.out.println("AFTER SLEEP: " + buttonSelection);
 				parent.getWaitingHandler().sendEmptyMessage(buttonSelection);
 			}
 		};
 
-		new Thread(ButtonLifeTime).start();
-	}
-
-	/**
-	 * Get The selected button: - -1 -> nothing selected - 0 -> CHOPPER - 1 ->
-	 * BOMB
-	 * 
-	 * @return
-	 */
-	private int getSelectedButton() {
-		for (int element : this.selected.keySet()) {
-			if (this.selected.get(element)) {
-				return element;
-			}
-		}
-		return -1;
+		Thread buttonLife = new Thread(ButtonLifeTime);
+		//buttonLife.start();
 	}
 
 	public void setSpawn(Spawn spawn) {
