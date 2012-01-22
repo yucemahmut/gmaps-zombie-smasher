@@ -83,6 +83,10 @@ public class Spawn {
 		this.bombStart = 0;
 	}
 	
+	/**
+	 * Create zombies
+	 * @param number the number of zombies to create
+	 */
 	public void spawnZombies(int number){
 		Entity zombie = null;
 		zombiesInGame = number;
@@ -92,6 +96,10 @@ public class Spawn {
 		}
 	}
 
+	/**
+	 * Create citizens
+	 * @param number the number of citizens to create
+	 */
 	public void spawnCitizen(int number){
 		citizenInGame = number;
 		Entity citizen = null;
@@ -106,11 +114,13 @@ public class Spawn {
 	 */
 	public void putOnMap() {
 		
+		// Clear the map
 		mapView.getOverlays().clear();
-		//clear();
 		
+		// initialise the spécials entities (chopper and bomb)
 		initialize();
 		
+		// display all citizen and zombies
 		for(Entity entity: getEntities()){
 			CBoolean exist = ((CBoolean) entity.getComponentMap().get(CBoolean.class.getName()));
 			if(exist.isExist()){
@@ -120,6 +130,12 @@ public class Spawn {
 		}
 	}
 	
+	/**
+	 * Create an overlay and put it on the map
+	 * @param entity the entity to put
+	 * @param id the id of the drawable element
+	 * @param shadow disaplay the shadow or not (NOT WORKING)
+	 */
 	private void createPutOverlay(Entity entity, int id, boolean shadow) {
 		CCoordinates coordinates = ((CCoordinates) entity.getComponentMap().get(CCoordinates.class.getName()));
 		GeoPoint point = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
@@ -129,6 +145,9 @@ public class Spawn {
 		mapView.getOverlays().add(entityOverlay);
 	}
 
+	/**
+	 * Initialise the spécial entities with animation
+	 */
 	private void initialize() {
 		if(getChopper() != null){
 			int id = ((CMarker)getChopper().getComponentMap().get(CMarker.class.getName())).getMarker();
@@ -408,12 +427,12 @@ public class Spawn {
 	 * @param goal the goal to reach
 	 */
 	public void setNextPosition(Entity parent, CGoal goal) {
-    if(this.pastMillis == -1) {
-      this.pastMillis = Calendar.getInstance().getTimeInMillis();
-    }
-
-    double pastMillis = Calendar.getInstance().getTimeInMillis();
-    double delta = (pastMillis - this.pastMillis) / 1000;
+	    if(this.pastMillis == -1) {
+	      this.pastMillis = Calendar.getInstance().getTimeInMillis();
+	    }
+	
+	    double pastMillis = Calendar.getInstance().getTimeInMillis();
+	    double delta = (pastMillis - this.pastMillis) / 1000;
 		CCoordinates c = goal.getNextPosition(delta); 
 		if(c != null){
 			parent.addComponent(c);
