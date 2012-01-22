@@ -123,7 +123,8 @@ public class GameActivity extends MapActivity {
 		Bundle objetbunble = this.getIntent().getExtras();
 		String worldName = objetbunble.getString("selectedWorldName");
 		World world = null;
-		if (worldName.equals("Play Here")) {
+		System.out.println(getString(R.string.play_here));
+		if (worldName.equals(getString(R.string.play_here))) {
 
 			// Intent to get GPS coordinates
 			Intent intent = new Intent().setClass(this, GPSUtilities.class);
@@ -263,7 +264,7 @@ public class GameActivity extends MapActivity {
 
 			if (notSpawn) {
 				dialog = ProgressDialog.show(GameActivity.this, "",
-						"Loading. Please wait...", true);
+						getString(R.string.wait), true);
 			}
 
 			Thread spawnTread = new Thread(spawLoop);
@@ -306,7 +307,6 @@ public class GameActivity extends MapActivity {
 					case REFRESH_MAP_CODE:
 						mapView.invalidate();
 					case CHOPPER_BUTTON_SELECTION:
-            System.out.println("###########----#############");
 						GameActivity.this
 								.setSelected((Button) GameActivity.this
 										.findViewById(R.id.helicopter_button));
@@ -429,18 +429,16 @@ public class GameActivity extends MapActivity {
 		String textName = "";
 		String buttonName = "";
 
-		System.out.println("TIME: " + new Date().getTime());
-		
 		win = (spawn.getCitizenFree() + spawn.getCitizenInGame()) >= ManagePreferences
 				.getMinCitizenSavedToWin(this);
 		if (win) {
-			textName = "You Win !";
-			buttonName = "Fu%k Yea";
+			textName = getString(R.string.you_win);;
+			buttonName = getString(R.string.you_win_button);
 			// update background music setting
 			this.startService(new Intent(this, BackgroundMusicService.class));
 		} else {
-			textName = "You LOOSE !!!";
-			buttonName = "Okay :(";
+			textName = getString(R.string.you_loose);;
+			buttonName = getString(R.string.you_loose_button);
 		}
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -451,10 +449,6 @@ public class GameActivity extends MapActivity {
 							public void onClick(DialogInterface dialog, int id) {
 								Intent intent = new Intent();
 								intent.putExtra(END_GAME_WIN, win);
-								System.out.println("TIIIIIIIIIIIIIIIIME: " +( Calendar
-										.getInstance().getTimeInMillis()
-										- startTime));
-
 								intent.putExtra(END_GAME_TIME, Calendar
 										.getInstance().getTimeInMillis()
 										- startTime);
@@ -480,7 +474,7 @@ public class GameActivity extends MapActivity {
 		switch (requestCode) {
 		case GPS_CODE:
 			if (resultCode == RESULT_CANCELED) {
-				Toast.makeText(this, "Unable to get your current location",
+				Toast.makeText(this, getString(R.string.unable_current_location),
 						Toast.LENGTH_LONG).show();
 				this.finish();
 			} else {
@@ -512,8 +506,6 @@ public class GameActivity extends MapActivity {
 	 * @param button
 	 */
 	public void setSelected(Button button) {
-		System.out.println("IsEnabled: " + button.getId() + " -> "
-				+ button.isEnabled());
 		if (button.isEnabled()) {
 			button.setEnabled(false);
 		} else {

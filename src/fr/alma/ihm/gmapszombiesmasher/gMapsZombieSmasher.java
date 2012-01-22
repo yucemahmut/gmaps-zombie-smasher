@@ -44,8 +44,7 @@ public class gMapsZombieSmasher extends Activity {
 		if(!ManagePreferences.isOnline(this)){
 			
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("You need an Internet connection to play this game." +
-					"Please, enable your internet connection.")
+			builder.setMessage(getString(R.string.internet_connection))
 			       .setCancelable(false)
 			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
