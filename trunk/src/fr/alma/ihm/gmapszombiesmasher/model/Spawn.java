@@ -47,8 +47,8 @@ public class Spawn {
 	private int rightLongitude;
   private double pastMillis;
 	private MapView mapView;
-	private int chopperLife;
-	private int bombLife;
+	private long chopperStart;
+	private long bombStart;
 	
 	public Spawn(Activity activity, MapView mapView, int topLatitude, int botLatitude, int leftLongitude,
 			int rightLongitude) {
@@ -69,8 +69,8 @@ public class Spawn {
 
 		this.mapView = mapView;
 		
-		this.chopperLife = GameActivity.CHOPPER_LIFE_TIME;
-		this.bombLife = GameActivity.BOMB_LIFE_TIME;
+		this.chopperStart = 0;
+		this.bombStart = 0;
 	}
 	
 	public void spawnZombies(int number){
@@ -119,10 +119,8 @@ public class Spawn {
 			if(!getEntities().contains(getChopper())){
 				getEntities().add(getChopper());
 			}
-			chopperLife--;
-			if(chopperLife == 0){
+			if(Calendar.getInstance().getTimeInMillis() - chopperStart >= GameActivity.CHOPPER_LIFE_TIME){
 				destroyChopper();
-				chopperLife = GameActivity.CHOPPER_LIFE_TIME;
 			}
 		}
 		
@@ -130,10 +128,8 @@ public class Spawn {
 			if(!getEntities().contains(getBomb())){
 				getEntities().add(getBomb());
 			}
-			bombLife--;
-			if(bombLife == 0){
+			if(Calendar.getInstance().getTimeInMillis() - bombStart >= GameActivity.BOMB_LIFE_TIME){
 				destroyBomb();
-				bombLife = GameActivity.BOMB_LIFE_TIME;
 			}
 		}
 	}
@@ -147,6 +143,7 @@ public class Spawn {
 		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.STANDING_BY);
 		((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).setExist(true);
 		chopper = entity;
+    chopperStart = Calendar.getInstance().getTimeInMillis();
 	}
 	
 	/**
@@ -155,6 +152,7 @@ public class Spawn {
 	public void destroyChopper() {
 		((CBoolean)chopper.getComponentMap().get(CBoolean.class.getName())).setExist(false);
 		chopper = null;
+    chopperStart = 0;
 	}
 	
 	/**
@@ -165,6 +163,7 @@ public class Spawn {
 		System.out.println("CREATE BOMB");
 		((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).setExist(true);
 		bomb = entity;
+    bombStart = Calendar.getInstance().getTimeInMillis();
 	}
 	
 	/**
@@ -173,6 +172,7 @@ public class Spawn {
 	public void destroyBomb() {
 			((CBoolean)bomb.getComponentMap().get(CBoolean.class.getName())).setExist(false);
 		bomb = null;
+    bombStart = 0;
 	}
 
 	/**
