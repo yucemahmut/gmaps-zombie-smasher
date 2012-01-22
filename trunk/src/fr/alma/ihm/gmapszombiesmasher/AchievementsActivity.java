@@ -99,7 +99,7 @@ public class AchievementsActivity extends Activity {
 				R.drawable.zombies_killed_achievements, getActivity()
 						.getString(R.string.zombies_killed)));
 		listItem.add(createAchievement(KILLED_CITIZENS_ACHIEVEMENT,
-				R.drawable.citizens_killed_bomb_achievement,
+				R.drawable.citizens_killed_bomb_achievements,
 				getActivity().getString(R.string.citizens_killed)));
 		listItem.add(createAchievement(EATED_CITIZENS_ACHIEVEMENT,
 				R.drawable.citizens_eated_achievement,
