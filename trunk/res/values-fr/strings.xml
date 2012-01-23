@@ -29,7 +29,6 @@
     <string name="you_loose">Vous avez perdu</string>
     <string name="you_loose_button">Okay :(</string>
     <string name="unable_current_location">Impossible d\'avoir votre position actuelle.</string>
-    <string name="api_key">0qsMDe7mnD957X3mV4eaM9Gw_pF6UQHdntSuZ7g</string>
     
     <!-- Manage Levels -->
     <string name="select_world">Sélectionner un niveau sur la carte</string>
