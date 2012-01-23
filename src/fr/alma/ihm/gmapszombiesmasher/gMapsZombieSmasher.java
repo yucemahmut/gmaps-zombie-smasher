@@ -108,6 +108,6 @@ public class gMapsZombieSmasher extends Activity {
     }
 
     public void exit(View v) {
-      this.finish();
+      android.os.Process.sendSignal(android.os.Process.myPid(), android.os.Process.SIGNAL_KILL);
     }
 }
