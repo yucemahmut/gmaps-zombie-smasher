@@ -63,6 +63,19 @@
             android:typeface="sans"
             android:background="@drawable/btn_menu"
             android:textColor="#fff" />
+        <Button
+            android:id="@+id/exit"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_width="200sp"
+            android:layout_height="60sp"
+            android:text="@string/exit"
+            android:textSize="10pt"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:background="@drawable/btn_menu"
+            android:textColor="#fff"
+            android:onClick="exit" />
 
     </LinearLayout>
 
