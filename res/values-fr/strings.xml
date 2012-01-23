@@ -8,6 +8,7 @@
     <string name="level">Manage Levels</string>
     <string name="achievements">Succès</string>
     <string name="settings">Paramètres</string>
+    <string name="exit">Quitter</string>
     
     <string name="select_world_in_map">Sélectionner un monde sur la carte</string>
     <string name="gps_utilities">Configuration GPS</string>

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import fr.alma.ihm.gmapszombiesmasher.listeners.AchievementsButtonListener;
@@ -104,7 +105,9 @@ public class gMapsZombieSmasher extends Activity {
     	} else {
     		// to do ...
     	}
-    	
-		
+    }
+
+    public void exit(View v) {
+      this.finish();
     }
 }
