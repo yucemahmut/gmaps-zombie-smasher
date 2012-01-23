@@ -58,6 +58,7 @@ public class GameActivity extends MapActivity {
 	private ProgressDialog dialog;
 	private int selectedButton;
 	private long startTime;
+  private long startPause;
 	private GameOnTouchListener onTouchListener;
 
 	private static final int GPS_CODE = 1;
@@ -286,6 +287,7 @@ public class GameActivity extends MapActivity {
 						nextStep();
 						break;
 					case WAIT_CODE:
+            startPause = Calendar.getInstance().getTimeInMillis();
 						onPause = true;
 						break;
 					case STOP_CODE:
@@ -296,8 +298,12 @@ public class GameActivity extends MapActivity {
 						break;
 					case RESUME_CODE:
 						if (onPause) {
+              long pauseTime = Calendar.getInstance().getTimeInMillis()
+                               - startPause;
 							onPause = false;
 							spawn.updateSeconds();
+              spawn.setChopperStart(spawn.getChopperStart() + pauseTime);
+              spawn.setBombStart(spawn.getBombStart() + pauseTime);
 							waittingHandler.sendEmptyMessage(NEXT_STEP_CODE);
 						}
 						break;
