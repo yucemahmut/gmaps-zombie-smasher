@@ -89,14 +89,14 @@ public class gMapsZombieSmasher extends Activity {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     	
     	// update background music setting
-    	if(prefs.getBoolean(SettingPreferenceActivity.BACKGROUND_MUSIC, false)) {
+    	if(prefs.getBoolean(SettingPreferenceActivity.BACKGROUND_MUSIC, true)) {
     		this.startService(new Intent(this, BackgroundMusicService.class));
     	} else {
     		this.stopService(new Intent(this, BackgroundMusicService.class));
     	}
     	
     	// update game sound setting
-    	gMapsZombieSmasher.soundsManager.setSoundOn(prefs.getBoolean(SettingPreferenceActivity.APPLICATION_SOUNDS, false));
+    	gMapsZombieSmasher.soundsManager.setSoundOn(prefs.getBoolean(SettingPreferenceActivity.APPLICATION_SOUNDS, true));
     	
     	// update satellite setting
     	if(prefs.getBoolean(SettingPreferenceActivity.SATELLITE_VIEW_IN_MAP, false)) {
