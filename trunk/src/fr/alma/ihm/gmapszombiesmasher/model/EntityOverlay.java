@@ -15,7 +15,7 @@ public class EntityOverlay extends ItemizedOverlay<OverlayItem> {
 	private boolean shadow;
 	
 	public EntityOverlay(Drawable defaultMarker) {
-		super(boundCenterBottom(defaultMarker));
+		super(boundCenter(defaultMarker));
 	}
 	
 	public void addOverlay(OverlayItem overlay, boolean shadow) {

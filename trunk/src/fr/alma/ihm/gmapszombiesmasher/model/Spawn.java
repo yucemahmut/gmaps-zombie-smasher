@@ -53,7 +53,8 @@ public class Spawn {
 	private int chopperCurrentFrame = 0;
 	private int chopperTotalFrame = 2;
 	private int bombCurrentFrame = 0;
-	private int bombTotalFrame = 11;
+	private int bombTotalFrame = 10;
+	private long chopperSound;
 
 	public Spawn(Activity activity, MapView mapView, int topLatitude,
 			int botLatitude, int leftLongitude, int rightLongitude) {
@@ -167,12 +168,14 @@ public class Spawn {
 			int id = ((CMarker) getChopper().getComponentMap().get(
 					CMarker.class.getName())).getMarker();
 			int tmp = id;
-			if(Calendar.getInstance().getTimeInMillis() >= chopperCurrent + 50000){
-				gMapsZombieSmasher.soundsManager.playSound(SoundsManager.CHOPPER);
+			
+			if(Calendar.getInstance().getTimeInMillis() >= chopperSound + 5000){
+				chopperSound += 10000;
+				gMapsZombieSmasher.soundsManager.playSound(SoundsManager.HELICOP);
 			}
 			
-			if(Calendar.getInstance().getTimeInMillis() >= chopperCurrent + 300){
-				chopperCurrent += 300;
+			if(Calendar.getInstance().getTimeInMillis() >= chopperCurrent + 100){
+				chopperCurrent += 100;
 				tmp = (id + (chopperCurrentFrame++ % chopperTotalFrame));
 			}
 			
@@ -190,10 +193,10 @@ public class Spawn {
 			
 			int tmp = id;
 			
-			if(Calendar.getInstance().getTimeInMillis() >= bombCurrent + 100){
-				bombCurrent += 100;
+			//if(Calendar.getInstance().getTimeInMillis() >= bombCurrent + 500){
+			//	bombCurrent += 500;
 				tmp = (id + (bombCurrentFrame++ % bombTotalFrame));
-			}
+			//}
 			
 			createPutOverlay(getBomb(), tmp, true);
 			if (Calendar.getInstance().getTimeInMillis() - bombStart >= GameActivity.BOMB_LIFE_TIME) {
@@ -217,6 +220,7 @@ public class Spawn {
 		chopper = entity;
 		chopperStart = Calendar.getInstance().getTimeInMillis();
 		chopperCurrent = chopperStart;
+		chopperSound = chopperStart;
 		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.HELICOP);
 	}
 
