@@ -38,7 +38,7 @@ public class SoundsManager {
 	public SoundsManager(Context context) {
 		super();
 		soundMap = new HashMap<Integer,Integer>();
-		sounds = new SoundPool(15, AudioManager.STREAM_MUSIC, 0);
+		sounds = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
 		setSoundOn(true);
 		
 		// sounds.load return a integer ID for every sound track and we put them in a hashmap
