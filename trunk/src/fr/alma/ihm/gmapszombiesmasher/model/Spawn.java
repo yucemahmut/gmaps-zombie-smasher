@@ -438,5 +438,21 @@ public class Spawn {
 			parent.addComponent(c);
 		}
 	}
+
+  public long getChopperStart() {
+    return this.chopperStart;
+  }
+
+  public void setChopperStart(long chopperStart) {
+    this.chopperStart = chopperStart;
+  }
+
+  public long getBombStart() {
+    return this.bombStart;
+  }
+
+  public void setBombStart(long bombStart) {
+    this.bombStart = bombStart;
+  }
 }
 
