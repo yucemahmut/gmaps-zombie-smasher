@@ -108,6 +108,7 @@ public class gMapsZombieSmasher extends Activity {
     }
 
     public void exit(View v) {
-      android.os.Process.sendSignal(android.os.Process.myPid(), android.os.Process.SIGNAL_KILL);
+    	this.stopService(new Intent(this, BackgroundMusicService.class));
+    	android.os.Process.sendSignal(android.os.Process.myPid(), android.os.Process.SIGNAL_KILL);
     }
 }
