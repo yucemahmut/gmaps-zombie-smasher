@@ -26,11 +26,11 @@ import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
 public class Spawn {
 	private CitizenFactory citizenFactory;
 	private ZombieFactory zombieFactory;
-	
+
 	private List<Entity> entities;
 	private Entity chopper;
 	private Entity bomb;
-	
+
 	private int citizenInGame = 0;
 	private int zombiesInGame = 0;
 	private int citizenFree = 0;
@@ -39,58 +39,61 @@ public class Spawn {
 	private int zombieKilled = 0;
 
 	private Activity activity;
-	
+
 	private int topLatitude;
 	private int botLatitude;
 	private int leftLongitude;
 	private int rightLongitude;
-  private double pastMillis;
+	private double pastMillis;
 	private MapView mapView;
 	private long chopperStart;
+	private long chopperCurrent;
 	private long bombStart;
+	private long bombCurrent;
 	private int chopperCurrentFrame = 0;
 	private int chopperTotalFrame = 2;
 	private int bombCurrentFrame = 0;
 	private int bombTotalFrame = 11;
-	
-	public Spawn(Activity activity, MapView mapView, int topLatitude, int botLatitude, int leftLongitude,
-			int rightLongitude) {
+
+	public Spawn(Activity activity, MapView mapView, int topLatitude,
+			int botLatitude, int leftLongitude, int rightLongitude) {
 		super();
-		
+
 		this.activity = activity;
-		
+
 		this.topLatitude = topLatitude;
 		this.botLatitude = botLatitude;
 		this.leftLongitude = leftLongitude;
 		this.rightLongitude = rightLongitude;
-    this.pastMillis = -1;
+		this.pastMillis = -1;
 
-    int gapLatitude = (topLatitude - botLatitude) / 4;
-    int gapLongitude = (leftLongitude - rightLongitude) / 6;
-		
+		int gapLatitude = (topLatitude - botLatitude) / 4;
+		int gapLongitude = (leftLongitude - rightLongitude) / 6;
+
 		this.citizenFactory = new CitizenFactory(topLatitude - gapLatitude,
-                                             botLatitude + gapLatitude,
-                                             leftLongitude - gapLongitude,
-                                             rightLongitude + gapLongitude,
-                                             this, mapView.getZoomLevel());
-		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude, leftLongitude, rightLongitude, this, mapView.getZoomLevel());
-		
+				botLatitude + gapLatitude, leftLongitude - gapLongitude,
+				rightLongitude + gapLongitude, this, mapView.getZoomLevel());
+		this.zombieFactory = new ZombieFactory(topLatitude, botLatitude,
+				leftLongitude, rightLongitude, this, mapView.getZoomLevel());
+
 		this.entities = new LinkedList<Entity>();
 
 		this.mapView = mapView;
-		
+
 		this.chopperStart = 0;
 		this.bombStart = 0;
 	}
-	
+
 	/**
 	 * Create zombies
-	 * @param number the number of zombies to create
+	 * 
+	 * @param number
+	 *            the number of zombies to create
 	 */
-	public void spawnZombies(int number){
+	public void spawnZombies(int number) {
 		Entity zombie = null;
 		zombiesInGame = number;
-		for(int i=0; i<number; i++){
+		for (int i = 0; i < number; i++) {
 			zombie = zombieFactory.getZombie();
 			entities.add(zombie);
 		}
@@ -98,49 +101,60 @@ public class Spawn {
 
 	/**
 	 * Create citizens
-	 * @param number the number of citizens to create
+	 * 
+	 * @param number
+	 *            the number of citizens to create
 	 */
-	public void spawnCitizen(int number){
+	public void spawnCitizen(int number) {
 		citizenInGame = number;
 		Entity citizen = null;
-		for(int i=0; i<number; i++){
+		for (int i = 0; i < number; i++) {
 			citizen = citizenFactory.getCitizen();
 			entities.add(citizen);
 		}
 	}
-	
+
 	/**
 	 * Put all the existing entities on the map
 	 */
 	public void putOnMap() {
-		
+
 		// Clear the map
 		mapView.getOverlays().clear();
-		
+
 		// initialise the spécials entities (chopper and bomb)
 		initialize();
-		
+
 		// display all citizen and zombies
-		for(Entity entity: getEntities()){
-			CBoolean exist = ((CBoolean) entity.getComponentMap().get(CBoolean.class.getName()));
-			if(exist.isExist()){
-				int id = ((CMarker)entity.getComponentMap().get(CMarker.class.getName())).getMarker();
+		for (Entity entity : getEntities()) {
+			CBoolean exist = ((CBoolean) entity.getComponentMap().get(
+					CBoolean.class.getName()));
+			if (exist.isExist()) {
+				int id = ((CMarker) entity.getComponentMap().get(
+						CMarker.class.getName())).getMarker();
 				createPutOverlay(entity, id, true);
 			}
 		}
 	}
-	
+
 	/**
 	 * Create an overlay and put it on the map
-	 * @param entity the entity to put
-	 * @param id the id of the drawable element
-	 * @param shadow disaplay the shadow or not (NOT WORKING)
+	 * 
+	 * @param entity
+	 *            the entity to put
+	 * @param id
+	 *            the id of the drawable element
+	 * @param shadow
+	 *            disaplay the shadow or not (NOT WORKING)
 	 */
 	private void createPutOverlay(Entity entity, int id, boolean shadow) {
-		CCoordinates coordinates = ((CCoordinates) entity.getComponentMap().get(CCoordinates.class.getName()));
-		GeoPoint point = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
+		CCoordinates coordinates = ((CCoordinates) entity.getComponentMap()
+				.get(CCoordinates.class.getName()));
+		GeoPoint point = new GeoPoint(coordinates.getLatitude(),
+				coordinates.getLongitude());
 		OverlayItem overlayitem = new OverlayItem(point, null, null);
-		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources().getDrawable(id));
+		EntityOverlay entityOverlay = new EntityOverlay(activity.getResources()
+				.getDrawable(id));
 		entityOverlay.addOverlay(overlayitem, shadow);
 		mapView.getOverlays().add(entityOverlay);
 	}
@@ -149,67 +163,95 @@ public class Spawn {
 	 * Initialise the spécial entities with animation
 	 */
 	private void initialize() {
-		if(getChopper() != null){
-			int id = ((CMarker)getChopper().getComponentMap().get(CMarker.class.getName())).getMarker();
-			int tmp = (id + (chopperCurrentFrame++%chopperTotalFrame));
-			createPutOverlay(getChopper(), tmp, false);
+		if (getChopper() != null) {
+			int id = ((CMarker) getChopper().getComponentMap().get(
+					CMarker.class.getName())).getMarker();
+			int tmp = id;
+			if(Calendar.getInstance().getTimeInMillis() >= chopperCurrent + 50000){
+				gMapsZombieSmasher.soundsManager.playSound(SoundsManager.CHOPPER);
+			}
 			
-			if(Calendar.getInstance().getTimeInMillis() - chopperStart >= GameActivity.CHOPPER_LIFE_TIME){
+			if(Calendar.getInstance().getTimeInMillis() >= chopperCurrent + 300){
+				chopperCurrent += 300;
+				tmp = (id + (chopperCurrentFrame++ % chopperTotalFrame));
+			}
+			
+			createPutOverlay(getChopper(), tmp, false);
+
+			if (Calendar.getInstance().getTimeInMillis() - chopperStart >= GameActivity.CHOPPER_LIFE_TIME) {
 				destroyChopper();
 				chopperCurrentFrame = 0;
 			}
 		}
-		
-		if(getBomb() != null){
-			int id = ((CMarker)getBomb().getComponentMap().get(CMarker.class.getName())).getMarker();
-			int tmp = (id + (bombCurrentFrame++%bombTotalFrame));
+
+		if (getBomb() != null) {
+			int id = ((CMarker) getBomb().getComponentMap().get(
+					CMarker.class.getName())).getMarker();
+			
+			int tmp = id;
+			
+			if(Calendar.getInstance().getTimeInMillis() >= bombCurrent + 100){
+				bombCurrent += 100;
+				tmp = (id + (bombCurrentFrame++ % bombTotalFrame));
+			}
+			
 			createPutOverlay(getBomb(), tmp, true);
-			if(Calendar.getInstance().getTimeInMillis() - bombStart >= GameActivity.BOMB_LIFE_TIME){
+			if (Calendar.getInstance().getTimeInMillis() - bombStart >= GameActivity.BOMB_LIFE_TIME) {
 				destroyBomb();
 				bombCurrentFrame = 0;
 			}
 		}
 	}
-	
+
 	/**
 	 * Create the chopper
+	 * 
 	 * @param entity
 	 */
-	public void createChopper(Entity entity){
+	public void createChopper(Entity entity) {
 		System.out.println("CREATE CHOPPER");
 		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.STANDING_BY);
-		((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).setExist(true);
+		((CBoolean) entity.getComponentMap().get(CBoolean.class.getName()))
+				.setExist(true);
+
 		chopper = entity;
-    chopperStart = Calendar.getInstance().getTimeInMillis();
+		chopperStart = Calendar.getInstance().getTimeInMillis();
+		chopperCurrent = chopperStart;
+		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.HELICOP);
 	}
-	
+
 	/**
 	 * Destroy the chopper
 	 */
 	public void destroyChopper() {
-		((CBoolean)chopper.getComponentMap().get(CBoolean.class.getName())).setExist(false);
+		((CBoolean) chopper.getComponentMap().get(CBoolean.class.getName()))
+				.setExist(false);
 		chopper = null;
-    chopperStart = 0;
+		chopperStart = 0;
 	}
-	
+
 	/**
 	 * Create the bomb
+	 * 
 	 * @param entity
 	 */
-	public void createBomb(Entity entity){
+	public void createBomb(Entity entity) {
 		System.out.println("CREATE BOMB");
-		((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).setExist(true);
+		((CBoolean) entity.getComponentMap().get(CBoolean.class.getName()))
+				.setExist(true);
 		bomb = entity;
-    bombStart = Calendar.getInstance().getTimeInMillis();
+		bombStart = Calendar.getInstance().getTimeInMillis();
+		bombCurrent = bombStart;
 	}
-	
+
 	/**
 	 * Destroy the bomb
 	 */
 	public void destroyBomb() {
-			((CBoolean)bomb.getComponentMap().get(CBoolean.class.getName())).setExist(false);
+		((CBoolean) bomb.getComponentMap().get(CBoolean.class.getName()))
+				.setExist(false);
 		bomb = null;
-    bombStart = 0;
+		bombStart = 0;
 	}
 
 	/**
@@ -218,67 +260,77 @@ public class Spawn {
 	public List<Entity> getEntities() {
 		return entities;
 	}
-	
+
 	/**
 	 * Return the list of citizens
+	 * 
 	 * @return
 	 */
 	public List<Entity> getCitizen() {
-		
+
 		List<Entity> citizens = new LinkedList<Entity>();
-		for(Entity entity: getEntities()){
-			if(entity.getComponentMap().containsKey(CAICitizen.class.getName())
-			   && ((CBoolean)entity.getComponentMap().get(CBoolean.class.getName())).isExist()){
+		for (Entity entity : getEntities()) {
+			if (entity.getComponentMap()
+					.containsKey(CAICitizen.class.getName())
+					&& ((CBoolean) entity.getComponentMap().get(
+							CBoolean.class.getName())).isExist()) {
 				citizens.add(entity);
 			}
 		}
-		
+
 		return citizens;
 	}
-	
+
 	/**
-	 * Return the chopper 
+	 * Return the chopper
+	 * 
 	 * @return the chopper, null if not exist
 	 */
 	public Entity getChopper() {
 		return chopper;
 	}
-	
+
 	/**
-	 * Return the bomb 
+	 * Return the bomb
+	 * 
 	 * @return the bolb, null if not exist
 	 */
 	public Entity getBomb() {
 		return bomb;
 	}
-	
+
 	/**
 	 * Return random position on the map for the entity
+	 * 
 	 * @param entity
 	 * @return a random position on the map
 	 */
-	private CCoordinates getRandomPosition(Entity entity){
-		int tempLatitude = (int) (botLatitude
-				+ Math.random() * (topLatitude - botLatitude));
-		int tempLongitude = (int) (leftLongitude
-				+ Math.random() * (rightLongitude - leftLongitude));
-		
+	private CCoordinates getRandomPosition(Entity entity) {
+		int tempLatitude = (int) (botLatitude + Math.random()
+				* (topLatitude - botLatitude));
+		int tempLongitude = (int) (leftLongitude + Math.random()
+				* (rightLongitude - leftLongitude));
+
 		CCoordinates coordinates = new CCoordinates(entity);
 		coordinates.setLatitude(tempLatitude);
 		coordinates.setLongitude(tempLongitude);
-		
+
 		return coordinates;
 	}
-	
+
 	/**
 	 * Set the goal <i>goal</i> for the chosen entity
-	 * @param entity the entity
-	 * @param goal the goal
+	 * 
+	 * @param entity
+	 *            the entity
+	 * @param goal
+	 *            the goal
 	 */
 	public void setGoal(Entity entity, Entity goal) {
-		entity.addComponent(((CGoal)entity.getComponentMap().get(CGoal.class.getName())).setGoal(goal));
+		entity.addComponent(((CGoal) entity.getComponentMap().get(
+				CGoal.class.getName())).setGoal(goal));
 	}
-	
+
 	/**
 	 * Set a random new goal to the entity and set the current position on the
 	 * road closer to the goal
@@ -287,7 +339,7 @@ public class Spawn {
 	 *            the entity to set
 	 */
 	public void setNewGoal(Entity entity) {
-		
+
 		// Get New Goal Coordinates
 		Entity newGoal = new Entity();
 		newGoal.addComponent(getRandomPosition(newGoal));
@@ -301,10 +353,12 @@ public class Spawn {
 	/**
 	 * Free a citizen
 	 * 
-	 * @param entity the citizen to free
+	 * @param entity
+	 *            the citizen to free
 	 */
 	public void freeCitizen(Entity entity) {
 		System.out.println("FREE");
+		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.FREEDOM);
 		citizenInGame--;
 		CBoolean isFree = new CBoolean(entity);
 		isFree.setExist(false);
@@ -312,7 +366,7 @@ public class Spawn {
 		entity.removeComponent(CAICitizen.class.getName());
 		citizenFree++;
 	}
-	
+
 	/**
 	 * Eat a citizen
 	 * 
@@ -320,35 +374,39 @@ public class Spawn {
 	 */
 	public void eatCitizen(Entity entity) {
 		System.out.println("EATED");
-		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.ZOMBIE);
+		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.EAT_CITIZEN);
 		citizenInGame--;
 		zombiesInGame++;
 		// Changement d'IA
 		entity.removeComponent(CAICitizen.class.getName());
 		entity.addComponent(new CAIZombie(entity, this, mapView.getZoomLevel()));
 		// Changement de marker
-		((CMarker)entity.getComponentMap().get(CMarker.class.getName())).setZombie();
+		((CMarker) entity.getComponentMap().get(CMarker.class.getName()))
+				.setZombie();
 		// diminution de la vitesse
-		CMoveSpeed speed = (CMoveSpeed) entity.getComponentMap().get(CMoveSpeed.class.getName());
+		CMoveSpeed speed = (CMoveSpeed) entity.getComponentMap().get(
+				CMoveSpeed.class.getName());
 		speed.setMoveSpeed(ZombieFactory.SPEED);
-		
+
 		citizenEated++;
 	}
-	
+
 	/**
 	 * Kill a citizen
 	 * 
-	 * @param entity the citizen to free
+	 * @param entity
+	 *            the citizen to free
 	 */
 	public void killCitizen(Entity entity) {
 		System.out.println("KILL CITIZEN");
 		citizenInGame--;
 		int rand = (int) (Math.random() * 2);
 		System.out.println("Rand: " + rand);
-		if(rand == 0){
+		if (rand == 0) {
 			gMapsZombieSmasher.soundsManager.playSound(SoundsManager.MAN_DEAD);
 		} else {
-			gMapsZombieSmasher.soundsManager.playSound(SoundsManager.WOMAN_DEAD);
+			gMapsZombieSmasher.soundsManager
+					.playSound(SoundsManager.WOMAN_DEAD);
 		}
 		CBoolean isKilled = new CBoolean(entity);
 		isKilled.setExist(false);
@@ -356,7 +414,7 @@ public class Spawn {
 		entity.removeComponent(CAICitizen.class.getName());
 		citizenKilled++;
 	}
-	
+
 	/**
 	 * Kill Zombie
 	 * 
@@ -364,6 +422,7 @@ public class Spawn {
 	 */
 	public void killZombie(Entity entity) {
 		System.out.println("KILL ZOMBIE");
+		gMapsZombieSmasher.soundsManager.playSound(SoundsManager.ZOMBIE);
 		CBoolean isKilled = new CBoolean(entity);
 		isKilled.setExist(false);
 		entity.addComponent(isKilled);
@@ -414,27 +473,30 @@ public class Spawn {
 		return citizenKilled;
 	}
 
-  /**
-   * Change the pastSeconds used to calculate the delta time.
-   */
-  public void updateSeconds() {
-    this.pastMillis = Calendar.getInstance().getTimeInMillis();
-  }
+	/**
+	 * Change the pastSeconds used to calculate the delta time.
+	 */
+	public void updateSeconds() {
+		this.pastMillis = Calendar.getInstance().getTimeInMillis();
+	}
 
 	/**
 	 * Get and set the next position on <i>parent</i> for the goal <i>goal</i>
-	 * @param parent the parent to set
-	 * @param goal the goal to reach
+	 * 
+	 * @param parent
+	 *            the parent to set
+	 * @param goal
+	 *            the goal to reach
 	 */
 	public void setNextPosition(Entity parent, CGoal goal) {
-	    if(this.pastMillis == -1) {
-	      this.pastMillis = Calendar.getInstance().getTimeInMillis();
-	    }
-	
-	    double pastMillis = Calendar.getInstance().getTimeInMillis();
-	    double delta = (pastMillis - this.pastMillis) / 1000;
-		CCoordinates c = goal.getNextPosition(delta); 
-		if(c != null){
+		if (this.pastMillis == -1) {
+			this.pastMillis = Calendar.getInstance().getTimeInMillis();
+		}
+
+		double pastMillis = Calendar.getInstance().getTimeInMillis();
+		double delta = (pastMillis - this.pastMillis) / 1000;
+		CCoordinates c = goal.getNextPosition(delta);
+		if (c != null) {
 			parent.addComponent(c);
 		}
 	}
@@ -455,4 +517,3 @@ public class Spawn {
     this.bombStart = bombStart;
   }
 }
-

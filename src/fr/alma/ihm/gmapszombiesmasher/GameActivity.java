@@ -1,7 +1,6 @@
 package fr.alma.ihm.gmapszombiesmasher;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -29,7 +28,6 @@ import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 import fr.alma.ihm.gmapszombiesmasher.model.Spawn;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAICitizen;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CAIZombie;
-import fr.alma.ihm.gmapszombiesmasher.sounds.BackgroundMusicService;
 import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManager;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSCoordinate;
 import fr.alma.ihm.gmapszombiesmasher.utils.GPSUtilities;
@@ -440,11 +438,13 @@ public class GameActivity extends MapActivity {
 		if (win) {
 			textName = getString(R.string.you_win);;
 			buttonName = getString(R.string.you_win_button);
-			// update background music setting
-			this.startService(new Intent(this, BackgroundMusicService.class));
+			// Play victory music
+			gMapsZombieSmasher.soundsManager.playSound(SoundsManager.VICTORY);
 		} else {
 			textName = getString(R.string.you_loose);;
 			buttonName = getString(R.string.you_loose_button);
+			// Play loose music
+		    gMapsZombieSmasher.soundsManager.playSound(SoundsManager.LOSE);
 		}
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);

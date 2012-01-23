@@ -21,9 +21,14 @@ public class SoundsManager {
 	public static final int STANDING_BY = 8;
 	public static final int BUILD_FINISHED = 9;
 	public static final int SHIOO = 10;
-	public static final int HELICOP = 11;
-	public static final int FREEDEM = 12;
-	public static final int GOGOGO = 13;
+	public static final int CHOPPER = 11;
+	public static final int LOSE = 12;
+	public static final int KILL_ZOMBIE = 13;
+	public static final int FREE_CITIZEN = 14;
+	public static final int HELICOP = 15;
+	public static final int FREEDOM = 16;
+	public static final int GOGOGO = 17;
+	public static final int EAT_CITIZEN = 18;
 	
 	
 	private SoundPool sounds;
@@ -48,8 +53,10 @@ public class SoundsManager {
 		soundMap.put(SHIOO, sounds.load(context, R.raw.shioo, 1));
 		soundMap.put(ZOMBIE, sounds.load(context, R.raw.zombie, 1));
 		soundMap.put(HELICOP, sounds.load(context, R.raw.helicopt, 1));
-		soundMap.put(FREEDEM, sounds.load(context, R.raw.imgoing, 1));
+		soundMap.put(FREEDOM, sounds.load(context, R.raw.imgoing, 1));
 		soundMap.put(GOGOGO, sounds.load(context, R.raw.gogogo, 1));
+		soundMap.put(EAT_CITIZEN, sounds.load(context, R.raw.eating_citizen, 1));
+		soundMap.put(LOSE, sounds.load(context, R.raw.loser, 1));
 		
 	}
 	
