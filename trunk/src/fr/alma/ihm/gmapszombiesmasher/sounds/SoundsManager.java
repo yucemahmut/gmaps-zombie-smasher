@@ -62,7 +62,7 @@ public class SoundsManager {
 	
 	public int playSound(int soundID) {
 		if(isSoundOn())
-			return sounds.play(soundMap.get(soundID), 1.0f, 1.0f, 1, 0, 1.0f);
+			return sounds.play(soundMap.get(soundID), 0.7f, 0.7f, 1, 0, 1.0f);
 		else
 			return 0;
 	}
@@ -74,6 +74,17 @@ public class SoundsManager {
 	public int playSound(int soundID, float rate) {
 		if(isSoundOn())
 			return sounds.play(soundMap.get(soundID), 1.0f, 1.0f, 1, 0, rate);
+		else
+			return 0;
+	}
+	
+	/**
+	 * @param leftVolume volume value (range = 0.0 to 1.0)
+	 * @param rightVolume volume value (range = 0.0 to 1.0)
+	 */
+	public int playSound(int soundID, float leftVolume, float rightVolume) {
+		if(isSoundOn())
+			return sounds.play(soundMap.get(soundID), leftVolume, rightVolume, 1, 0, 1.0f);
 		else
 			return 0;
 	}
