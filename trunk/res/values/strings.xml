@@ -31,7 +31,7 @@
     <string name="you_loose">You Loose !</string>
     <string name="you_loose_button">Okay :(</string>
     <string name="unable_current_location">Unable to get your current location</string>
-    <string name="api_key">0qsMDe7mnD957X3mV4eaM9Gw_pF6UQHdntSuZ7g</string>
+    <string name="api_key">0qsMDe7mnD95CtN61ynjw1eFzOBpyrqDRfvDJmQ</string>
     
     <!-- Manage Levels -->
     <string name="select_world">Select World In Map</string>
@@ -61,5 +61,16 @@
     <string name="zombies_killed">Zombies Killed by Bomb</string>
     <string name="citizens_eated">Citizens eated by Zombies</string>
     
+    <!-- Settings -->
+    <string name="music_on">Zombie: Did I scare you?</string>
+    <string name="music_off">Silence hill</string>
+    <string name="background_music">Background music</string>
+    <string name="sound_off">Sound off</string>
+    <string name="sound_on">Sound on</string>
+    <string name="sound">Sound</string>
+    <string name="satellite_mode">View the maps in satellite mode</string>
+    <string name="satellite">Satellite</string>
+    <string name="difficulty_level">Define the difficulty level</string>
+    <string name="difficulty">Difficulty Level</string>
     
 </resources>

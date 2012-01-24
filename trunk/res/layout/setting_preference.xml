@@ -7,30 +7,30 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="check_backgroundMusic"
-            android:summaryOff="Silence hill"
-            android:summaryOn="Zombie: Did I scare you?"
-            android:title="Background music" />
+            android:summaryOff="@string/music_off"
+            android:summaryOn="@string/music_on"
+            android:title="@string/background_music" />
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="check_sound"
-            android:summaryOff="Sound off"
-            android:summaryOn="Sound on"
-            android:title="Sound" />
+            android:summaryOff="@string/sound_off"
+            android:summaryOn="@string/sound_on"
+            android:title="@string/sound" />
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="check_satellite"
-            android:summary="View the maps in satellite mode"
-            android:title="Satellite" />
+            android:summary="@string/satellite_mode"
+            android:title="@string/satellite" />
 
         <ListPreference
             android:defaultValue="1"
             android:entries="@array/dificultyLevel"
             android:entryValues="@array/dificultyLevelValues"
             android:key="level"
-            android:summary="Define the dificulty level"
-            android:title="Level" />
+            android:summary="@string/difficulty_level"
+            android:title="@string/difficulty" />
     </PreferenceCategory>
 
 </PreferenceScreen>

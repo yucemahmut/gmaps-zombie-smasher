@@ -40,7 +40,7 @@ public class SelectWorldInMap extends MapActivity {
 
 		mapView.setBuiltInZoomControls(true);
 		mapController.setCenter(new GeoPoint(40769800, -73960500));
-		mapController.setZoom(GameActivity.ZOOM_LEVEL_MIN);
+		mapController.setZoom(GameActivity.ZOOM_LEVEL_MAX);
 	}
 
 	@Override
