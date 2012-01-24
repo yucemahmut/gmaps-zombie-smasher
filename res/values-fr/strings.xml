@@ -59,5 +59,17 @@
     <string name="zombies_killed">Nombre de zombies tué par une bombe.</string>
     <string name="citizens_eated">Nombre de civils mangés par des zombies.</string>
     
+    <!-- Settings -->
+    <string name="music_on">Zombie: Je vous ai effrayé?</string>
+    <string name="music_off">Silence hill</string>
+    <string name="background_music">Musique de fond</string>
+    <string name="sound_off">Je coupe le son</string>
+    <string name="sound_on">Je remet le son</string>
+    <string name="sound">Son</string>
+    <string name="satellite_mode">Afficher el mode satellite pour les cartes</string>
+    <string name="satellite">Satellite</string>
+    <string name="difficulty_level">Définir le niveau de difficulté</string>
+    <string name="difficulty">Niveau de difficulté</string>
+    
     
 </resources>
