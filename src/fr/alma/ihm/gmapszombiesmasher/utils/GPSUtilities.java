@@ -13,14 +13,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 /**
- * Provide utilities to the GPS
- * 
- * @author alban
- * 
+ * Provide utilities to the GPS.
  */
 public class GPSUtilities extends Activity {
 
-	protected int time = 15;
 	private static double latitude = 0;
 	private static double longitude = 0;
 	private ProgressDialog dialog;

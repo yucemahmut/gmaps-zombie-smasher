@@ -1,6 +1,6 @@
 package fr.alma.ihm.gmapszombiesmasher.model.components;
 
-import fr.alma.ihm.gmapszombiesmasher.model.Entity;
+import com.google.android.maps.GeoPoint;
 
 /**
  * 
@@ -8,20 +8,19 @@ import fr.alma.ihm.gmapszombiesmasher.model.Entity;
  * in this component
  * 
  */
-public class CCoordinates extends Component {
+public class CCoordinates implements Component {
 
 	private int latitude;
 	private int longitude;
 
-	public CCoordinates(Entity parent) {
-		super(parent);
+	public CCoordinates() {
 		latitude = 0;
 		longitude = 0;
 	}
 
-  public boolean equals(CCoordinates c) {
-    return (latitude == c.latitude && longitude == c.longitude);
-  }
+	public boolean equals(CCoordinates c) {
+		return (latitude == c.latitude && longitude == c.longitude);
+	}
 
 	public int getLatitude() {
 		return latitude;
@@ -39,25 +38,51 @@ public class CCoordinates extends Component {
 		this.longitude = longitude;
 	}
 
-  // http://fr.wikipedia.org/wiki/Calcul_distance_ente_deux_coordonnées_géographiques
-  public double distanceTo(CCoordinates c) {
-    double r = 6378.137;
-    double lat1 = (double) latitude / 1000000.0;
-    double lon1 = (double) longitude / 1000000.0;
-    double lat2 = (double) c.latitude / 1000000.0;
-    double lon2 = (double) c.longitude / 1000000.0;
+	/**
+	 * Return a new GeoPoint according to the coordinates.
+	 * 
+	 * @return a new instance of geopoint
+	 */
+	public GeoPoint getPoint(){
+		return new GeoPoint(getLatitude(), getLongitude());
+	}
 
-    double tetaLat = lat2 - lat1;
-    double tetaLon = lon2 - lon1;
+	/**
+	 * Return the distance (in meters) between the current coordinates and the
+	 * coordinates in parameter.
+	 * 
+	 * @param coordinates
+	 *            the coordinates to compare
+	 * @return the distance in meters between the two coordinates
+	 */
+	public double distanceTo(CCoordinates coordinates) {
+		double r = 6378.137;
+		double lat1 = (double) latitude / 1000000.0;
+		double lon1 = (double) longitude / 1000000.0;
+		double lat2 = (double) coordinates.latitude / 1000000.0;
+		double lon2 = (double) coordinates.longitude / 1000000.0;
 
-    double deltaLat = tetaLat * r * (Math.PI / 180);
-    double deltaLon = tetaLon * r * Math.cos(tetaLat) * (Math.PI / 180);
+		double tetaLat = lat2 - lat1;
+		double tetaLon = lon2 - lon1;
 
-    double d = (Math.sqrt(Math.pow(deltaLat, 2) + Math.pow(deltaLon, 2))) * 1000;
+		double deltaLat = tetaLat * r * (Math.PI / 180);
+		double deltaLon = tetaLon * r * Math.cos(tetaLat) * (Math.PI / 180);
 
-    return d;
-  }
+		double d = (Math.sqrt(Math.pow(deltaLat, 2) + Math.pow(deltaLon, 2))) * 1000;
 
+		return d;
+	}
+
+	/**
+	 * Return true or false if this is near of the <i>goalCoordinates</i>
+	 * according to the <i>distanceMin</i> in meters.
+	 * 
+	 * @param goalCoordinates
+	 *            the coordinates to compare.
+	 * @param distanceMin
+	 *            the minimum distance to qualify the coordinates has "near".
+	 * @return true if the distance is lower that <i>distanceMin</i>.
+	 */
 	public boolean isNearOf(CCoordinates goalCoordinates, double distanceMin) {
 		return distanceTo(goalCoordinates) <= distanceMin;
 	}

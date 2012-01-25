@@ -1,29 +1,13 @@
 package fr.alma.ihm.gmapszombiesmasher.model.factories;
 
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
-import fr.alma.ihm.gmapszombiesmasher.model.components.CBoolean;
-import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
-import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
 
-public class BombFactory {
+public class BombFactory implements IFactory {
 
-	private static Entity bomb;
-
-	public BombFactory() {
+	@Override
+	public Entity createEntity() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public static Entity get() {
-		// Lazy Loading
-		if (bomb == null) {
-			bomb = new Entity();
-			bomb.addComponent(new CCoordinates(bomb));
-			CBoolean alive = new CBoolean(bomb);
-			alive.setExist(false);
-			bomb.addComponent(alive);
-			CMarker marker = new CMarker(bomb);
-			marker.setBomb();
-			bomb.addComponent(marker);
-		}
-		return bomb;
-	}
 }

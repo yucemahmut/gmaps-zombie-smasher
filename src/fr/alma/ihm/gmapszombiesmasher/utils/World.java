@@ -2,7 +2,7 @@ package fr.alma.ihm.gmapszombiesmasher.utils;
 
 import java.io.Serializable;
 
-import fr.alma.ihm.gmapszombiesmasher.GameActivity;
+import fr.alma.ihm.gmapszombiesmasher_old.GameActivity;
 
 public class World implements Serializable {
 	

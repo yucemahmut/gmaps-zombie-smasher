@@ -3,8 +3,8 @@ package fr.alma.ihm.gmapszombiesmasher.utils;
 import java.util.LinkedList;
 import java.util.List;
 
-import fr.alma.ihm.gmapszombiesmasher.GameActivity;
-import fr.alma.ihm.gmapszombiesmasher.exceptions.AlreadyExistingWorldException;
+import fr.alma.ihm.gmapszombiesmasher_old.GameActivity;
+import fr.alma.ihm.gmapszombiesmasher_old.exceptions.AlreadyExistingWorldException;
 
 public class ManageWorlds {
 

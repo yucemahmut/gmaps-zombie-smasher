@@ -1,18 +1,16 @@
 package fr.alma.ihm.gmapszombiesmasher.model.components;
 
-import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 
 /**
  * 
  * Class which contains the movespeed of an entity ( Zombie, citizen, chopper ..
  * ) expressed in m/s
  */
-public class CMoveSpeed extends Component {
+public class CMoveSpeed implements Component {
 
 	private double moveSpeed; // meter per second
 
-	public CMoveSpeed(Entity parent) {
-		super(parent);
+	public CMoveSpeed() {
 		moveSpeed = 0;
 	}
 

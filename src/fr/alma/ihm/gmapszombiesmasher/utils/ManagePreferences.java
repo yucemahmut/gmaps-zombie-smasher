@@ -9,7 +9,7 @@ import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
-import fr.alma.ihm.gmapszombiesmasher.SettingPreferenceActivity;
+import fr.alma.ihm.gmapszombiesmasher_old.SettingPreferenceActivity;
 
 public class ManagePreferences {
 

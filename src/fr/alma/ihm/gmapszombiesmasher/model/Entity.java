@@ -1,8 +1,10 @@
 package fr.alma.ihm.gmapszombiesmasher.model;
 
-import java.util.TreeMap;
-
-import fr.alma.ihm.gmapszombiesmasher.model.components.Component;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
+import fr.alma.ihm.gmapszombiesmasher.model.components.CAI;
 
 /**
  * 
@@ -10,44 +12,143 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.Component;
  * Explosion ... )
  * 
  */
-public class Entity implements Cloneable {
+public abstract class Entity {
 
-	private TreeMap<String, Component> componentMap;
-
-	public Entity() {
-		componentMap = new TreeMap<String, Component>();
-	}
-
-	public TreeMap<String, Component> getComponentMap() {
-		return componentMap;
-	}
-
-	public void setComponentMap(TreeMap<String, Component> componentMap) {
-		this.componentMap = componentMap;
+	private Thread thread;
+	
+	private Thread getThread(){
+		if(thread == null){
+			thread = new Thread(getIa());
+		}
+		
+		return thread;
 	}
 	
 	/**
-	 * Add a new component to the entity, which can be a moveSpeed, an IA etc...
-	 * 
-	 * @param c
-	 *            the new component to be added
+	 * The entity exist or not.
 	 */
-	public void addComponent(Component c) {
-		//System.out.println("New component name : " + c.getClass().getName());
-		componentMap.put(c.getClass().getName(), c);
+	private boolean exist;
+	/**
+	 * The IA of the entity.
+	 */
+	private CAI ia;
+	/**
+	 * The current position of the entity.
+	 */
+	private CCoordinates currentPosition;
+	/**
+	 * The goal of the entity (the coordinates to reach).
+	 */
+	private CGoal goal;
+	/**
+	 * The marker of the entity.
+	 */
+	private CMarker marker;
+	/**
+	 * The speed of the entity.
+	 */
+	private CMoveSpeed moveSpeed;
+
+	/**
+	 * Start the activity of the Entity.
+	 */
+	public void start() {
+		getThread().run();
+	}
+	
+	/**
+	 * Stop the activity of the Entity.
+	 */
+	public void stop() {
+		getThread().stop();
 	}
 
-	public Object clone() {
-		Entity entity = null;
-		try {
-			entity = (Entity) super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		return entity;
+	/**
+	 * @return the exist
+	 */
+	public boolean isExist() {
+		return exist;
+	}
+	
+	/**
+	 * @param exist the exist to set
+	 */
+	public void setExist(boolean exist) {
+		this.exist = exist;
 	}
 
-	public void removeComponent(String name) {
-		componentMap.remove(name);
+	/**
+	 * @return the ia
+	 */
+	public CAI getIa() {
+		return ia;
+	}
+
+	/**
+	 * @param ia
+	 *            the ia to set
+	 */
+	public void setIa(CAI ia) {
+		this.ia = ia;
+	}
+
+	/**
+	 * @return the currentPosition
+	 */
+	public CCoordinates getCurrentPosition() {
+		return currentPosition;
+	}
+
+	/**
+	 * @param currentPosition
+	 *            the currentPosition to set
+	 */
+	public void setCurrentPosition(CCoordinates currentPosition) {
+		this.currentPosition = currentPosition;
+	}
+
+	/**
+	 * @return the goal
+	 */
+	public CGoal getGoal() {
+		return goal;
+	}
+
+	/**
+	 * @param goal
+	 *            the goal to set
+	 */
+	public void setGoal(CGoal goal) {
+		this.goal = goal;
+	}
+
+	/**
+	 * @return the marker
+	 */
+	public CMarker getMarker() {
+		return marker;
+	}
+
+	/**
+	 * @param marker
+	 *            the marker to set
+	 */
+	public void setMarker(CMarker marker) {
+		this.marker = marker;
+	}
+
+	/**
+	 * @return the moveSpeed
+	 */
+	public CMoveSpeed getMoveSpeed() {
+		return moveSpeed;
+	}
+
+	/**
+	 * @param moveSpeed
+	 *            the moveSpeed to set
+	 */
+	public void setMoveSpeed(CMoveSpeed moveSpeed) {
+		this.moveSpeed = moveSpeed;
 	}
 }
