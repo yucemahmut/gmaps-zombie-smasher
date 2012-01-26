@@ -12,17 +12,9 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CAI;
  * Explosion ... )
  * 
  */
-public abstract class Entity {
+public class Entity {
 
 	private Thread thread;
-	
-	private Thread getThread(){
-		if(thread == null){
-			thread = new Thread(getIa());
-		}
-		
-		return thread;
-	}
 	
 	/**
 	 * The entity exist or not.
@@ -49,6 +41,20 @@ public abstract class Entity {
 	 */
 	private CMoveSpeed moveSpeed;
 
+	
+	/**
+	 * Return the thread o create a new one.
+	 * 
+	 * @return the thread.
+	 */
+	private Thread getThread(){
+		if(thread == null){
+			thread = new Thread(getIa());
+		}
+		
+		return thread;
+	}
+	
 	/**
 	 * Start the activity of the Entity.
 	 */

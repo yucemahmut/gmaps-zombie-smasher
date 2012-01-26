@@ -95,12 +95,9 @@ public class CGoal implements Component {
 			String firstLon = firstStep.getJSONObject("start_location")
 					.optString("lng");
 
-			startCoordinates = new CCoordinates();
-			startCoordinates
-					.setLatitude((int) (Float.parseFloat(firstLat) * 1e6));
-			startCoordinates
-					.setLongitude((int) (Float.parseFloat(firstLon) * 1e6));
-
+			startCoordinates = new CCoordinates(
+					(int) (Float.parseFloat(firstLat) * 1e6),
+					(int) (Float.parseFloat(firstLon) * 1e6));
 		} catch (Exception e) {
 			SystemClock.sleep(250);
 			startCoordinates = updateSteps();

@@ -12,10 +12,10 @@ public class CCoordinates implements Component {
 
 	private int latitude;
 	private int longitude;
-
-	public CCoordinates() {
-		latitude = 0;
-		longitude = 0;
+	
+	public CCoordinates(int latitude, int longitude) {
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	public boolean equals(CCoordinates c) {

@@ -15,6 +15,10 @@ public class CMarker implements Component {
 	
 	private int idMarker;
 	
+	public CMarker(int idMarker){
+		this.idMarker = idMarker;
+	}
+	
 	public int getIdMarker(){
 		return idMarker;
 	}

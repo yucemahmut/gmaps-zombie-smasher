@@ -10,8 +10,8 @@ public class CMoveSpeed implements Component {
 
 	private double moveSpeed; // meter per second
 
-	public CMoveSpeed() {
-		moveSpeed = 0;
+	public CMoveSpeed(double moveSpeed) {
+		this.moveSpeed = moveSpeed;
 	}
 
 	public double getMoveSpeed() {

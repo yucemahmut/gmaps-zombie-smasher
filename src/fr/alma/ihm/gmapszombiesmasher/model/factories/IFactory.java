@@ -8,5 +8,5 @@ import fr.alma.ihm.gmapszombiesmasher.model.Entity;
  */
 public interface IFactory {
 
-	public Entity createEntity(); 
+	public Entity getEntity(); 
 }

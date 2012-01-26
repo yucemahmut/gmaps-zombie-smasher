@@ -8,6 +8,7 @@ package fr.alma.ihm.gmapszombiesmasher.model.components;
  */
 public class CAICitizen implements CAI {
 
+	
 
 	@Override
 	public void run() {

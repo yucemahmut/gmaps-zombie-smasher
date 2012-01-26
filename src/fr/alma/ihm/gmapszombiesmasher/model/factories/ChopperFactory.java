@@ -4,10 +4,16 @@ import fr.alma.ihm.gmapszombiesmasher.model.Entity;
 
 public class ChopperFactory implements IFactory {
 
+	private Entity chopper;
+	
 	@Override
-	public Entity createEntity() {
-		// TODO Auto-generated method stub
-		return null;
+	public Entity getEntity() {
+		if(chopper == null){
+			chopper = new Entity();
+			
+		}
+		
+		return chopper;
 	}
 
 }
