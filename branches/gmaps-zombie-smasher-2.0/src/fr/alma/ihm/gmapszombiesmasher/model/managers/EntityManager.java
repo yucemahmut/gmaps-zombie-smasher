@@ -13,6 +13,7 @@ import android.app.Activity;
 import com.google.android.maps.MapView;
 
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
+import fr.alma.ihm.gmapszombiesmasher.model.components.MapInformationUtilities;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.IFactory;
 
 /**
@@ -27,6 +28,7 @@ public class EntityManager {
 	private List<Integer> types;
 	private Map<Integer, List<Entity>> entities;
 	private PlacementManager placementManager;
+	private FactoryManager factoryManager;
 
 	public EntityManager(Activity activity, MapView mapView) {
 		this.entities = new HashMap<Integer, List<Entity>>();
@@ -37,6 +39,9 @@ public class EntityManager {
 		this.types.add(CITIZEN);
 		this.types.add(CHOPPER);
 		this.types.add(BOMB);
+
+		this.factoryManager = new FactoryManager(
+				new MapInformationUtilities(mapView));
 	}
 
 	/**
@@ -81,9 +86,9 @@ public class EntityManager {
 		IFactory factory = null;
 		Entity entity = null;
 		for (int i = 0; i < types.length; i++) {
-			factory = FactoryManager.getFactory(types[i]);
+			factory = factoryManager.getFactory(types[i]);
 			for (int j = 0; j <= numbers[i]; j++) {
-				entity = factory.createEntity();
+				entity = factory.getEntity();
 				getEntities().add(entity);
 				this.placementManager.putEntityOnMap(entity);
 			}
@@ -114,11 +119,11 @@ public class EntityManager {
 			entity.stop();
 		}
 	}
-	
+
 	/**
 	 * Wait all the entities.
 	 */
-	public void waitAll(){
+	public void waitAll() {
 		for (Entity entity : getEntities()) {
 			try {
 				entity.wait();
@@ -127,11 +132,11 @@ public class EntityManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * Resume all the entities.
 	 */
-	public void resumeAll(){
+	public void resumeAll() {
 		notifyAll();
 	}
 }

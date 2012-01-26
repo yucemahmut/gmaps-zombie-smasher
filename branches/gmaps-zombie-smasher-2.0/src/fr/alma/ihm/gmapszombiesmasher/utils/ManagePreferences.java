@@ -9,10 +9,17 @@ import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
-import fr.alma.ihm.gmapszombiesmasher_old.SettingPreferenceActivity;
+import fr.alma.ihm.gmapszombiesmasher.SettingPreferenceActivity;
 
 public class ManagePreferences {
 
+	// CHOPPER
+	public static final int CHOPPER_LIFE_TIME = 10000;
+	public static final long CHOPPER_BUTTON_LIFE_TIME = 15000;
+	// BOMB
+	public static final int BOMB_LIFE_TIME = 2000;
+	public static final long BOMB_BUTTON_LIFE_TIME = 10000;
+	// SPAWN
 	private static final int ZOMBIES_EASY = 5;
 	private static final int CITIZEN_EASY = 5;
 	private static final int ZOMBIES_NORMAL = 10;
