@@ -1,7 +1,5 @@
 package fr.alma.ihm.gmapszombiesmasher.utils;
 
-import fr.alma.ihm.gmapszombiesmasher.R;
-import fr.alma.ihm.gmapszombiesmasher.activities.game.GameActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -12,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import fr.alma.ihm.gmapszombiesmasher.R;
 
 /**
  * Provide utilities to the GPS.
