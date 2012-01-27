@@ -1,10 +1,12 @@
 package fr.alma.ihm.gmapszombiesmasher.model;
 
+import java.util.Calendar;
+
+import fr.alma.ihm.gmapszombiesmasher.model.components.CAI;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CCoordinates;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CGoal;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
-import fr.alma.ihm.gmapszombiesmasher.model.components.CAI;
 
 /**
  * 
@@ -14,8 +16,6 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CAI;
  */
 public class Entity {
 
-	private Thread thread;
-	
 	/**
 	 * The entity exist or not.
 	 */
@@ -40,33 +40,44 @@ public class Entity {
 	 * The speed of the entity.
 	 */
 	private CMoveSpeed moveSpeed;
-
-	
 	/**
-	 * Return the thread o create a new one.
-	 * 
-	 * @return the thread.
+	 * The last time.s
 	 */
-	private Thread getThread(){
-		if(thread == null){
-			thread = new Thread(getIa());
-		}
-		
-		return thread;
+	private long pastTimeMillis;
+
+	/**
+	 * Update the Entity.
+	 */
+	public void update() {
+		getIa().update();
 	}
 	
 	/**
 	 * Start the activity of the Entity.
 	 */
 	public void start() {
-		getThread().run();
+		getIa().start();
 	}
-	
+
 	/**
 	 * Stop the activity of the Entity.
 	 */
 	public void stop() {
-		getThread().stop();
+		getIa().setOnStop(true);
+	}
+	
+	/**
+	 * Pause the activity of the Entity.
+	 */
+	public void pause() {
+		getIa().setOnPause(true);
+	}
+	
+	/**
+	 * Resume the activity of the Entity.
+	 */
+	public void resume() {
+		getIa().setOnPause(false);
 	}
 
 	/**
@@ -75,9 +86,10 @@ public class Entity {
 	public boolean isExist() {
 		return exist;
 	}
-	
+
 	/**
-	 * @param exist the exist to set
+	 * @param exist
+	 *            the exist to set
 	 */
 	public void setExist(boolean exist) {
 		this.exist = exist;
@@ -121,11 +133,35 @@ public class Entity {
 	}
 
 	/**
-	 * @param goal
-	 *            the goal to set
+	 * Set a new goal to the entity. The current position of the entity will be
+	 * updated with the position on the road.
+	 * 
+	 * @param newGoalCoordinates the coordinates of the new goal.
 	 */
-	public void setGoal(CGoal goal) {
-		this.goal = goal;
+	public void setNewGoal(CCoordinates newGoalCoordinates) {
+		this.goal = new CGoal(this);
+		this.setCurrentPosition(this.goal.setGoal(newGoalCoordinates));
+	}
+	
+	public void updateTime(){
+		this.pastTimeMillis = Calendar.getInstance().getTimeInMillis();
+	}
+	
+	/**
+	 * Update the currentPosition to the next position (according to the goal).
+	 */
+	public void goToNextPostion(){
+		if (this.pastTimeMillis == -1) {
+			this.pastTimeMillis = Calendar.getInstance().getTimeInMillis();
+		}
+
+		double thisTimeMillis = Calendar.getInstance().getTimeInMillis();
+		double delta = (thisTimeMillis - this.pastTimeMillis) / 1000;
+		CCoordinates coordinates = goal.getNextPosition(delta);
+		if (coordinates != null) {
+			setCurrentPosition(this.goal.getNextPosition(delta));
+		}
+		
 	}
 
 	/**

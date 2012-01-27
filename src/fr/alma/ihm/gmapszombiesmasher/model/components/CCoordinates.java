@@ -13,9 +13,19 @@ public class CCoordinates implements Component {
 	private int latitude;
 	private int longitude;
 	
+	public CCoordinates() {
+		this.latitude = 0;
+		this.longitude = 0;
+	}
+	
 	public CCoordinates(int latitude, int longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
+	}
+	
+	public CCoordinates(GeoPoint geoPoint) {
+		this.latitude = geoPoint.getLatitudeE6();
+		this.longitude = geoPoint.getLongitudeE6();
 	}
 
 	public boolean equals(CCoordinates c) {
@@ -85,5 +95,9 @@ public class CCoordinates implements Component {
 	 */
 	public boolean isNearOf(CCoordinates goalCoordinates, double distanceMin) {
 		return distanceTo(goalCoordinates) <= distanceMin;
+	}
+	
+	public String toString(){
+		return "Lat: " + getLatitude() + " - Long: " + getLongitude();
 	}
 }

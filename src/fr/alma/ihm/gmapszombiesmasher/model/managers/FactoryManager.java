@@ -1,22 +1,29 @@
 package fr.alma.ihm.gmapszombiesmasher.model.managers;
 
 import fr.alma.ihm.gmapszombiesmasher.model.components.MapInformationUtilities;
+import fr.alma.ihm.gmapszombiesmasher.model.factories.AFactory;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.BombFactory;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.ChopperFactory;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.CitizenFactory;
-import fr.alma.ihm.gmapszombiesmasher.model.factories.IFactory;
 import fr.alma.ihm.gmapszombiesmasher.model.factories.ZombieFactory;
 
 public class FactoryManager {
 
+	private MapInformationUtilities mapInfo;
+	private EntityManager entityManager;
+	
 	public static final int ZOMBIES = 0;
 	public static final int CITIZEN = 1;
 	public static final int CHOPPER = 2;
 	public static final int BOMB = 3;
 	
-	private MapInformationUtilities mapInfo;
+	private ZombieFactory zombieFactory;
+	private CitizenFactory citizenFactory;
+	private ChopperFactory chopperFactory;
+	private BombFactory bombFactory;
 
-	public FactoryManager(MapInformationUtilities mapInfo){
+	public FactoryManager(EntityManager entityManager, MapInformationUtilities mapInfo){
+		this.entityManager = entityManager;
 		this.mapInfo = mapInfo;
 	}
 
@@ -27,18 +34,31 @@ public class FactoryManager {
 	 *            the type of the factory.
 	 * @return the factory.
 	 */
-	public IFactory getFactory(int type) {
+	public AFactory getFactory(int type) {
 		switch (type) {
 		case ZOMBIES:
-			return new ZombieFactory(this.mapInfo);
+			if(zombieFactory == null){
+				zombieFactory = new ZombieFactory(this.entityManager, this.mapInfo);
+			}
+			return zombieFactory;
 		case CITIZEN:
-			return new CitizenFactory(this.mapInfo);
+			if(citizenFactory == null){
+				citizenFactory = new CitizenFactory(this.entityManager, this.mapInfo);
+			}
+			return citizenFactory;
 		case CHOPPER:
-			return new ChopperFactory();
+			if(chopperFactory == null){
+				chopperFactory = new ChopperFactory(this.entityManager, this.mapInfo);
+			}
+			return chopperFactory;
 		case BOMB:
-			return new BombFactory();
+			if(bombFactory == null){
+				bombFactory = new BombFactory(this.entityManager, this.mapInfo);
+			}
+			return bombFactory;
+		default:
+				return null;
 		}
-		return null;
 	}
 
 }

@@ -23,20 +23,23 @@ public class CMarker implements Component {
 		return idMarker;
 	}
 	
-	public void setZombie(){
-		this.idMarker = ZOMBIE_MARKER;
-	}
-	
-	public void setCitizen(){
-		this.idMarker = CITIZEN_MARKER;
-	}
-	
-	public void setChopper(){
-		this.idMarker = CHOPPER_MARKER;
-	}
-
-	public void setBomb() {
-		this.idMarker = BOMB_MARKER;
+	public void setIdMarker(int id){
+		switch (id) {
+		case ZOMBIE_MARKER:
+			this.idMarker = ZOMBIE_MARKER;
+			break;
+		case CITIZEN_MARKER:
+			this.idMarker = CITIZEN_MARKER;
+			break;
+		case CHOPPER_MARKER:
+			this.idMarker = CHOPPER_MARKER;
+			break;
+		case BOMB_MARKER:
+			this.idMarker = BOMB_MARKER;
+			break;
+		default:
+			break;
+		}
 	}
 
 }
