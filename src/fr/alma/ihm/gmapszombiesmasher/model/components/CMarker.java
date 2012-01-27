@@ -10,7 +10,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.managers.FactoryManager;
 public class CMarker implements Component {
 
 	public static final int ZOMBIE_MARKER = R.drawable.zombie_marker_2;
-	public static final int CITIZEN_MARKER = R.drawable.citizen_marker_2;
+	public static final int CITIZEN_MARKER = R.drawable.citizen_marker_3;
 	public static final int CHOPPER_MARKER = R.drawable.chopper_0_marker;
 	public static final int BOMB_MARKER = R.drawable.explosion_0_marker;
 	
