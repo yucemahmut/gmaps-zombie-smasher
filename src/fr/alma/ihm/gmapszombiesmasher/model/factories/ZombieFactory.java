@@ -54,7 +54,7 @@ public class ZombieFactory extends AFactory {
 		
 		switch (randomValue) {
 		case 0: // topLatitude
-			tempLatitude = topLatitude;
+			tempLatitude = topLatitude - 100;
 			tempLongitude = (int) (leftLongitude
 					+ Math.random() * (rightLongitude - leftLongitude));
 			break;
@@ -69,7 +69,7 @@ public class ZombieFactory extends AFactory {
 					+ Math.random() * (topLatitude - botLatitude));
 			break;
 		default: // rightLongitude
-			tempLongitude = rightLongitude;
+			tempLongitude = rightLongitude - 100;
 			tempLatitude = (int) (botLatitude
 					+ Math.random() * (topLatitude - botLatitude));
 			break;

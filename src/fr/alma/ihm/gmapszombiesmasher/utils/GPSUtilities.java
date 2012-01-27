@@ -1,6 +1,7 @@
 package fr.alma.ihm.gmapszombiesmasher.utils;
 
 import fr.alma.ihm.gmapszombiesmasher.R;
+import fr.alma.ihm.gmapszombiesmasher.activities.game.GameActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -75,13 +76,14 @@ public class GPSUtilities extends Activity {
 						Intent intent = new Intent();
 						intent.putExtra("latitude", latitude);
 						intent.putExtra("longitude", longitude);
-						
-						setResult(RESULT_OK, intent);
+						System.out.println("[GPS]  OK");
+						GPSUtilities.this.setResult(RESULT_OK, intent);
 					} else {
-						setResult(RESULT_CANCELED);
+						System.out.println("[GPS]  CANCEL");
+						GPSUtilities.this.setResult(RESULT_CANCELED);
 					}
 					
-					finish();
+					GPSUtilities.this.finish();
 				}
 			};
 
