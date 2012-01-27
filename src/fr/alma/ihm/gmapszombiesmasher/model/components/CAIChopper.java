@@ -59,19 +59,10 @@ public class CAIChopper extends CAI {
 
 	@Override
 	public void update() {
+		System.out.println("START: " + (Calendar.getInstance().getTimeInMillis() - startTime));
 		// Tantque la vie du chopper n'est pas finie
 		if (Calendar.getInstance().getTimeInMillis() - startTime <= LIFE_TIME) {
-
-			if (isOnPause()) {
-				startPause = Calendar.getInstance().getTimeInMillis();
-			}
-			if (startPause != -1) {
-				startTime += Calendar.getInstance().getTimeInMillis()
-						- startPause;
-			}
-
 			updateFrame();
-
 			notifyCitizens();
 			releaseCitizens();
 		} else {
@@ -136,6 +127,16 @@ public class CAIChopper extends CAI {
 			currentTime = Calendar.getInstance().getTimeInMillis();
 			getParent().getMarker().setIdMarker(
 					CMarker.CHOPPER_MARKER + (currentFrame++ % TOTAL_FRAMES));
+		}
+	}
+
+	@Override
+	public void setOnPause(boolean onPause) {
+		if (onPause) {
+			startPause = Calendar.getInstance().getTimeInMillis();
+		} else {
+			startTime += (Calendar.getInstance().getTimeInMillis() - startPause);
+			System.out.println("PAUSE: " + startTime);
 		}
 	}
 
