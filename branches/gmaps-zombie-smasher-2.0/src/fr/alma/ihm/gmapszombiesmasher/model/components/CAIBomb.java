@@ -113,7 +113,7 @@ public class CAIBomb extends CAI {
 		if (onPause) {
 			startPause = Calendar.getInstance().getTimeInMillis();
 		} else {
-			startTime = startTime + startPause;
+			startTime += (Calendar.getInstance().getTimeInMillis() - startPause);
 		}
 	}
 }

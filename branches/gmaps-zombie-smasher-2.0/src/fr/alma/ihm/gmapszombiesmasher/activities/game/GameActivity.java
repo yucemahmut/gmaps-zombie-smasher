@@ -1,6 +1,7 @@
 package fr.alma.ihm.gmapszombiesmasher.activities.game;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -176,8 +177,6 @@ public class GameActivity extends MapActivity {
 
 				GMapsZombieSmasher.soundsManager
 						.playSound(SoundsManager.BUILD_FINISHED);
-
-				// waitingHandler.sendEmptyMessage(WaitingHandler.START_CODE);
 			}
 
 			/**
@@ -198,7 +197,15 @@ public class GameActivity extends MapActivity {
 		};
 
 		dialog = ProgressDialog.show(GameActivity.this, "",
-				getString(R.string.wait), true);
+				getString(R.string.wait), true, true,
+				new DialogInterface.OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface arg0) {
+						finish();
+					}
+
+				});
 
 		Thread spawnTread = new Thread(spawLoop);
 		spawnTread.start();
@@ -264,6 +271,7 @@ public class GameActivity extends MapActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		System.out.println("[RESULT] " + requestCode);
 		switch (requestCode) {
 		case GPS_CODE:
 			if (resultCode == RESULT_CANCELED) {
@@ -283,7 +291,7 @@ public class GameActivity extends MapActivity {
 
 				mapController.setCenter(new GeoPoint(world.getLatitude(), world
 						.getLongitude()));
-				mapController.setZoom(MapInformationUtilities.ZOOM_LEVEL_MIN);
+				mapController.setZoom(MapInformationUtilities.ZOOM_LEVEL_MAX);
 			}
 			break;
 		case SETTINGS_CODE:
