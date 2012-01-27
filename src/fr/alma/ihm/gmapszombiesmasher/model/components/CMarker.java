@@ -9,8 +9,8 @@ import fr.alma.ihm.gmapszombiesmasher.model.managers.FactoryManager;
  */
 public class CMarker implements Component {
 
-	public static final int ZOMBIE_MARKER = R.drawable.zombies_marker;
-	public static final int CITIZEN_MARKER = R.drawable.citizens_marker;
+	public static final int ZOMBIE_MARKER = R.drawable.zombie_marker_2;
+	public static final int CITIZEN_MARKER = R.drawable.citizen_marker_2;
 	public static final int CHOPPER_MARKER = R.drawable.chopper_0_marker;
 	public static final int BOMB_MARKER = R.drawable.explosion_0_marker;
 	
@@ -32,13 +32,8 @@ public class CMarker implements Component {
 		case FactoryManager.CITIZEN:
 			this.idMarker = CITIZEN_MARKER;
 			break;
-		case FactoryManager.CHOPPER:
-			this.idMarker = CHOPPER_MARKER;
-			break;
-		case FactoryManager.BOMB:
-			this.idMarker = BOMB_MARKER;
-			break;
 		default:
+			this.idMarker = id;
 			break;
 		}
 	}

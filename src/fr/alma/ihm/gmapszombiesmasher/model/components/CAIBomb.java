@@ -15,13 +15,14 @@ public class CAIBomb extends CAI {
 	private int[] deadlyTypes;
 	private long startTime;
 	private int currentFrame;
+	private long startPause;
 
 	public CAIBomb(Entity parent, EntityManager entityManager) {
 		super(parent, entityManager);
 		currentFrame = 0;
 		deadlyTypes = new int[] { EntityManager.CITIZEN, EntityManager.ZOMBIES };
 		startTime = Calendar.getInstance().getTimeInMillis();
-		System.out.println("BOMB");
+		startPause = -1;
 	}
 
 	@Override
@@ -33,20 +34,15 @@ public class CAIBomb extends CAI {
 		while (Calendar.getInstance().getTimeInMillis() - startTime < LIFE_TIME) {
 
 			if (isOnPause()) {
-				long startPause = Calendar.getInstance().getTimeInMillis();
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				setOnPause(false);
+				startPause = Calendar.getInstance().getTimeInMillis();
+			}
+			if (startPause != -1) {
 				startTime += Calendar.getInstance().getTimeInMillis()
 						- startPause;
 			}
 
 			update();
 		}
-		System.out.println("[BOMB] STOP");
 		// Stop the entity
 		getEntityManager().stopEntity(getParent(), EntityManager.BOMB);
 
@@ -58,13 +54,9 @@ public class CAIBomb extends CAI {
 		if (Calendar.getInstance().getTimeInMillis() - startTime <= LIFE_TIME) {
 
 			if (isOnPause()) {
-				long startPause = Calendar.getInstance().getTimeInMillis();
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				setOnPause(false);
+				startPause = Calendar.getInstance().getTimeInMillis();
+			}
+			if (startPause != -1) {
 				startTime += Calendar.getInstance().getTimeInMillis()
 						- startPause;
 			}
@@ -73,7 +65,6 @@ public class CAIBomb extends CAI {
 
 			killThemAll();
 		} else {
-			System.out.println("[BOMB] STOP");
 			// Stop the entity
 			getEntityManager().stopEntity(getParent(), EntityManager.BOMB);
 		}
@@ -122,9 +113,7 @@ public class CAIBomb extends CAI {
 	 * Update de la frame de l'image.
 	 */
 	private void updateFrame() {
-		int id = getParent().getMarker().getIdMarker();
-		getParent().getMarker().setIdMarker(
-				(id + (currentFrame++ % TOTAL_FRAMES)));
+		getParent().getMarker().setIdMarker(CMarker.BOMB_MARKER + currentFrame++ % TOTAL_FRAMES);
 	}
 
 }

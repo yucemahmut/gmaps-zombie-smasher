@@ -110,7 +110,7 @@ public class EntityManager {
 		for (int i = 0; i < types.length; i++) {
 			factory = getFactory(types[i]);
 			inGameCounter.put(types[i], numbers[i]);
-			for (int j = 0; j <= numbers[i]; j++) {
+			for (int j = 0; j < numbers[i]; j++) {
 				entity = factory.getEntity();
 				this.entities.add(entity);
 				this.entitiesType.put(entity, types[i]);
@@ -245,11 +245,12 @@ public class EntityManager {
 	 * @param toType
 	 *            the new type of the entity.
 	 */
-	public void transformEntityTo(Entity entity, int toType) {
+	public void transformEntityTo(Entity entity, int fromType, int toType) {
 		// Change the entity type
 		entitiesType.put(entity, toType);
 		// change the marker
 		entity.getMarker().setIdMarker(toType);
+		inGameCounter.put(toType, inGameCounter.get(toType) + 1);
 	}
 
 	/**
