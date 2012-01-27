@@ -13,7 +13,6 @@ public class CAICitizen extends CAI {
 
 	public CAICitizen(Entity parent, EntityManager entityManager) {
 		super(parent, entityManager);
-		System.out.println("[CITIZEN] IA");
 	}
 
 	@Override

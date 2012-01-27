@@ -12,10 +12,10 @@ public class MapInformationUtilities {
 	public static final int ZOOM_LEVEL_MAX = 16;
 
 	private int zoomLevel;
-	private double distanceEatMin = 10;
+	private double distanceEatMin = 15;
 	private double distanceBombMin = 100;
 	private double distanceChopperMin = 80;
-	private double distanceChopperToGetInMin = 10;
+	private double distanceChopperToGetInMin = 20;
 	private MapView mapView;
 
 	public MapInformationUtilities(MapView mapView) {

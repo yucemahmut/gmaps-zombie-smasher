@@ -18,6 +18,7 @@ public class CAIChopper extends CAI {
 	private long currentTime;
 	private long soundTime;
 	private int currentFrame;
+	private long startPause;
 
 	public CAIChopper(Entity parent, EntityManager entityManager) {
 		super(parent, entityManager);
@@ -25,7 +26,7 @@ public class CAIChopper extends CAI {
 		startTime = Calendar.getInstance().getTimeInMillis();
 		currentTime = startTime;
 		soundTime = startTime;
-		System.out.println("CHOPPER");
+		startPause = -1;
 	}
 
 	@Override
@@ -62,13 +63,9 @@ public class CAIChopper extends CAI {
 		if (Calendar.getInstance().getTimeInMillis() - startTime <= LIFE_TIME) {
 
 			if (isOnPause()) {
-				long startPause = Calendar.getInstance().getTimeInMillis();
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				setOnPause(false);
+				startPause = Calendar.getInstance().getTimeInMillis();
+			}
+			if (startPause != -1) {
 				startTime += Calendar.getInstance().getTimeInMillis()
 						- startPause;
 			}
@@ -78,7 +75,6 @@ public class CAIChopper extends CAI {
 			notifyCitizens();
 			releaseCitizens();
 		} else {
-			System.out.println("[CHOPPER] STOP");
 			// Stop the entity
 			getEntityManager().stopEntity(getParent(), EntityManager.CHOPPER);
 		}
@@ -95,7 +91,8 @@ public class CAIChopper extends CAI {
 					getEntityManager().getMapInformations()
 							.getDistanceChopperMin())) {
 				// Si le goal du civil n'est pas l'hélico
-				if(!entity.getGoal().getGoalCoordinates().equals(getParent().getCurrentPosition())){
+				if (!entity.getGoal().getGoalCoordinates()
+						.equals(getParent().getCurrentPosition())) {
 					entity.setNewGoal(getParent().getCurrentPosition());
 				}
 			}
@@ -128,7 +125,6 @@ public class CAIChopper extends CAI {
 	 * Update de la frame de l'image.
 	 */
 	private void updateFrame() {
-		int id = getParent().getMarker().getIdMarker();
 
 		if (Calendar.getInstance().getTimeInMillis() - soundTime >= CHOPPER_SOUND_TIME) {
 			soundTime = Calendar.getInstance().getTimeInMillis();
@@ -139,7 +135,7 @@ public class CAIChopper extends CAI {
 		if (Calendar.getInstance().getTimeInMillis() - currentTime >= FRAME_TIME) {
 			currentTime = Calendar.getInstance().getTimeInMillis();
 			getParent().getMarker().setIdMarker(
-					id + (currentFrame++ % TOTAL_FRAMES));
+					CMarker.CHOPPER_MARKER + (currentFrame++ % TOTAL_FRAMES));
 		}
 	}
 

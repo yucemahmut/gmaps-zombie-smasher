@@ -15,7 +15,6 @@ public class CAIZombie extends CAI {
 
 	public CAIZombie(Entity parent, EntityManager entityManager) {
 		super(parent, entityManager);
-		System.out.println("[ZOMBIE] IA");
 	}
 
 	@Override
@@ -69,7 +68,9 @@ public class CAIZombie extends CAI {
 					getEntityManager().getMapInformations()
 							.getDistanceToEatMin())) {
 				// Transform the citizen to a zombie
-				getEntityManager().transformEntityTo(entity, EntityManager.ZOMBIES);
+				getEntityManager().transformEntityTo(entity, 
+						EntityManager.CITIZEN
+						, EntityManager.ZOMBIES);
 				// Incremente eated counter
 				getEntityManager().incrementEatedCounter(EntityManager.CITIZEN);
 				// PlaySound
