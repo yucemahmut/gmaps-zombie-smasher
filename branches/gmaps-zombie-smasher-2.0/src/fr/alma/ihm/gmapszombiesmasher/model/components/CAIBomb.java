@@ -39,6 +39,7 @@ public class CAIBomb extends CAI {
 			if (startPause != -1) {
 				startTime += Calendar.getInstance().getTimeInMillis()
 						- startPause;
+				startPause = -1;
 			}
 
 			update();
@@ -52,15 +53,6 @@ public class CAIBomb extends CAI {
 	public void update() {
 		// Tantque la vie de la bombe n'est pas finie
 		if (Calendar.getInstance().getTimeInMillis() - startTime <= LIFE_TIME) {
-
-			if (isOnPause()) {
-				startPause = Calendar.getInstance().getTimeInMillis();
-			}
-			if (startPause != -1) {
-				startTime += Calendar.getInstance().getTimeInMillis()
-						- startPause;
-			}
-
 			updateFrame();
 
 			killThemAll();
@@ -116,4 +108,12 @@ public class CAIBomb extends CAI {
 		getParent().getMarker().setIdMarker(CMarker.BOMB_MARKER + currentFrame++ % TOTAL_FRAMES);
 	}
 
+	@Override
+	public void setOnPause(boolean onPause) {
+		if (onPause) {
+			startPause = Calendar.getInstance().getTimeInMillis();
+		} else {
+			startTime = startTime + startPause;
+		}
+	}
 }
