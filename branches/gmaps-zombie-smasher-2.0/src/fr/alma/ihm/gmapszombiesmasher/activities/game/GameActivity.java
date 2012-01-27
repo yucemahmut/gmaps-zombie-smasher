@@ -42,6 +42,7 @@ public class GameActivity extends MapActivity {
 	private int selectedButton;
 
 	private boolean isSpawned;
+	private boolean isStarted;
 
 	private static final int GPS_CODE = 1;
 	private static final int SETTINGS_CODE = 2;
@@ -83,12 +84,12 @@ public class GameActivity extends MapActivity {
 		String worldName = objetbunble.getString("selectedWorldName");
 		World world = null;
 		if (worldName.equals(getString(R.string.play_here))) {
-
+			isStarted = false;
 			// Intent to get GPS coordinates
 			Intent intent = new Intent().setClass(this, GPSUtilities.class);
 			this.startActivityForResult(intent, 1);
-
 		} else {
+			isStarted = true;
 			world = ManageWorlds.getWorld(worldName);
 			mapController.setCenter(new GeoPoint(world.getLatitude(), world
 					.getLongitude()));
@@ -127,28 +128,32 @@ public class GameActivity extends MapActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		startGameProcess();
+		if(isStarted)
+			startGameProcess();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		System.out.println("OnPause");
-		waitingHandler.sendEmptyMessage(WaitingHandler.WAIT_CODE);
+		if(isStarted)
+			waitingHandler.sendEmptyMessage(WaitingHandler.WAIT_CODE);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		System.out.println("OnResume");
-		waitingHandler.sendEmptyMessage(WaitingHandler.RESUME_CODE);
+		if(isStarted)
+			waitingHandler.sendEmptyMessage(WaitingHandler.RESUME_CODE);
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
 		System.out.println("OnStop");
-		waitingHandler.sendEmptyMessage(WaitingHandler.STOP_CODE);
+		if(isStarted)
+			waitingHandler.sendEmptyMessage(WaitingHandler.STOP_CODE);
 	}
 
 	/**
@@ -292,6 +297,8 @@ public class GameActivity extends MapActivity {
 				mapController.setCenter(new GeoPoint(world.getLatitude(), world
 						.getLongitude()));
 				mapController.setZoom(MapInformationUtilities.ZOOM_LEVEL_MAX);
+				
+				startGameProcess();
 			}
 			break;
 		case SETTINGS_CODE:

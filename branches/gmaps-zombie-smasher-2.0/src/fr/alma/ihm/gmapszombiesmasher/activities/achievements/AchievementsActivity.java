@@ -78,9 +78,24 @@ public class AchievementsActivity extends Activity {
 			initList(listItem);
 			PersistenceAccess.saveObject(PersistenceAccess.ACHIEVEMENTS_LIST,
 					listItem);
+		} else {
+			listItem = initExistingList(listItem);
 		}
 
 		return listItem;
+	}
+
+	private List<Map<String, String>> initExistingList(List<Map<String, String>> listItem) {
+		List<Map<String, String>> listTmp = new ArrayList<Map<String, String>>();
+		for(Map<String, String> map: listItem){
+			listTmp.add(createAchievement(
+					map.get(ID),
+					Integer.valueOf(map.get(IMG)),
+					map.get(TITLE),
+					map.get(PROGRESS)));
+		}
+		
+		return listTmp;
 	}
 
 	/**
@@ -90,21 +105,27 @@ public class AchievementsActivity extends Activity {
 	 *            the list to initialise
 	 */
 	private void initList(List<Map<String, String>> listItem) {
+		
 		listItem.add(createAchievement(TOTAL_TIME_ACHIEVEMENT,
 				R.drawable.time_achievements,
-				getActivity().getString(R.string.played_time)));
+				getActivity().getString(R.string.played_time),
+				String.valueOf(0)));
 		listItem.add(createAchievement(SAVED_CITIZEN_ACHIEVEMENT,
 				R.drawable.citizens_saved_achievements, getActivity()
-						.getString(R.string.citizens_saved)));
+						.getString(R.string.citizens_saved),
+						String.valueOf(0)));
 		listItem.add(createAchievement(KILLED_ZOMBIE_ACHIEVEMENT,
 				R.drawable.zombies_killed_achievements, getActivity()
-						.getString(R.string.zombies_killed)));
+						.getString(R.string.zombies_killed),
+						String.valueOf(0)));
 		listItem.add(createAchievement(KILLED_CITIZENS_ACHIEVEMENT,
 				R.drawable.citizens_killed_bomb_achievements,
-				getActivity().getString(R.string.citizens_killed)));
+				getActivity().getString(R.string.citizens_killed),
+				String.valueOf(0)));
 		listItem.add(createAchievement(EATED_CITIZENS_ACHIEVEMENT,
 				R.drawable.citizens_eated_achievement,
-				getActivity().getString(R.string.citizens_eated)));
+				getActivity().getString(R.string.citizens_eated),
+				String.valueOf(0)));
 	}
 
 	/**
@@ -119,12 +140,12 @@ public class AchievementsActivity extends Activity {
 	 * @return
 	 */
 	private Map<String, String> createAchievement(String id, int img,
-			String title) {
+			String title, String value) {
 		Map<String, String> achievement = new HashMap<String, String>();
 		achievement.put(ID, id);
 		achievement.put(IMG, String.valueOf(img));
 		achievement.put(TITLE, String.valueOf(title));
-		achievement.put(PROGRESS, String.valueOf(0));
+		achievement.put(PROGRESS, String.valueOf(value));
 
 		return achievement;
 	}
