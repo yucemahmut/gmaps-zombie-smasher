@@ -159,7 +159,7 @@ public class Entity {
 		double delta = (thisTimeMillis - this.pastTimeMillis) / 1000;
 		CCoordinates coordinates = goal.getNextPosition(delta);
 		if (coordinates != null) {
-			setCurrentPosition(this.goal.getNextPosition(delta));
+			setCurrentPosition(coordinates);
 		}
 		
 	}

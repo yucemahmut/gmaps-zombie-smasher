@@ -122,7 +122,6 @@ public class WaitingHandler extends Handler {
 	 * Loop for refreshing the mapView.
 	 */
 	private void startRefreshMapLoop() {
-		System.out.println("[LOOP]");
 		entityManager.updateAll();
 		//mapView.getOverlays().clear();
 		//mapView.invalidate();

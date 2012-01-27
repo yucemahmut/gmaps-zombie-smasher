@@ -37,7 +37,6 @@ public class CAICitizen extends CAI {
 
 	@Override
 	public void update() {
-		System.out.println("[CITIZEN] UP " + getParent().getCurrentPosition().toString());
 		CGoal goal = getParent().getGoal();
 
 		if (goal == null) {
@@ -46,6 +45,8 @@ public class CAICitizen extends CAI {
 			getParent().setNewGoal(newGoalCoordinates);
 			goal = getParent().getGoal();
 		}
+		
+		
 
 		if (goal.goalReached()) {
 			CCoordinates newGoalCoordinates = getEntityManager()
@@ -55,6 +56,5 @@ public class CAICitizen extends CAI {
 		} else {
 			getParent().goToNextPostion();
 		}
-		System.out.println("[CITIZEN] FIN UP " + getParent().getCurrentPosition().toString());
 	}
 }

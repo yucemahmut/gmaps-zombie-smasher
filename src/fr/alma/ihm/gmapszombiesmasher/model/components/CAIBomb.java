@@ -54,8 +54,6 @@ public class CAIBomb extends CAI {
 
 	@Override
 	public void update() {
-		System.out.println("[BOMB] "
-				+ (Calendar.getInstance().getTimeInMillis() - startTime));
 		// Tantque la vie de la bombe n'est pas finie
 		if (Calendar.getInstance().getTimeInMillis() - startTime <= LIFE_TIME) {
 

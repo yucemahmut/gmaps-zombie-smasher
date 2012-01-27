@@ -45,7 +45,7 @@ public class CGoal implements Component {
 	 */
 	public CCoordinates setGoal(CCoordinates goal) {
 		this.goal = goal;
-
+		this.lastGoalCoordinates = goal;
 		return updateSteps();
 	}
 
@@ -104,8 +104,6 @@ public class CGoal implements Component {
 			startCoordinates = updateSteps();
 		}
 		
-		System.out.println("StartCoordinates: " + startCoordinates);
-
 		return startCoordinates;
 	}
 
@@ -120,7 +118,7 @@ public class CGoal implements Component {
 	 */
 	public CCoordinates getNextPosition(double delta) {
 		CCoordinates coordinates = null;
-
+		
 		if (roadSteps != null) {
 
 			try {
@@ -163,10 +161,9 @@ public class CGoal implements Component {
 					int v = (int) ((distance * (lastStepCoordinates
 							.getLongitude() - currentCoordinates.getLongitude())) / currentCoordinates
 							.distanceTo(lastStepCoordinates));
-					coordinates.setLatitude(currentCoordinates.getLatitude()
-							+ u);
-					coordinates.setLongitude(currentCoordinates.getLongitude()
-							+ v);
+					
+					coordinates = new CCoordinates(currentCoordinates.getLatitude()
+							+ u, currentCoordinates.getLongitude() + v);
 				} else {
 					coordinates = lastStepCoordinates;
 					// pass to the next step
@@ -182,7 +179,7 @@ public class CGoal implements Component {
 					}
 				}
 			} catch (Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 
 		}

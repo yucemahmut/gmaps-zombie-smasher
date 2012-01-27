@@ -29,7 +29,8 @@ public class EntityManager {
 	public static final int BOMB = FactoryManager.BOMB;
 
 	private List<Integer> types;
-	private Map<Integer, List<Entity>> entities;
+	private Map<Entity, Integer> entitiesType;
+	private List<Entity> entities;
 	private Map<Integer, Integer> releasedCounter;
 	private Map<Integer, Integer> killedCounter;
 	private Map<Integer, Integer> eatedCounter;
@@ -41,7 +42,8 @@ public class EntityManager {
 
 	public EntityManager(Activity activity, MapView mapView, 
 			WaitingHandler waittingHandler) {
-		this.entities = new HashMap<Integer, List<Entity>>();
+		this.entities = new LinkedList<Entity>();
+		this.entitiesType = new HashMap<Entity, Integer>();
 		this.releasedCounter = new HashMap<Integer, Integer>();
 		this.killedCounter = new HashMap<Integer, Integer>();
 		this.eatedCounter = new HashMap<Integer, Integer>();
@@ -75,14 +77,10 @@ public class EntityManager {
 	 */
 	public List<Entity> getEntities(int type) {
 		
-		List<Entity> entities = this.entities.get(type);
-		if (entities == null) {
-			entities = new LinkedList<Entity>();
-		} else {
-			for (Entity entity : this.entities.get(type)) {
-				if (!entity.isExist()) {
-					entities.remove(entity);
-				}
+		List<Entity> entities = new LinkedList<Entity>();
+		for (Entity entity : this.entities) {
+			if (entity.isExist() && entitiesType.get(entity)==type) {
+				entities.add(entity);
 			}
 		}
 
@@ -95,14 +93,7 @@ public class EntityManager {
 	 * @return A list of the entities
 	 */
 	public List<Entity> getEntities() {
-		List<Entity> entities = new LinkedList<Entity>();
-		for (Integer type : this.types) {
-			entities.addAll(getEntities(type));
-		}
-		
-		System.out.println("[ENTITY_MANAGER] " + entities.size());
-
-		return entities;
+		return this.entities;
 	}
 
 	/**
@@ -116,21 +107,22 @@ public class EntityManager {
 	public void spawn(int[] types, int[] numbers) {
 		AFactory factory = null;
 		Entity entity = null;
-		List<Entity> list = null;
 		for (int i = 0; i < types.length; i++) {
 			factory = getFactory(types[i]);
 			inGameCounter.put(types[i], numbers[i]);
-			list = new LinkedList<Entity>();
 			for (int j = 0; j <= numbers[i]; j++) {
 				entity = factory.getEntity();
-				list.add(entity);
+				this.entities.add(entity);
+				this.entitiesType.put(entity, types[i]);
 			}
-			this.entities.put(types[i], list);
 		}
 		
 		draw();
 	}
 	
+	/**
+	 * Refresh all the 
+	 */
 	public void draw(){
 		this.placementManager.draw(getEntities());
 	}
@@ -181,7 +173,7 @@ public class EntityManager {
 	public void stopType(int type) {
 		for (Entity entity : getEntities(type)) {
 			this.placementManager.removeEntityFromMap(entity);
-			entity.stop();
+			stopEntity(entity, type);
 		}
 	}
 
@@ -196,6 +188,7 @@ public class EntityManager {
 		entity.setExist(false);
 		entity.stop();
 		getFactory(type).destroyEntity();
+		this.getEntities().remove(entity);
 	}
 
 	/**
@@ -249,18 +242,14 @@ public class EntityManager {
 	 * 
 	 * @param entity
 	 *            the entity to transform.
-	 * @param fromType
-	 *            the current entity type.
 	 * @param toType
 	 *            the new type of the entity.
 	 */
-	public void transformEntityTo(Entity entity, int fromType, int toType) {
-		// remove the entity form the type list
-		entities.get(fromType).remove(entity);
+	public void transformEntityTo(Entity entity, int toType) {
+		// Change the entity type
+		entitiesType.put(entity, toType);
 		// change the marker
 		entity.getMarker().setIdMarker(toType);
-		// put the entity to the list
-		entities.get(toType).add(entity);
 	}
 
 	/**
@@ -377,9 +366,8 @@ public class EntityManager {
 	 */
 	public void createEntity(int type, CCoordinates coordinates) {
 		Entity entity = getFactory(type).createEntity(coordinates);
-		List<Entity> list = new LinkedList<Entity>();
-		list.add(entity);
-		this.entities.put(type, list);
+		this.getEntities().add(entity);
+		this.entitiesType.put(entity, type);
 	}
 
 	/**
