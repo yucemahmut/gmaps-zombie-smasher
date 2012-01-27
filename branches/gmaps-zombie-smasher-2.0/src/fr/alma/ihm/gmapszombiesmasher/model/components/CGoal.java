@@ -99,9 +99,12 @@ public class CGoal implements Component {
 					(int) (Float.parseFloat(firstLat) * 1e6),
 					(int) (Float.parseFloat(firstLon) * 1e6));
 		} catch (Exception e) {
+			//e.printStackTrace();
 			SystemClock.sleep(250);
 			startCoordinates = updateSteps();
 		}
+		
+		System.out.println("StartCoordinates: " + startCoordinates);
 
 		return startCoordinates;
 	}
@@ -179,8 +182,7 @@ public class CGoal implements Component {
 					}
 				}
 			} catch (Exception e) {
-				// FIXME
-				// e.printStackTrace();
+				//e.printStackTrace();
 			}
 
 		}

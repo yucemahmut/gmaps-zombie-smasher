@@ -8,32 +8,18 @@ import com.google.android.maps.MapView;
 public class MapInformationUtilities {
 
 	// ZOOM
-	private static final int ZOOM_LEVEL_MIN = 18;
-	private static final int ZOOM_LEVEL_MAX = 16;
+	public static final int ZOOM_LEVEL_MIN = 18;
+	public static final int ZOOM_LEVEL_MAX = 16;
 
 	private int zoomLevel;
 	private double distanceEatMin = 10;
 	private double distanceBombMin = 100;
 	private double distanceChopperMin = 80;
-	private int topLatitude;
-	private int botLatitude;
-	private int leftLongitude;
-	private int rightLongitude;
+	private MapView mapView;
 
 	public MapInformationUtilities(MapView mapView) {
 		this.zoomLevel = mapView.getZoomLevel();
-
-		int height = mapView.getHeight();
-		int width = mapView.getWidth();
-
-		GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
-		GeoPoint topRight = mapView.getProjection().fromPixels(width, 0);
-		GeoPoint botLeft = mapView.getProjection().fromPixels(0, height);
-
-		topLatitude = topLeft.getLatitudeE6();
-		botLatitude = botLeft.getLatitudeE6();
-		leftLongitude = topLeft.getLongitudeE6();
-		rightLongitude = topRight.getLongitudeE6();
+		this.mapView = mapView;
 	}
 
 	/**
@@ -44,38 +30,35 @@ public class MapInformationUtilities {
 	}
 
 	/**
-	 * @return the distanceEatMin
-	 */
-	public double getDistanceEatMin() {
-		return distanceEatMin;
-	}
-
-	/**
 	 * @return the topLatitude
 	 */
 	public int getTopLatitude() {
-		return topLatitude;
+		GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
+		return topLeft.getLatitudeE6();
 	}
 
 	/**
 	 * @return the botLatitude
 	 */
 	public int getBotLatitude() {
-		return botLatitude;
+		GeoPoint botLeft = mapView.getProjection().fromPixels(0, mapView.getHeight());
+		return botLeft.getLatitudeE6();
 	}
 
 	/**
 	 * @return the leftLongitude
 	 */
 	public int getLeftLongitude() {
-		return leftLongitude;
+		GeoPoint topLeft = mapView.getProjection().fromPixels(0, 0);
+		return topLeft.getLongitudeE6();
 	}
 
 	/**
 	 * @return the rightLongitude
 	 */
 	public int getRightLongitude() {
-		return rightLongitude;
+		GeoPoint topRight = mapView.getProjection().fromPixels(mapView.getWidth(), 0);
+		return topRight.getLongitudeE6();
 	}
 
 	public double getDistanceToEatMin() {

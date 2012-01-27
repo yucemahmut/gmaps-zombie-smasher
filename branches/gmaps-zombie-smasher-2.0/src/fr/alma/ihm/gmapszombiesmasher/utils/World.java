@@ -2,7 +2,7 @@ package fr.alma.ihm.gmapszombiesmasher.utils;
 
 import java.io.Serializable;
 
-import fr.alma.ihm.gmapszombiesmasher_old.GameActivity;
+import fr.alma.ihm.gmapszombiesmasher.model.components.MapInformationUtilities;
 
 public class World implements Serializable {
 	
@@ -72,10 +72,10 @@ public class World implements Serializable {
 	 * @param zoom the zoom to set
 	 */
 	public void setZoom(int zoom) {
-		if(zoom < GameActivity.ZOOM_LEVEL_MAX){
-			zoom = GameActivity.ZOOM_LEVEL_MAX;
-		} else if(zoom > GameActivity.ZOOM_LEVEL_MIN){
-			zoom = GameActivity.ZOOM_LEVEL_MIN;
+		if(zoom < MapInformationUtilities.ZOOM_LEVEL_MAX){
+			zoom = MapInformationUtilities.ZOOM_LEVEL_MAX;
+		} else if(zoom > MapInformationUtilities.ZOOM_LEVEL_MIN){
+			zoom = MapInformationUtilities.ZOOM_LEVEL_MIN;
 		}
 		this.zoom = zoom;
 	}

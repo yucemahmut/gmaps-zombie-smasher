@@ -1,6 +1,7 @@
 package fr.alma.ihm.gmapszombiesmasher.model.managers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
@@ -22,12 +23,24 @@ public class PlacementManager {
 	/**
 	 * Constructor.
 	 * 
-	 * @param activity The current actitvity.
-	 * @param mapView the mapview on to display.
+	 * @param activity
+	 *            The current actitvity.
+	 * @param mapView
+	 *            the mapview on to display.
 	 */
 	public PlacementManager(Activity activity, MapView mapView) {
+		this.activity = activity;
 		this.mapView = mapView;
 		this.entitiesOverlays = new HashMap<Entity, EntityOverlay>();
+	}
+	
+	public void draw(List<Entity> entities){
+		mapView.getOverlays().clear();
+		for(Entity entity: entities){
+			putEntityOnMap(entity);
+		}
+		mapView.invalidate();
+		
 	}
 
 	/**
@@ -36,12 +49,15 @@ public class PlacementManager {
 	 * @param entity
 	 *            the entity to put on the map.
 	 */
-	public void putEntityOnMap(Entity entity) {
+	private void putEntityOnMap(Entity entity) {
 		if (entity.isExist()) {
-			getOverlay(entity);
-		} else {
+			createOverlay(entity);
+		} 
+		/*
+		else {
 			removeEntityFromMap(entity);
 		}
+		*/
 	}
 
 	/**
@@ -62,13 +78,14 @@ public class PlacementManager {
 	 *            the entity.
 	 * @return the overlay occording to this entity.
 	 */
-	private EntityOverlay getOverlay(Entity entity) {
-		if (!this.entitiesOverlays.containsKey(entity)) {
-			EntityOverlay overlay = new EntityOverlay(entity, this.activity);
-			mapView.getOverlays().add(overlay);
-		}
+	private EntityOverlay createOverlay(Entity entity) {
 
-		return this.entitiesOverlays.get(entity);
+		EntityOverlay overlay = new EntityOverlay(entity, this.activity);
+		this.entitiesOverlays.put(entity, overlay);
+		mapView.getOverlays().add(overlay);
+
+		//return this.entitiesOverlays.get(entity);
+		return overlay;
 	}
 
 	/**
@@ -78,7 +95,7 @@ public class PlacementManager {
 	 *            the entity to remove.
 	 */
 	private void removeOverlay(Entity entity) {
-		mapView.getOverlays().remove(getOverlay(entity));
+		mapView.getOverlays().remove(createOverlay(entity));
 		this.entitiesOverlays.remove(entity);
 	}
 
