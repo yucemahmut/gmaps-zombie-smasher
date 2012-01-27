@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@drawable/level_selection_background" android:gravity="center_horizontal" android:weightSum="0.3">
+
+	<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/list_play" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_marginTop="140px" android:layout_weight="0.4" >
+	</ListView>
+
+	<Button android:id="@+id/new_world" android:layout_height="wrap_content" android:text="@string/new_world"
+		android:textSize="10pt" android:textStyle="bold" android:typeface="sans"
+		android:background="@drawable/btn_menu" android:textColor="#fff" android:layout_width="393dp"/>
+
+</LinearLayout>

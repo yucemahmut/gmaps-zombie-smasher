@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Main Menu -->
+    <string name="play">Jouer</string>
+    <string name="resume">Reprendre</string>
+    <string name="level">Manage Levels</string>
+    <string name="achievements">Succès</string>
+    <string name="settings">Paramètres</string>
+    <string name="exit">Quitter</string>
+    
+    <string name="select_world_in_map">Sélectionner un monde sur la carte</string>
+    <string name="gps_utilities">Configuration GPS</string>
+    <string name="edit_world_in_map">Éditer un monde sur la carte</string>
+    <string name="internet_connection">Vous avez besoin d\'internet pour jouer au jeu. SVP, activer votre connexion internet.</string>
+    
+    <!-- SD CARD -->
+    <string name="welcome_dialog_sdcard_error">SD CARD Error</string>
+    <string name="welcome_dialog_sdcard_ok">SD CARD Ok</string>
+    
+    <!-- Play -->
+    <string name="play_here">Jouer Ici</string>
+    <string name="new_world">Créer un nouveau niveau</string>    
+    
+    <!-- Game -->
+    <string name="game">Jeu</string>
+    <string name="you_win">Vous avez gagné !</string>
+    <string name="you_win_button">F%$k Yea !</string>
+    <string name="you_loose">Vous avez perdu</string>
+    <string name="you_loose_button">Okay :(</string>
+    <string name="unable_current_location">Impossible d\'avoir votre position actuelle.</string>
+    
+    <!-- Manage Levels -->
+    <string name="select_world">Sélectionner un niveau sur la carte</string>
+    <string name="manage_levels">Parametrer les niveaux</string>
+    <string name="delete_world">Supprimer le niveau sélectionné</string>
+    <string name="new_world_name">Entrez un nouveau nom:</string>
+    <string name="get_current_position">Avoir la position actuelle.</string>
+    <string name="set_zoom_min">Avoir le zoom minimum</string>
+    <string name="set_zoom_max">Avoir le zoom maximum</string>
+    <string name="select_world_here">Selectionner le niveau ici</string>
+    <string name="edit_ok">Valider la nouvelle position</string>
+    <string name="edit_cancel">Annuler l\'édtition</string>
+    <string name="no_changes">Aucuns changements!</string>
+    <string name="changes">Niveau mis à jour!</string>
+    
+    <!-- GPS -->
+    <string name="wait">Chargement. Patientez...</string>
+    <string name="receiving">Réception des données GPS...</string>
+    <string name="enable_gps_question">Votre GPS est désactivé, voulez-vous l\'activer ?</string>
+    <string name="enable_gps">Activer le GPS</string>
+    <string name="disable_gps">Non merci</string>
+        
+    <!-- Result Pop-Up -->
+    <string name="played_time">Temps de jeu</string>
+    <string name="citizens_saved">Nombre de civils sauvés.</string>
+    <string name="citizens_killed">Nombre de civils tués par une bombe.</string>
+    <string name="zombies_killed">Nombre de zombies tué par une bombe.</string>
+    <string name="citizens_eated">Nombre de civils mangés par des zombies.</string>
+    
+    <!-- Settings -->
+    <string name="music_on">Zombie: Je vous ai effrayé?</string>
+    <string name="music_off">Silence hill</string>
+    <string name="background_music">Musique de fond</string>
+    <string name="sound_off">Je coupe le son</string>
+    <string name="sound_on">Je remets le son</string>
+    <string name="sound">Son</string>
+    <string name="satellite_mode">Afficher el mode satellite pour les cartes</string>
+    <string name="satellite">Satellite</string>
+    <string name="difficulty_level">Définir le niveau de difficulté</string>
+    <string name="difficulty">Niveau de difficulté</string>
+    
+    
+</resources>
