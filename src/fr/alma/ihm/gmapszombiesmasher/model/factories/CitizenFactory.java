@@ -39,7 +39,25 @@ public class CitizenFactory extends AFactory{
 	 * @return a random position.
 	 */
 	private CCoordinates getRandomSpawnPosition() {
-		return getRandomPosition();
+		int topLatitude = getMapInformationUtilities().getTopLatitude();
+		int leftLongitude = getMapInformationUtilities().getLeftLongitude();
+		int rightLongitude = getMapInformationUtilities().getRightLongitude();
+		int botLatitude = getMapInformationUtilities().getBotLatitude();
+		
+		int gapLatitude = (topLatitude - botLatitude) / 4;
+		int gapLongitude = (leftLongitude - rightLongitude) / 6;
+		
+		topLatitude = topLatitude - gapLatitude;
+		botLatitude = botLatitude + gapLatitude;
+		leftLongitude = leftLongitude - gapLongitude;
+		rightLongitude = rightLongitude + gapLongitude;
+		
+		int tempLatitude = (int) (botLatitude
+				+ Math.random() * (topLatitude - botLatitude));
+		int tempLongitude = (int) (leftLongitude
+				+ Math.random() * (rightLongitude - leftLongitude));
+		
+		return new CCoordinates(tempLatitude, tempLongitude);
 	}
 
 	@Override
