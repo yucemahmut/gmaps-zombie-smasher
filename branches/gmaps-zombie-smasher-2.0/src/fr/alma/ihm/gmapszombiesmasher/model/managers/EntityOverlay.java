@@ -25,7 +25,6 @@ public class EntityOverlay extends ItemizedOverlay<OverlayItem> {
 
 	@Override
 	protected OverlayItem createItem(int i) {
-		System.out.println("[ENTITY OVERLAY] " + entity.getCurrentPosition().getPoint());
 		return new OverlayItem(entity.getCurrentPosition().getPoint(), null, null);
 	}
 
@@ -36,7 +35,6 @@ public class EntityOverlay extends ItemizedOverlay<OverlayItem> {
 
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-		System.out.println("[DRAW]");
 		if (!shadow) {
 			super.draw(canvas, mapView, false);
 		}

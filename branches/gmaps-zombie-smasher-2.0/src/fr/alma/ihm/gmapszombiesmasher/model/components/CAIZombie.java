@@ -39,7 +39,6 @@ public class CAIZombie extends CAI {
 
 	@Override
 	public void update() {
-		System.out.println("[ZOMBIE] UP");
 		CGoal goal = getParent().getGoal();
 		if (goal == null) {
 			CCoordinates newGoalCoordinates = getEntityManager()
@@ -47,9 +46,6 @@ public class CAIZombie extends CAI {
 			getParent().setNewGoal(newGoalCoordinates);
 			goal = getParent().getGoal();
 		}
-		
-		System.out.println("[ZOMBIE GOAL] " + getParent().getGoal());
-		System.out.println("[ZOMBIE POSITION] " + getParent().getCurrentPosition());
 
 		eatCitizens();
 
@@ -57,39 +53,29 @@ public class CAIZombie extends CAI {
 			CCoordinates newGoalCoordinates = getEntityManager()
 					.getFactory(EntityManager.ZOMBIES).getRandomPosition();
 			getParent().setNewGoal(newGoalCoordinates);
-			goal = getParent().getGoal();
 		} else {
 			getParent().goToNextPostion();
 		}
-		
-		System.out.println("[ZOMBIE] FIN UP");
 	}
 
 	/**
 	 * Eat any closed citizen.
 	 */
 	private void eatCitizens() {
-		System.out.println("[ZOMBIE] EAT");
 		for (Entity entity : getEntityManager().getEntities(
 				EntityManager.CITIZEN)) {
-			System.out.println("[ENTITY] " + entity);
-			System.out.println("[PARENT] " + getParent());
-			System.out.println("[PARENT] " + getParent().getGoal().goalReached());
-			System.out.println("[PARENT] " + getParent().getCurrentPosition());
-			System.out.println("[PARENT] " + getEntityManager().getMapInformations().getDistanceToEatMin());
 			if (entity.getCurrentPosition().isNearOf(
 					getParent().getCurrentPosition(),
 					getEntityManager().getMapInformations()
 							.getDistanceToEatMin())) {
 				// Transform the citizen to a zombie
-				getEntityManager().transformEntityTo(entity,
-						EntityManager.CITIZEN, EntityManager.ZOMBIES);
+				getEntityManager().transformEntityTo(entity, EntityManager.ZOMBIES);
+				// Incremente eated counter
+				getEntityManager().incrementEatedCounter(EntityManager.CITIZEN);
 				// PlaySound
 				GMapsZombieSmasher.soundsManager
 						.playSound(SoundsManager.EAT_CITIZEN);
 			}
-			
-			System.out.println("[ZOMBIE] FIN EAT");
 		}
 	}
 }

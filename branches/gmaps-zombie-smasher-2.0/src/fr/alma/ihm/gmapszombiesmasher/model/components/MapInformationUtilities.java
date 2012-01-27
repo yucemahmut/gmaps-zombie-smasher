@@ -15,6 +15,7 @@ public class MapInformationUtilities {
 	private double distanceEatMin = 10;
 	private double distanceBombMin = 100;
 	private double distanceChopperMin = 80;
+	private double distanceChopperToGetInMin = 10;
 	private MapView mapView;
 
 	public MapInformationUtilities(MapView mapView) {
@@ -79,5 +80,9 @@ public class MapInformationUtilities {
 	
 	public int getZoomLevelMax() {
 		return ZOOM_LEVEL_MAX;
+	}
+
+	public double getDistanceToGetInChopper() {
+		return distanceChopperToGetInMin * (getZoomLevelMin() - zoomLevel + 1);
 	}
 }

@@ -58,8 +58,6 @@ public class CAIChopper extends CAI {
 
 	@Override
 	public void update() {
-		System.out.println("[CHOPPER] "
-				+ (Calendar.getInstance().getTimeInMillis() - startTime));
 		// Tantque la vie du chopper n'est pas finie
 		if (Calendar.getInstance().getTimeInMillis() - startTime <= LIFE_TIME) {
 
@@ -77,6 +75,7 @@ public class CAIChopper extends CAI {
 
 			updateFrame();
 
+			notifyCitizens();
 			releaseCitizens();
 		} else {
 			System.out.println("[CHOPPER] STOP");
@@ -85,13 +84,34 @@ public class CAIChopper extends CAI {
 		}
 	}
 
-	private void releaseCitizens() {
+	/**
+	 * Notify all the citizens that the chopper is here.
+	 */
+	private void notifyCitizens() {
 		for (Entity entity : getEntityManager().getEntities(
 				EntityManager.CITIZEN)) {
 			if (entity.getCurrentPosition().isNearOf(
 					getParent().getCurrentPosition(),
 					getEntityManager().getMapInformations()
 							.getDistanceChopperMin())) {
+				// Si le goal du civil n'est pas l'hélico
+				if(!entity.getGoal().getGoalCoordinates().equals(getParent().getCurrentPosition())){
+					entity.setNewGoal(getParent().getCurrentPosition());
+				}
+			}
+		}
+	}
+
+	/**
+	 * Release all the nearly citizens.
+	 */
+	private void releaseCitizens() {
+		for (Entity entity : getEntityManager().getEntities(
+				EntityManager.CITIZEN)) {
+			if (entity.getCurrentPosition().isNearOf(
+					getParent().getCurrentPosition(),
+					getEntityManager().getMapInformations()
+							.getDistanceToGetInChopper())) {
 				// Delete the citizen if close.
 				getEntityManager().stopEntity(entity, EntityManager.CITIZEN);
 				// Increment the release citizen counter

@@ -52,12 +52,9 @@ public class PlacementManager {
 	private void putEntityOnMap(Entity entity) {
 		if (entity.isExist()) {
 			createOverlay(entity);
-		} 
-		/*
-		else {
+		} else {
 			removeEntityFromMap(entity);
 		}
-		*/
 	}
 
 	/**
@@ -71,8 +68,7 @@ public class PlacementManager {
 	}
 
 	/**
-	 * Return the EntityOverlay according to the entity. Using singleton
-	 * pattern: one overlay per entity.
+	 * Create and return a new EntityOverlay for the specific entity.
 	 * 
 	 * @param entity
 	 *            the entity.

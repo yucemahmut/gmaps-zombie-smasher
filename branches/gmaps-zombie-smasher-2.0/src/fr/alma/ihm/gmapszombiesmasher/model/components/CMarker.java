@@ -1,6 +1,7 @@
 package fr.alma.ihm.gmapszombiesmasher.model.components;
 
 import fr.alma.ihm.gmapszombiesmasher.R;
+import fr.alma.ihm.gmapszombiesmasher.model.managers.FactoryManager;
 
 /**
  * Define the marker image to be displayed on the map.
@@ -25,16 +26,16 @@ public class CMarker implements Component {
 	
 	public void setIdMarker(int id){
 		switch (id) {
-		case ZOMBIE_MARKER:
+		case FactoryManager.ZOMBIES:
 			this.idMarker = ZOMBIE_MARKER;
 			break;
-		case CITIZEN_MARKER:
+		case FactoryManager.CITIZEN:
 			this.idMarker = CITIZEN_MARKER;
 			break;
-		case CHOPPER_MARKER:
+		case FactoryManager.CHOPPER:
 			this.idMarker = CHOPPER_MARKER;
 			break;
-		case BOMB_MARKER:
+		case FactoryManager.BOMB:
 			this.idMarker = BOMB_MARKER;
 			break;
 		default:
