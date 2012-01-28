@@ -165,15 +165,18 @@ public class GameActivity extends MapActivity {
 		Runnable spawLoop = new Runnable() {
 			@Override
 			public void run() {
-
-				while (!isFullyCharged()) {
-					SystemClock.sleep(SLEEPING_TIME);
+				SystemClock.sleep(SLEEPING_TIME);
+				
+				while (!isFullyCharged() && mapView.isShown()) {
+					System.out.println("NOT YET");
 				}
 
+				
 				// Send a message to the handler
 				waitingHandler.sendEmptyMessage(WaitingHandler.SPAWN_CODE);
 
 				while (!isSpawned) {
+					SystemClock.sleep(SLEEPING_TIME);
 					// Waiting...
 				}
 
