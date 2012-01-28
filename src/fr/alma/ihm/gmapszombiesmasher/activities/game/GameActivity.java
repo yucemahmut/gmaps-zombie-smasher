@@ -72,6 +72,7 @@ public class GameActivity extends MapActivity {
 		GameOnTouchListener onTouchListener = new GameOnTouchListener(this);
 		mapView.setOnTouchListener(onTouchListener);
 		mapView.setBuiltInZoomControls(false);
+		mapView.setStreetView(false);
 
 		mapView.setSatellite(ManagePreferences.isSateliteView(this));
 

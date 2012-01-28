@@ -38,7 +38,7 @@ public class ManagePreferences {
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(activity);
 		return settings.getBoolean(
-				SettingPreferenceActivity.SATELLITE_VIEW_IN_MAP, false);
+				SettingPreferenceActivity.SATELLITE_VIEW_IN_MAP, true);
 	}
 
 	/**
