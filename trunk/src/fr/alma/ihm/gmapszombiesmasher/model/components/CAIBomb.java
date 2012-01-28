@@ -79,7 +79,7 @@ public class CAIBomb extends CAI {
 					// PlaySound
 					switch (deadlyTypes[i]) {
 					case EntityManager.CITIZEN:
-						int rand = (int) (Math.random() * 1);
+						int rand = (int) (Math.random() * 2);
 						if (rand == 0) {
 							GMapsZombieSmasher.soundsManager
 									.playSound(SoundsManager.MAN_DEAD);

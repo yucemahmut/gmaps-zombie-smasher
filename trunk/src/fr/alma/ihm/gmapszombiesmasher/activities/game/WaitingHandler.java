@@ -43,7 +43,6 @@ public class WaitingHandler extends Handler {
 
 	private GameActivity activity;
 	private EntityManager entityManager;
-	private MapView mapView;
 
 	private long startTime;
 	private boolean win;
@@ -53,7 +52,6 @@ public class WaitingHandler extends Handler {
 
 	public WaitingHandler(GameActivity activity, MapView mapView) {
 		this.activity = activity;
-		this.mapView = mapView;
 		this.entityManager = new EntityManager(activity, mapView, this);
 		onStop = false;
 		onPause = false;
@@ -70,14 +68,14 @@ public class WaitingHandler extends Handler {
 					ManagePreferences.getCitizenNumber(this.activity),
 					ManagePreferences.getZombieNumber(this.activity) };
 			entityManager.spawn(types, numbers);
-			mapView.invalidate();
+			entityManager.draw();
 			startRefreshMapLoop();
 			activity.setIsSpawned(true);
 			break;
 		case START_CODE:
 			entityManager.updateAll();
+			entityManager.draw();
 			startTime = Calendar.getInstance().getTimeInMillis();
-			mapView.invalidate();
 			isStarted = true;
 			startRefreshMapLoop();
 			break;
