@@ -113,7 +113,6 @@ public class GameActivity extends MapActivity {
 					@Override
 					public void onClick(View v) {
 						selectedButton = EntityManager.CHOPPER;
-						((ToggleButton)v).setFocusable(true);
 					}
 				});
 
@@ -122,7 +121,6 @@ public class GameActivity extends MapActivity {
 					@Override
 					public void onClick(View v) {
 						selectedButton = EntityManager.BOMB;
-						((ToggleButton)v).setFocusable(true);
 
 					}
 				});
