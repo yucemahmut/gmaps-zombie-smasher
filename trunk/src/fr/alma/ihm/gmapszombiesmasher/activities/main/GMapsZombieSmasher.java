@@ -33,7 +33,6 @@ public class GMapsZombieSmasher extends Activity {
 		checkInternetConnection();
 		
 		this.findViewById(R.id.play).setOnClickListener(new PlayButtonListener(this));
-		//this.findViewById(R.id.level).setOnClickListener(new ManageLevelsButtonListener(this));
 		this.findViewById(R.id.achievements).setOnClickListener(new AchievementsButtonListener(this));
 		this.findViewById(R.id.settings).setOnClickListener(new SettingsButtonListener(this));
 		this.findViewById(R.id.help).setOnClickListener(new OnClickListener(){
@@ -72,7 +71,7 @@ public class GMapsZombieSmasher extends Activity {
 			       .setCancelable(false)
 			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
-			        	   GMapsZombieSmasher.this.finish();
+			        	   android.os.Process.sendSignal(android.os.Process.myPid(), android.os.Process.SIGNAL_KILL);
 			           }
 			       });
 			
