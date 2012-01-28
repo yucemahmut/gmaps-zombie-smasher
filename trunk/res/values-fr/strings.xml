@@ -11,7 +11,7 @@
     <string name="select_world_in_map">Sélectionner un monde sur la carte</string>
     <string name="gps_utilities">Configuration GPS</string>
     <string name="edit_world_in_map">Éditer un monde sur la carte</string>
-    <string name="internet_connection">Vous avez besoin d\'internet pour jouer au jeu. SVP, activer votre connexion internet.</string>
+    <string name="internet_connection">Vous avez besoin d\'internet pour jouer au jeu. SVP, activez votre connexion internet.</string>
     
     <!-- SD CARD -->
     <string name="welcome_dialog_sdcard_error">SD CARD Error</string>
@@ -19,7 +19,7 @@
     
     <!-- Play -->
     <string name="play_here">Jouer Ici</string>
-    <string name="new_world">Créer un nouveau niveau</string>    
+    <string name="new_world">Créer un nouveau niveau</string>
     
     <!-- Game -->
     <string name="game">Jeu</string>
@@ -40,7 +40,7 @@
     <string name="select_world_here">Selectionner le niveau ici</string>
     <string name="edit_ok">Valider la nouvelle position</string>
     <string name="edit_cancel">Annuler l\'édtition</string>
-    <string name="no_changes">Aucuns changements!</string>
+    <string name="no_changes">Aucun changement!</string>
     <string name="changes">Niveau mis à jour!</string>
     
     <!-- GPS -->
@@ -71,16 +71,19 @@
     
      <!-- Help -->
     <string name="help">Aide</string>
-    <string name="help_intro">This little help will show you the aim of the game</string>
-    <string name="help_citizen">This is a citizen: you have to save him!</string>
-    <string name="help_zombie">This is a zombie: they will eat the citizen and transform them into zombies</string>
-    <string name="help_chopper">By hitting this button, you select the chopper. You can place it on the map to save the citizen of a certainly death.</string>
-    <string name="help_bomb">By hitting this button, you select the bombs. You can place-it on the map to kill the zombies. Be careful, bombs also kills citizens.</string>
-    <string name="help_rules">The aim of the game is to save most citizen as possible. 
-        \n You have a chopper and bombs to help you.
-        \n After use a item, this one will be unavailable during a few seconds.
-        \n The game ends when all citizens are saved or all the zombies/citizens are killed.
-        \n To win, you have to save at least, half of the citizens at the begining of the game.</string>
+    <string name="help_intro">Cette aide va vous aider à mieux comprendre le jeu</string>
+    <string name="help_citizen">Ceci est un civil, vous devez le sauver!</string>
+    <string name="help_zombie">Ceci est un zombie, il va essayer de manger les civils et de les transformer en zombie. Empêchez-les!</string>
+    <string name="help_chopper">En appuyant sur ce bouton, vous sélectionnez l\'hélicoptère. Vous pouvez le placer sur la carte afin de sauver les civils. Attention, l\'hélicoptère ne restera qu\'un certain temps sur la carte.</string>
+    <string name="help_bomb">En appuyant sur ce bouton, vous sélectionnez les bombes. Vous pouvez lancer des bombes sur la carte pour tuer les zombies. Attention, les bombes peuvent tuer aussi bien les zombies que les civils.</string>
+    <string name="help_rules">Le but du jeu est de sauver les plus de civil possible. 
+        \n L\'hélicoptère et les bombes sont là pour vous aider.
+        \n Après avoir utilisé un item, ce dernière restera inactif pendant un certain temps. De gâchez pas vos coups.
+        \n Le jeu se termine lorsqu\'il ne reste plus de zombies ou de civils sur la carte.
+        \n Pour gagner, vous devez sauver au moins la moitié des civils sur la carte.</string>
     
-    
+  <string name="edit">Éditer</string>   
+    <string name="rename">Renommer</string>   
+    <string name="delete">Supprimer</string>   
+    <string name="pick_option">Choisissez une option</string>      
 </resources>
