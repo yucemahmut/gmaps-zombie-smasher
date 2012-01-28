@@ -71,13 +71,13 @@ public class WaitingHandler extends Handler {
 					ManagePreferences.getZombieNumber(this.activity) };
 			entityManager.spawn(types, numbers);
 			mapView.invalidate();
-			this.sendEmptyMessage(START_CODE);
+			startRefreshMapLoop();
+			activity.setIsSpawned(true);
 			break;
 		case START_CODE:
 			entityManager.updateAll();
 			startTime = Calendar.getInstance().getTimeInMillis();
 			mapView.invalidate();
-			activity.setIsSpawned(true);
 			isStarted = true;
 			startRefreshMapLoop();
 			break;
@@ -123,7 +123,7 @@ public class WaitingHandler extends Handler {
 		entityManager.draw();
 		entityManager.updateTime();
 
-		if (!onPause && !onStop) {
+		if (!onPause && !onStop && isStarted) {
 			this.sendEmptyMessage(LOOP_CODE);
 		}
 	}
