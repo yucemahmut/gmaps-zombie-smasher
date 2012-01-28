@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -167,7 +166,7 @@ public class GameActivity extends MapActivity {
 			public void run() {
 
 				while (!isFullyCharged()) {
-					SystemClock.sleep(SLEEPING_TIME);
+					//SystemClock.sleep(SLEEPING_TIME);
 				}
 
 				// Send a message to the handler
@@ -182,6 +181,8 @@ public class GameActivity extends MapActivity {
 
 				GMapsZombieSmasher.soundsManager
 						.playSound(SoundsManager.BUILD_FINISHED);
+				
+				waitingHandler.sendEmptyMessage(WaitingHandler.START_CODE);
 			}
 
 			/**
