@@ -73,17 +73,17 @@
     <string name="difficulty_level">Define the difficulty level</string>
     <string name="difficulty">Difficulty Level</string>
     
-        <!-- Help -->
-        <string name="help">Help</string>
-        <string name="help_intro">This little help will show you the aim of the game</string>
-        <string name="help_citizen">This is a citizen: you have to save them!</string>
-        <string name="help_zombie">This is a zombie: they will eat the citizen and transform them into zombies</string>
-        <string name="help_chopper">By hitting this button, you select the chopper. You can place it on the map to save the citizen of a certainly death.</string>
-        <string name="help_bomb">By hitting this button, you select the bombs. You can place-it on the map to kill the zombies. Be careful, bombs also kills citizens.</string>
-        <string name="help_rules">The aim of the game is to save most citizen as possible. 
-            \n You have a chopper and bombs to help you.
-            \n After use a item, this one will be unavailable during a few seconds.
-            \n The game ends when all citizens are saved or all the zombies/citizens are killed.
-            \n To win, you have to save at least, half of the citizens at the begining of the game.</string>
+    <!-- Help -->
+    <string name="help">Help</string>
+    <string name="help_intro">This little help will show you the aim of the game</string>
+    <string name="help_citizen">This is a citizen: you have to save him!</string>
+    <string name="help_zombie">This is a zombie: they will eat the citizen and transform them into zombies</string>
+    <string name="help_chopper">By hitting this button, you select the chopper. You can place it on the map to save the citizen of a certainly death.</string>
+    <string name="help_bomb">By hitting this button, you select the bombs. You can place-it on the map to kill the zombies. Be careful, bombs also kills citizens.</string>
+    <string name="help_rules">The aim of the game is to save most citizen as possible. 
+        \n You have a chopper and bombs to help you.
+        \n After use a item, this one will be unavailable during a few seconds.
+        \n The game ends when all citizens are saved or all the zombies/citizens are killed.
+        \n To win, you have to save at least, half of the citizens at the begining of the game.</string>
     
 </resources>
