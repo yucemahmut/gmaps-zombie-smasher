@@ -25,7 +25,7 @@
             android:title="@string/satellite" />
 
         <ListPreference
-            android:defaultValue="1"
+            android:defaultValue="normal"
             android:entries="@array/dificultyLevel"
             android:entryValues="@array/dificultyLevelValues"
             android:key="level"
