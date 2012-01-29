@@ -7,10 +7,9 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
 import fr.alma.ihm.gmapszombiesmasher.model.components.MapInformationUtilities;
 import fr.alma.ihm.gmapszombiesmasher.model.managers.EntityManager;
+import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
 
 public class CitizenFactory extends AFactory{
-	
-	private static final double SPEED = 10.0;
 	
 	public CitizenFactory(EntityManager entityManager,
 			MapInformationUtilities mapInformationUtilities) {
@@ -26,7 +25,7 @@ public class CitizenFactory extends AFactory{
 		entity.setExist(true);
 		entity.setIa(new CAICitizen(entity, getEntityManager()));
 		entity.setMarker(new CMarker(CMarker.CITIZEN_MARKER));
-		entity.setMoveSpeed(new CMoveSpeed(SPEED
+		entity.setMoveSpeed(new CMoveSpeed(ManagePreferences.getCitizenSpeed()
 				* (getMapInformationUtilities().getZoomLevelMin() 
 						- getMapInformationUtilities().getZoomLevel() + 2)));
 

@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
+import fr.alma.ihm.gmapszombiesmasher.activities.game.GameActivity;
 import fr.alma.ihm.gmapszombiesmasher.activities.settings.SettingPreferenceActivity;
 
 public class ManagePreferences {
@@ -26,6 +27,13 @@ public class ManagePreferences {
 	private static final int CITIZEN_NORMAL = 10;
 	private static final int ZOMBIES_HARD = 20;
 	private static final int CITIZEN_HARD = 10;
+	// SPEED
+	private static final int ZOMBIES_SPEED_EASY = 6;
+	private static final int CITIZEN_SPEED_EASY = 10;
+	private static final int ZOMBIES_SPEED_NORMAL = 10;
+	private static final int CITIZEN_SPEED_NORMAL = 10;
+	private static final int ZOMBIES_SPEED_HARD = 10;
+	private static final int CITIZEN_SPEED_HARD = 6;
 
 	/**
 	 * Get on the preference settings if the satellite mode view is on or not
@@ -149,6 +157,48 @@ public class ManagePreferences {
 	 */
 	public static int getMinCitizenSavedToWin(Activity activity) {
 		return getCitizenNumber(activity) / 2;
+	}
+
+	/**
+	 * Return the citizen speed according to the difficulty level.
+	 * 
+	 * @return the citizen speed.
+	 */
+	public static int getCitizenSpeed() {
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(GameActivity.getAppContext());
+
+		String choice = settings.getString(
+				SettingPreferenceActivity.DIFICULTY_LEVEL, "normal");
+		if (choice.equals("Easy"))
+			return CITIZEN_SPEED_EASY;
+		else if (choice.equals("Normal"))
+			return CITIZEN_SPEED_NORMAL;
+		else if (choice.equals("Hard"))
+			return CITIZEN_SPEED_HARD;
+
+		return CITIZEN_SPEED_NORMAL;
+	}
+	
+	/**
+	 * Return the zombie speed according to the difficulty level.
+	 * 
+	 * @return the zombie speed.
+	 */
+	public static int getZombieSpeed() {
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(GameActivity.getAppContext());
+
+		String choice = settings.getString(
+				SettingPreferenceActivity.DIFICULTY_LEVEL, "normal");
+		if (choice.equals("Easy"))
+			return ZOMBIES_SPEED_EASY;
+		else if (choice.equals("Normal"))
+			return ZOMBIES_SPEED_NORMAL;
+		else if (choice.equals("Hard"))
+			return ZOMBIES_SPEED_HARD;
+
+		return ZOMBIES_SPEED_NORMAL;
 	}
 
 }

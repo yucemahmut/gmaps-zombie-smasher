@@ -7,6 +7,7 @@ import fr.alma.ihm.gmapszombiesmasher.model.components.CMarker;
 import fr.alma.ihm.gmapszombiesmasher.model.components.CMoveSpeed;
 import fr.alma.ihm.gmapszombiesmasher.model.components.MapInformationUtilities;
 import fr.alma.ihm.gmapszombiesmasher.model.managers.EntityManager;
+import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
 
 public class ZombieFactory extends AFactory {
 
@@ -14,10 +15,6 @@ public class ZombieFactory extends AFactory {
 			MapInformationUtilities mapInformationUtilities) {
 		super(entityManager, mapInformationUtilities);
 	}
-
-	private static final double SPEED = 5.0;
-
-	
 
 	@Override
 	public Entity getEntity() {
@@ -27,7 +24,7 @@ public class ZombieFactory extends AFactory {
 		entity.setExist(true);
 		entity.setIa(new CAIZombie(entity, getEntityManager()));
 		entity.setMarker(new CMarker(CMarker.ZOMBIE_MARKER));
-		entity.setMoveSpeed(new CMoveSpeed(SPEED
+		entity.setMoveSpeed(new CMoveSpeed(ManagePreferences.getZombieSpeed()
 				* (getMapInformationUtilities().getZoomLevelMin() 
 						- getMapInformationUtilities().getZoomLevel() + 2)));
 

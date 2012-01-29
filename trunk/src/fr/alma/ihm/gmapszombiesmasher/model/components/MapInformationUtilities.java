@@ -16,7 +16,9 @@ public class MapInformationUtilities {
 	private double distanceBombMin = 100;
 	private double distanceChopperMin = 80;
 	private double distanceChopperToGetInMin = 20;
+	private int distanceChopperToHuntMin = 50;
 	private MapView mapView;
+	
 
 	public MapInformationUtilities(MapView mapView) {
 		this.zoomLevel = mapView.getZoomLevel();
@@ -84,5 +86,9 @@ public class MapInformationUtilities {
 
 	public double getDistanceToGetInChopper() {
 		return distanceChopperToGetInMin * (getZoomLevelMin() - zoomLevel + 1);
+	}
+
+	public double getDistanceToHuntMin() {
+		return distanceChopperToHuntMin * (getZoomLevelMin() - zoomLevel + 1);
 	}
 }

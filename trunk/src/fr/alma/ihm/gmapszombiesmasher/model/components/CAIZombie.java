@@ -49,12 +49,31 @@ public class CAIZombie extends CAI {
 		eatCitizens();
 
 		if (goal.goalReached()) {
-			CCoordinates newGoalCoordinates = getEntityManager()
-					.getFactory(EntityManager.ZOMBIES).getRandomPosition();
+			CCoordinates newGoalCoordinates = huntCitizen();
 			getParent().setNewGoal(newGoalCoordinates);
 		} else {
 			getParent().goToNextPostion();
 		}
+	}
+	
+	/**
+	 * Get the goal coordinates:
+	 * 	-> To the closer citizen.
+	 *  -> Or a random position.
+	 */
+	private CCoordinates huntCitizen() {
+		Entity citizen = getCloserCitizen();
+		CCoordinates newGoalCoordinates = null;
+		if(citizen != null){
+			if(getParent().getGoal().getGoalCoordinates() != citizen.getGoal().getGoalCoordinates()){
+				newGoalCoordinates = citizen.getGoal().getGoalCoordinates();
+			}
+		} else {
+			newGoalCoordinates = getEntityManager()
+					.getFactory(EntityManager.ZOMBIES).getRandomPosition();
+		}
+		
+		return newGoalCoordinates;
 	}
 
 	/**
@@ -78,5 +97,29 @@ public class CAIZombie extends CAI {
 						.playSound(SoundsManager.EAT_CITIZEN);
 			}
 		}
+	}
+	
+	/**
+	 * Get closer citizen.
+	 * 
+	 * @return the closer citizen.
+	 */
+	private Entity getCloserCitizen() {
+		double maxDistance = getEntityManager().getMapInformations()
+				.getDistanceToHuntMin();
+		double distance = 0;
+		Entity closer = null;
+		for (Entity entity : getEntityManager().getEntities(
+				EntityManager.CITIZEN)) {
+			
+			distance = getParent().getCurrentPosition()
+					.distanceTo(entity.getCurrentPosition());
+			if (distance < maxDistance) {
+				closer = entity;
+				maxDistance = distance;
+			}
+		}
+
+		return closer;
 	}
 }

@@ -1,6 +1,7 @@
 package fr.alma.ihm.gmapszombiesmasher.activities.game;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ public class GameActivity extends MapActivity {
 	private ProgressDialog dialog;
 	private int selectedButton;
 
+	private static Context context;
+
 	private boolean isSpawned;
 	private boolean isStarted;
 
@@ -58,6 +61,7 @@ public class GameActivity extends MapActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
 
+		context = getApplicationContext();
 		initButtons();
 
 		// Keep Screen On
@@ -102,6 +106,15 @@ public class GameActivity extends MapActivity {
 	}
 
 	/**
+	 * Return the activity context in a static way.
+	 * 
+	 * @return the activity context.
+	 */
+	public static Context getAppContext() {
+		return context;
+	}
+
+	/**
 	 * Create a listener on each button and update "selectedButton" if one is
 	 * selected
 	 */
@@ -129,7 +142,7 @@ public class GameActivity extends MapActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if(isStarted)
+		if (isStarted)
 			startGameProcess();
 	}
 
@@ -137,7 +150,7 @@ public class GameActivity extends MapActivity {
 	protected void onPause() {
 		super.onPause();
 		System.out.println("OnPause");
-		if(isStarted)
+		if (isStarted)
 			waitingHandler.sendEmptyMessage(WaitingHandler.WAIT_CODE);
 	}
 
@@ -145,7 +158,7 @@ public class GameActivity extends MapActivity {
 	protected void onResume() {
 		super.onResume();
 		System.out.println("OnResume");
-		if(isStarted)
+		if (isStarted)
 			waitingHandler.sendEmptyMessage(WaitingHandler.RESUME_CODE);
 	}
 
@@ -153,7 +166,7 @@ public class GameActivity extends MapActivity {
 	protected void onStop() {
 		super.onStop();
 		System.out.println("OnStop");
-		if(isStarted)
+		if (isStarted)
 			waitingHandler.sendEmptyMessage(WaitingHandler.STOP_CODE);
 	}
 
@@ -167,12 +180,11 @@ public class GameActivity extends MapActivity {
 			@Override
 			public void run() {
 				SystemClock.sleep(SLEEPING_TIME);
-				
+
 				while (!isFullyCharged() && mapView.isShown()) {
 					System.out.println("NOT YET");
 				}
 
-				
 				// Send a message to the handler
 				waitingHandler.sendEmptyMessage(WaitingHandler.SPAWN_CODE);
 
@@ -186,7 +198,7 @@ public class GameActivity extends MapActivity {
 
 				GMapsZombieSmasher.soundsManager
 						.playSound(SoundsManager.BUILD_FINISHED);
-				
+
 				waitingHandler.sendEmptyMessage(WaitingHandler.START_CODE);
 			}
 
@@ -303,7 +315,7 @@ public class GameActivity extends MapActivity {
 				mapController.setCenter(new GeoPoint(world.getLatitude(), world
 						.getLongitude()));
 				mapController.setZoom(MapInformationUtilities.ZOOM_LEVEL_MAX);
-				
+
 				startGameProcess();
 			}
 			break;
