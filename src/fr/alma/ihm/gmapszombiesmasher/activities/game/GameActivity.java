@@ -80,10 +80,6 @@ public class GameActivity extends MapActivity {
 
 		mapView.setSatellite(ManagePreferences.isSateliteView(this));
 
-		// New Waitting Handler
-		waitingHandler = new WaitingHandler(this, mapView);
-		waitingHandler.sendEntityManager(onTouchListener);
-
 		// On récupère l'objet Bundle envoyé par l'autre Activity
 		Bundle objetbunble = this.getIntent().getExtras();
 		String worldName = objetbunble.getString("selectedWorldName");
@@ -102,6 +98,10 @@ public class GameActivity extends MapActivity {
 			mapController.setZoom(world.getZoom());
 			mapView.invalidate();
 		}
+		
+		// New Waitting Handler
+		waitingHandler = new WaitingHandler(this, mapView);
+		waitingHandler.sendEntityManager(onTouchListener);
 
 	}
 

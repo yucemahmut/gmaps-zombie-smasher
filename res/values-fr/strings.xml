@@ -27,7 +27,7 @@
     <string name="you_win_button">F%$k Yea !</string>
     <string name="you_loose">Vous avez perdu</string>
     <string name="you_loose_button">Okay :(</string>
-    <string name="unable_current_location">Impossible d\'avoir votre position actuelle.</string>
+    <string name="unable_current_location">S'il vous plait, réessayez.</string>
     
     <!-- Manage Levels -->
     <string name="select_world">Sélectionner un niveau sur la carte</string>

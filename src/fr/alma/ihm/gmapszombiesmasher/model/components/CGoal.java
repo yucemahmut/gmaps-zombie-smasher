@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import android.os.SystemClock;
 import fr.alma.ihm.gmapszombiesmasher.model.Entity;
+import fr.alma.ihm.gmapszombiesmasher.model.components.exception.NoInternetConnectionException;
 
 /**
  * 
@@ -42,6 +43,7 @@ public class CGoal implements Component {
 	 *            The target entity of the parent entity.
 	 * @return The initial coordinates of the parent entity. NULL if the goal
 	 *         isn't valide.
+	 * @throws NoInternetConnectionException 
 	 */
 	public CCoordinates setGoal(CCoordinates goal) {
 		this.goal = goal;
@@ -49,7 +51,7 @@ public class CGoal implements Component {
 		return updateSteps();
 	}
 
-	private CCoordinates updateSteps() {
+	private CCoordinates updateSteps(){
 		CCoordinates startCoordinates = null;
 		String jsonString = "";
 
