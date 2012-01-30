@@ -75,10 +75,8 @@ public class GPSUtilities extends Activity {
 						Intent intent = new Intent();
 						intent.putExtra("latitude", latitude);
 						intent.putExtra("longitude", longitude);
-						System.out.println("[GPS]  OK");
 						GPSUtilities.this.setResult(RESULT_OK, intent);
 					} else {
-						System.out.println("[GPS]  CANCEL");
 						GPSUtilities.this.setResult(RESULT_CANCELED);
 					}
 					

@@ -9,10 +9,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import fr.alma.ihm.gmapszombiesmasher.R;
 import fr.alma.ihm.gmapszombiesmasher.activities.main.listeners.AchievementsButtonListener;
+import fr.alma.ihm.gmapszombiesmasher.activities.main.listeners.HelpButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.activities.main.listeners.PlayButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.activities.main.listeners.SettingsButtonListener;
 import fr.alma.ihm.gmapszombiesmasher.activities.settings.SettingPreferenceActivity;
@@ -22,6 +22,7 @@ import fr.alma.ihm.gmapszombiesmasher.sounds.SoundsManagerFactory;
 import fr.alma.ihm.gmapszombiesmasher.utils.ManagePreferences;
 
 public class GMapsZombieSmasher extends Activity {
+	
 		
 	public static SoundsManager soundsManager;
 	/** Called when the activity is first created. */
@@ -35,26 +36,7 @@ public class GMapsZombieSmasher extends Activity {
 		this.findViewById(R.id.play).setOnClickListener(new PlayButtonListener(this));
 		this.findViewById(R.id.achievements).setOnClickListener(new AchievementsButtonListener(this));
 		this.findViewById(R.id.settings).setOnClickListener(new SettingsButtonListener(this));
-		this.findViewById(R.id.help).setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View arg0) {
-				View resultView = getLayoutInflater().inflate(R.layout.help_dialog,
-						null);
-				AlertDialog.Builder builder = new AlertDialog.Builder(GMapsZombieSmasher.this);
-				builder.setView(resultView);
-				builder.setPositiveButton("OK",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
-
-				builder.show();
-				
-			}
-			
-		});
+		this.findViewById(R.id.help).setOnClickListener(new HelpButtonListener(this));
 		
 		// get sound manager
 		soundsManager = SoundsManagerFactory.get(this);
